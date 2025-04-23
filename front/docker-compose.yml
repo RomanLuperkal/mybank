@@ -1,0 +1,7 @@
+services:
+  front:
+    build: .
+    ports:
+      - "${FRONT_SERVER_PORT}:${FRONT_SERVER_PORT}"
+    environment:
+      FRONT_SERVER_PORT: ${FRONT_SERVER_PORT}

@@ -1,0 +1,33 @@
+services:
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    ports:
+      - "${FRONT_SERVER_PORT}:${FRONT_SERVER_PORT}"
+    environment:
+      SERVER_PORT: ${FRONT_SERVER_PORT}
+
+  account-service:
+    build:
+      context: ./account-service
+      dockerfile: Dockerfile
+    ports:
+      - "${ACCOUNT_SERVICE_PORT}:${ACCOUNT_SERVICE_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${ACCOUNT_DB_HOST}:5432/${ACCOUNT_DB_NAME}
+      SPRING_DATASOURCE_USERNAME: ${ACCOUNT_DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+      SERVER_PORT: ${ACCOUNT_SERVICE_PORT}
+    depends_on:
+      - account-db
+
+  account-db:
+    image: postgres:16
+    container_name: order-db
+    environment:
+      POSTGRES_DB: ${ACCOUNT_DB_NAME}
+      POSTGRES_USER: ${ACCOUNT_DB_USERNAME}
+      POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
+    ports:
+      - "5434:5432"
