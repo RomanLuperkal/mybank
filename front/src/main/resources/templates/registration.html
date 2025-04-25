@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+        }
+        .form-container {
+            max-width: 300px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+        .form-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .form-container button:hover {
+            background-color: #0056b3;
+        }
+        .error-message {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .success-message {
+            color: green;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2>Register</h2>
+
+
+    <div th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></div>
+
+    <!-- Форма регистрации -->
+    <form method="post" action="http://localhost:8081/account/register">
+        <div>
+            <label for="username">Логин:</label>
+            <input type="text" id="username" name="username" required />
+        </div>
+        <div>
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required />
+        </div>
+        <div>
+            <label for="firstName">Имя:</label>
+            <input type="text" id="firstName" name="firstName" required />
+        </div>
+        <div>
+            <label for="lastName">Фамилия:</label>
+            <input type="text" id="lastName" name="lastName" required />
+        </div>
+        <div>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required />
+        </div>
+        <div>
+            <label for="dateOfBirth">Дата рождения:</label>
+            <input type="date" id="dateOfBirth" name="dateOfBirth" required />
+        </div>
+        <div>
+            <button type="submit">Register</button>
+        </div>
+    </form>
+
+    <!-- Ссылка на страницу входа -->
+    <div style="text-align: center; margin-top: 10px;">
+        Уже есть аккаунт? <a href="/login">Войти здесь</a>.
+    </div>
+</div>
+</body>
+</html>
