@@ -1,13 +1,13 @@
 package org.ivanov.account.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.ivanov.account.dto.account.CreateAccountDto;
-import org.ivanov.account.dto.account.ResponseAccountDto;
 import org.ivanov.account.handler.exception.AccountException;
 import org.ivanov.account.mapper.AccountMapper;
 import org.ivanov.account.model.Account;
 import org.ivanov.account.repository.AccountRepository;
 import org.ivanov.account.service.AccountService;
+import org.ivanov.accountdto.account.CreateAccountDto;
+import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +19,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseAccountDto createAccount(CreateAccountDto dto) {
-        if (accountRepository.existsAccountByUsername(dto.getUsername())) {
-            throw new AccountException(HttpStatus.CONFLICT, "Аккаунт с именем: " + dto.getUsername() + " уже существует.");
+        if (accountRepository.existsAccountByUsername(dto.username())) {
+            throw new AccountException(HttpStatus.CONFLICT, "Аккаунт с именем: " + dto.username() + " уже существует.");
         }
 
         Account newAccount = accountMapper.mapToAccount(dto);

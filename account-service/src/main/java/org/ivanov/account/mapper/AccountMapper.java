@@ -1,8 +1,9 @@
 package org.ivanov.account.mapper;
 
-import org.ivanov.account.dto.account.CreateAccountDto;
-import org.ivanov.account.dto.account.ResponseAccountDto;
+
 import org.ivanov.account.model.Account;
+import org.ivanov.accountdto.account.CreateAccountDto;
+import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

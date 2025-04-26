@@ -24,7 +24,7 @@ public class Wallet {
     private WalletType walletType;
     private BigDecimal balance = BigDecimal.ZERO;
 
-    private enum WalletType {
+    public enum WalletType {
         RUB, USD, CNY
     }
 

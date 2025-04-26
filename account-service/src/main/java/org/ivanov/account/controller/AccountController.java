@@ -2,9 +2,11 @@ package org.ivanov.account.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.ivanov.account.dto.account.CreateAccountDto;
-import org.ivanov.account.dto.account.ResponseAccountDto;
 import org.ivanov.account.service.AccountService;
+
+
+import org.ivanov.accountdto.account.CreateAccountDto;
+import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

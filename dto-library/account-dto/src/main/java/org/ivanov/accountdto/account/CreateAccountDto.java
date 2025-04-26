@@ -1,5 +1,4 @@
-/*
-package org.ivanov.account.dto.account;
+package org.ivanov.accountdto.account;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,4 +21,3 @@ public record CreateAccountDto(
         LocalDate birthDate
 ) {
 }
-*/

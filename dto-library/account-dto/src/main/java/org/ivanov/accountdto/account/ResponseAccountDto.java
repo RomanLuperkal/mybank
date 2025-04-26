@@ -1,7 +1,8 @@
-/*
-package org.ivanov.account.dto.account;
+package org.ivanov.accountdto.account;
 
-import org.ivanov.account.dto.wallet.ResponseWalletDto;
+
+
+import org.ivanov.accountdto.wallet.ResponseWalletDto;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,4 +16,3 @@ public record ResponseAccountDto(
         LocalDate dateOfBirth
 ) {
 }
-*/
