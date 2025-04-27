@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
     private final AccountService accountService;
 
-    @PostMapping("/registry")
+    @PostMapping("/registration")
     public ResponseEntity<ResponseAccountDto> registry(@Valid @RequestBody CreateAccountDto createAccountDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(accountService.createAccount(createAccountDto));
     }

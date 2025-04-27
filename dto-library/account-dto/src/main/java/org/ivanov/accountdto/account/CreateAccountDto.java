@@ -11,7 +11,8 @@ public record CreateAccountDto(
         String username,
         @NotBlank(message = "пароль не может быть пустым")
         String password,
-        @Email(message = "адрес почти должен иметь корректный формат")
+        @Email(message = "адрес почты должен иметь корректный формат",
+                regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
         String email,
         @NotBlank(message = "имя не может быть пустым")
         String firstName,
