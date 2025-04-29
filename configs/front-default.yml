@@ -2,3 +2,9 @@ server:
   port: 8080
 
 my: test1
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh 
