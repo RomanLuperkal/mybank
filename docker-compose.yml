@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   front:
     build:
@@ -6,7 +8,12 @@ services:
     ports:
       - "${FRONT_SERVER_PORT}:${FRONT_SERVER_PORT}"
     environment:
-      SERVER_PORT: ${FRONT_SERVER_PORT}
+      - FRONT_SERVER_PORT=${FRONT_SERVER_PORT}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+    depends_on:
+      config-server:
+        condition: service_healthy
 
   account-service:
     build:
@@ -15,19 +22,45 @@ services:
     ports:
       - "${ACCOUNT_SERVICE_PORT}:${ACCOUNT_SERVICE_PORT}"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://${ACCOUNT_DB_HOST}:5432/${ACCOUNT_DB_NAME}
-      SPRING_DATASOURCE_USERNAME: ${ACCOUNT_DB_USERNAME}
-      SPRING_DATASOURCE_PASSWORD: ${ACCOUNT_DB_PASSWORD}
-      SERVER_PORT: ${ACCOUNT_SERVICE_PORT}
+      - ACCOUNT_DB_HOST=${ACCOUNT_DB_HOST}
+      - ACCOUNT_DB_PORT=${ACCOUNT_DB_PORT}
+      - ACCOUNT_DB_NAME=${ACCOUNT_DB_NAME}
+      - ACCOUNT_DB_USERNAME=${ACCOUNT_DB_USERNAME}
+      - ACCOUNT_DB_PASSWORD=${ACCOUNT_DB_PASSWORD}
+      - ACCOUNT_SERVICE_PORT=${ACCOUNT_SERVICE_PORT}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
     depends_on:
-      - account-db
+      config-server:
+        condition: service_healthy
+      account-db:
+        condition: service_healthy
 
   account-db:
-    image: postgres:16
-    container_name: order-db
+    image: postgres:15.1-alpine
+    container_name: account-db
     environment:
       POSTGRES_DB: ${ACCOUNT_DB_NAME}
       POSTGRES_USER: ${ACCOUNT_DB_USERNAME}
       POSTGRES_PASSWORD: ${ACCOUNT_DB_PASSWORD}
     ports:
       - "5434:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${ACCOUNT_DB_USERNAME}", "-d", "${ACCOUNT_DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  config-server:
+    build:
+      context: ./config-server
+      dockerfile: Dockerfile
+    ports:
+      - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
+    environment:
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9090/actuator/health" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5

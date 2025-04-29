@@ -1,24 +1,11 @@
-server:
-  port: ${ACCOUNT_SERVICE_PORT:8081}
-
 spring:
   application:
     name: account-service
-  jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: validate
-    show-sql: true
 
-  datasource:
-    driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${ACCOUNT_DB_HOST:localhost}:${DB_PORT:5432}/${ACCOUNT_DB_NAME:account}
-    username: ${ACCOUNT_DB_USERNAME:postgres}
-    password: ${ACCOUNT_DB_PASSWORD}
-
-  liquibase:
-    change-log: classpath:db/changelog/changelog-master.xml
+  config:
+    import: configserver:http://${CONFIG_SERVER_NAME:localhost}:${CONFIG_SERVER_PORT:9090}
+  cloud:
+    config:
+      label: config
 
 

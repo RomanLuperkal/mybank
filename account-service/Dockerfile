@@ -1,7 +1,5 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM amazoncorretto:21
 
-WORKDIR /app
-
-COPY build/libs/*.jar account-service.jar
+COPY target/*.jar account-service.jar
 
 ENTRYPOINT ["java", "-jar", "account-service.jar"]

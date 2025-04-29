@@ -1,12 +1,9 @@
-#server:
- # port: ${FRONT_SERVER_PORT:8080}
-
 spring:
   application:
     name: front
 
   config:
-    import: configserver:http://localhost:9090
+    import: configserver:http://${CONFIG_SERVER_NAME:localhost}:${CONFIG_SERVER_PORT:9090}
   cloud:
     config:
-      label: release/v1.0.0
+      label: config
