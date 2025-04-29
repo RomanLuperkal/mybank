@@ -1,7 +1,7 @@
 server:
   port: 8080
 
-my: test2
+my: test1
 
 management:
   endpoints:
