@@ -30,7 +30,7 @@ public class Account {
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Wallet> wallets = new HashSet<>();
 
-    private enum Role {
+    public enum Role {
         ROLE_USER, ROLE_ADMIN
     }
 }

@@ -6,7 +6,6 @@
         <groupId>org.ivanov</groupId>
         <artifactId>mybank</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -25,6 +24,18 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
+                <version>3.4.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>*</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
                 <version>3.4.5</version>
                 <exclusions>
                     <exclusion>

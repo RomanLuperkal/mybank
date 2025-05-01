@@ -33,4 +33,9 @@ public class AccountController {
         accountService.registration(dto);
         return "redirect:/login";
     }
+
+    @GetMapping("/home")
+    public String home() {
+        return "home";
+    }
 }
