@@ -9,3 +9,12 @@ spring:
       label: config
 
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_URL:http://localhost:9092}/realms/master
+
+logging:
+  level:
+    org.springframework.security: DEBUG

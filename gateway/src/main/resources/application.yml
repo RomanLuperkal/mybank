@@ -4,8 +4,6 @@ server:
 spring:
   application:
     name: gateway
-#TODO ????????? ??? ? env ? ??????
-#TODO ???????? ? ?????? ??????
   cloud:
     gateway:
       routes:
@@ -13,12 +11,30 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/account/**
-         # filters:
-          #  - RewritePath=/account/?(?<segment>.*), /$\{segment}
+
+          filters:
+            - TokenRelay=gateway-client
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_URL:http://localhost:9092}/realms/master
+        registration:
+          gateway-client:
+            provider: keycloak
+            client-id: gateway-client        # ID зарегистрированного клиента
+            client-secret: CxhbUBGdW845a17EBM52XIq0qPavdfo8
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post
 
 logging:
   level:
     org.springframework.cloud.gateway: DEBUG
-    #reactor.netty.http.client: DEBUG
-    #org.springframework.web.reactive.function.client: DEBUG
+    reactor.netty.http.client: DEBUG
+    org.springframework.security: DEBUG
+    reactor.netty.http.client.HttpClientOperations: DEBUG
+    org.springframework.cloud.gateway.filter.factory.TokenRelayGatewayFilterFactory: TRACE
 
