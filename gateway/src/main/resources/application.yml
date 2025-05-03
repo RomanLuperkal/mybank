@@ -11,9 +11,8 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/account/**
-
           filters:
-            - TokenRelay=gateway-client
+            TokenRelayToKeycloak=gateway-client
 
   security:
     oauth2:
@@ -25,7 +24,7 @@ spring:
           gateway-client:
             provider: keycloak
             client-id: gateway-client        # ID зарегистрированного клиента
-            client-secret: CxhbUBGdW845a17EBM52XIq0qPavdfo8
+            client-secret: Nje9fmQzqbOGT3bwax7Y1B2Az453eeWA
             scope: profile
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: client_secret_post
@@ -37,4 +36,3 @@ logging:
     org.springframework.security: DEBUG
     reactor.netty.http.client.HttpClientOperations: DEBUG
     org.springframework.cloud.gateway.filter.factory.TokenRelayGatewayFilterFactory: TRACE
-

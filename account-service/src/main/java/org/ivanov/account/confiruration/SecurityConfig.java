@@ -3,6 +3,7 @@ package org.ivanov.account.confiruration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -32,7 +34,7 @@ public class SecurityConfig {
                             JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
                             jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
                                 Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-                                Map<String, Object> account = (Map<String, Object>) resourceAccess.get("account");
+                                Map<String, Object> account = (Map<String, Object>) resourceAccess.get("account-client");
                                 List<String> roles = (List<String>) account.get("roles");
 
                                 return roles.stream()

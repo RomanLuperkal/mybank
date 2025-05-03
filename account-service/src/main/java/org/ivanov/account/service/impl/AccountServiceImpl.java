@@ -10,6 +10,7 @@ import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountInfoDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class AccountServiceImpl implements AccountService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
     public ResponseAccountDto createAccount(CreateAccountDto dto) {
         if (accountRepository.existsAccountByUsername(dto.username())) {
             throw new AccountException(HttpStatus.CONFLICT, "Аккаунт с именем: " + dto.username() + " уже существует.");
@@ -34,6 +36,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('account_role')")
     public ResponseAccountInfoDto getAccountInfo(String username) {
         if (!accountRepository.existsAccountByUsername(username)) {
             throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + username + " не существует.");
