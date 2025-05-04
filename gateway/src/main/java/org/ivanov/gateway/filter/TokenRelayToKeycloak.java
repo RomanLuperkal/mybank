@@ -1,6 +1,6 @@
 package org.ivanov.gateway.filter;
 
-import lombok.Getter;
+/*import lombok.Getter;
 import lombok.Setter;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -59,4 +59,4 @@ public class TokenRelayToKeycloak extends AbstractGatewayFilterFactory<TokenRela
             this.client = client;
         }
     }
-}
+}*/

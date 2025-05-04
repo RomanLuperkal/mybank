@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.front.service.AccountService;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,7 +18,10 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(@RequestParam(required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("error", "Неверные логин или пароль");
+        }
         return "login";
     }
 

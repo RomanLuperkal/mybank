@@ -78,3 +78,22 @@ services:
     #volumes:
     #  - ./keycloak/realm-export.json:/opt/keycloak/data/import/realm-export.json
     command: [ "start-dev" ]
+
+  consul:
+    image: hashicorp/consul:latest
+    ports:
+      - "8500:8500"       # HTTP API и веб-интерфейс
+      - "8300:8300"       # RPC
+      - "8301:8301"       # LAN
+      - "8302:8302"       # WAN
+      - "8600:8600/udp"   # DNS
+    #volumes:
+    #  - ./consul/data:/consul/data
+    command:
+      - "agent"
+      - "-server"
+      - "-ui"
+      - "-bind=0.0.0.0"   # ❗️Критически важно для доступа
+      - "-client=0.0.0.0"
+      - "-data-dir=/consul/data"
+      - "-bootstrap-expect=1"  # ❗️Критически важно для одиночного узла

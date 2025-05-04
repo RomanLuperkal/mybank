@@ -34,8 +34,19 @@ public class SecurityConfig {
                             JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
                             jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
                                 Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
-                                Map<String, Object> account = (Map<String, Object>) resourceAccess.get("account-client");
-                                List<String> roles = (List<String>) account.get("roles");
+                                Map<String, Object> account;
+                                List<String> roles = null;
+
+                                if (resourceAccess != null) {
+                                    account = (Map<String, Object>) resourceAccess.get("account-client");
+                                    if (account != null) {
+                                        roles = (List<String>) account.get("roles");
+                                    }
+                                }
+
+                                if (roles == null) {
+                                    roles = List.of();
+                                }
 
                                 return roles.stream()
                                         .map(SimpleGrantedAuthority::new)

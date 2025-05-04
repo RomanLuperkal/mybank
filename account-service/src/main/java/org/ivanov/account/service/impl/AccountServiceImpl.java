@@ -36,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('account_role')")
+    @PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
     public ResponseAccountInfoDto getAccountInfo(String username) {
         if (!accountRepository.existsAccountByUsername(username)) {
             throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + username + " не существует.");

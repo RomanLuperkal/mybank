@@ -3,6 +3,7 @@ package org.ivanov.front.configuration.security;
 import org.ivanov.front.client.AccountClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,6 +11,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebSecurity
@@ -25,7 +30,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/home", true)
-                        .failureUrl("/login?error")
+                        .failureHandler(failureHandler())
                 )
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login"))
@@ -45,5 +50,21 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private AuthenticationFailureHandler failureHandler() {
+        return (request, response, authException) -> {
+            String redirectUrl = "/login";
+
+            if (authException instanceof BadCredentialsException) {
+                redirectUrl += "?error";
+            } else {
+                String errorMessage = "Ошибка: " + authException.getMessage();
+                String encodedMessage = URLEncoder.encode(errorMessage, StandardCharsets.UTF_8);
+                redirectUrl += "?alert=" + encodedMessage;
+            }
+
+            response.sendRedirect(redirectUrl);
+        };
     }
 }

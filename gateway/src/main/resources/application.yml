@@ -11,23 +11,10 @@ spring:
           uri: http://localhost:8081
           predicates:
             - Path=/account/**
-          filters:
-            TokenRelayToKeycloak=gateway-client
+          #filters:
+           # TokenRelayToKeycloak=gateway-client
 
-  security:
-    oauth2:
-      client:
-        provider:
-          keycloak:
-            issuer-uri: ${KEYCLOAK_URL:http://localhost:9092}/realms/master
-        registration:
-          gateway-client:
-            provider: keycloak
-            client-id: gateway-client        # ID зарегистрированного клиента
-            client-secret: Nje9fmQzqbOGT3bwax7Y1B2Az453eeWA
-            scope: profile
-            authorization-grant-type: client_credentials
-            clientAuthenticationMethod: client_secret_post
+
 
 logging:
   level:
