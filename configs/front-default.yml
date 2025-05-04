@@ -1,5 +1,5 @@
 server:
-  port: ${FRONT_SERVER_PORT:8089}
+  adress: ${FRONT_SERVER_PORT:8089}
 
 management:
   endpoints:
