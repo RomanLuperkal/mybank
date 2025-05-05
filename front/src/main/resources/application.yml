@@ -8,6 +8,11 @@ spring:
     config:
       label: config
 
+    consul:
+      host: localhost          # Адрес Consul (по умолчанию localhost)
+      port: 8500               # Порт Consul (8500 по умолчанию)
+
+
   security:
     oauth2:
       client:
@@ -18,7 +23,7 @@ spring:
           account-client:
             provider: keycloak
             client-id: account-client
-            client-secret: FYKoMBTP4OF2GVYSH9CDzbZqE9u8v2rl
+            client-secret: fFY1Yiw4GPrcSwUHflJMvuRcdJkpfF8R
             scope: profile
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: client_secret_post

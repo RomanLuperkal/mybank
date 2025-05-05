@@ -8,11 +8,15 @@ spring:
     gateway:
       routes:
         - id: account-service
-          uri: http://localhost:8081
+          uri: lb://account-service
           predicates:
             - Path=/account/**
           #filters:
            # TokenRelayToKeycloak=gateway-client
+
+    consul:
+      host: localhost          # Адрес Consul (по умолчанию localhost)
+      port: 8500               # Порт Consul (8500 по умолчанию)
 
 
 

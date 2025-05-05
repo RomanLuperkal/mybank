@@ -14,6 +14,10 @@ spring:
           search-paths: configs
           refreshRate: 10
 
+    consul:
+      host: localhost          # Адрес Consul (по умолчанию localhost)
+      port: 8500               # Порт Consul (8500 по умолчанию)
+
 management:
   endpoints:
     web:
