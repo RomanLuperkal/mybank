@@ -9,7 +9,7 @@ spring:
       label: config
 
     consul:
-      host: localhost          # Адрес Consul (по умолчанию localhost)
+      host: ${CONSUL_HOST_NAME:localhost}          # Адрес Consul (по умолчанию localhost)
       port: 8500               # Порт Consul (8500 по умолчанию)
 
 
@@ -17,7 +17,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_URL:http://localhost:9092}/realms/master
+          issuer-uri: ${KEYCLOAK_HOST_NAME:http://localhost:9092}/realms/master
 
 
 logging:

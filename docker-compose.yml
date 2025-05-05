@@ -11,6 +11,21 @@ services:
       - FRONT_SERVER_PORT=${FRONT_SERVER_PORT}
       - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - "${GATEWAY_SERVER_PORT}:${GATEWAY_SERVER_PORT}"
+    environment:
+      - GATEWAY_SERVER_PORT=${GATEWAY_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
     depends_on:
       config-server:
         condition: service_healthy
@@ -30,6 +45,8 @@ services:
       - ACCOUNT_SERVICE_PORT=${ACCOUNT_SERVICE_PORT}
       - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
     depends_on:
       config-server:
         condition: service_healthy
@@ -59,6 +76,7 @@ services:
       - "${CONFIG_SERVER_PORT}:${CONFIG_SERVER_PORT}"
     environment:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9090/actuator/health" ]
       interval: 5s

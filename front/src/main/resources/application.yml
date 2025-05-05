@@ -9,8 +9,11 @@ spring:
       label: config
 
     consul:
-      host: localhost          # Адрес Consul (по умолчанию localhost)
+      host: ${CONSUL_HOST_NAME:localhost}        # Адрес Consul (по умолчанию localhost)
       port: 8500               # Порт Consul (8500 по умолчанию)
+      discovery:
+        enabled: true
+        prefer-ip-address: true
 
 
   security:
@@ -18,12 +21,12 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: ${KEYCLOAK_URL:http://localhost:9092}/realms/master
+            issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
         registration:
           account-client:
             provider: keycloak
             client-id: account-client
-            client-secret: fFY1Yiw4GPrcSwUHflJMvuRcdJkpfF8R
+            client-secret: 84eTgOYoRFimGGnLoEX05yYZ5CHXdcpS
             scope: profile
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: client_secret_post
