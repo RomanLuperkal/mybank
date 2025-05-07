@@ -1,5 +1,6 @@
 package org.ivanov.front.configuration.security;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.ivanov.front.client.AccountClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -43,8 +44,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsService accountUserDetailsService(AccountClient client) {
-        return new AccountUserDetailService(client);
+    public UserDetailsService accountUserDetailsService(AccountClient client, CircuitBreakerRegistry circuitBreakerRegistry) {
+        return new AccountUserDetailService(client, circuitBreakerRegistry);
     }
 
     @Bean

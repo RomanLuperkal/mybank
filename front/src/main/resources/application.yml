@@ -35,17 +35,20 @@ resilience4j:
   circuitbreaker:
     configs:
       default:
-        slidingWindowSize: 3
+        slidingWindowSize: 100
         permittedNumberOfCallsInHalfOpenState: 3
-        # slowCallDurationThreshold: 4s
-        #slowCallRateThreshold: 90
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
-        minimumNumberOfCalls: 3
+        minimumNumberOfCalls: 10
         ignoreExceptions:
         - org.ivanov.front.handler.exception.AccountException
         - org.springframework.security.core.userdetails.UsernameNotFoundException
         - org.ivanov.front.handler.exception.LoginException
+        ignore-exception-predicate:
+          - "exception -> exception instanceof org.ivanov.front.handler.exception.AccountException"
+          - "exception -> exception instanceof org.springframework.security.core.userdetails.UsernameNotFoundException"
+          - "exception -> exception instanceof org.ivanov.front.handler.exception.LoginException"
+
     instances:
       front-circuitbreaker:
         baseConfig: default

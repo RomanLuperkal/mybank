@@ -1,5 +1,6 @@
 package org.ivanov.front.client;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +29,12 @@ import java.util.Set;
 public class AccountClientImpl implements AccountClient {
     private final WebClient client;
     private final OAuth2AuthorizedClientManager clientManager;
+    private final CircuitBreakerRegistry circuitBreakerRegistry;
+
 
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackRegistration")
     public ResponseAccountDto registration(CreateAccountDto dto) {
+
         return client.post()
                 .uri("http://gateway/account/registration")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
@@ -44,7 +48,7 @@ public class AccountClientImpl implements AccountClient {
                 block();
     }
 
-    //@CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallback")
+    @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackGetAccount")
     public ResponseAccountInfoDto getAccount(String username) {
         return client.get()
                 .uri("http://gateway/account/" + username)
@@ -69,5 +73,10 @@ public class AccountClientImpl implements AccountClient {
     private ResponseAccountDto fallbackRegistration(Exception ex) {
         log.info("execute fallbackRegistration: {}", ex.getMessage());
         return new ResponseAccountDto(-1L, Set.of(), "error", "error", "error", LocalDate.now());
+    }
+
+    private ResponseAccountInfoDto fallbackGetAccount(Throwable ex) {
+        log.info("execute fallbackGetAccount: {}", ex.getMessage());
+        return null;
     }
 }
