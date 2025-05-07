@@ -1,6 +1,7 @@
 package org.ivanov.account.confiruration;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -20,6 +21,7 @@ import java.util.Map;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@Slf4j
 public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,7 +45,7 @@ public class SecurityConfig {
                                         roles = (List<String>) account.get("roles");
                                     }
                                 }
-
+                                log.info("roles: {}", roles);
                                 if (roles == null) {
                                     roles = List.of();
                                 }
