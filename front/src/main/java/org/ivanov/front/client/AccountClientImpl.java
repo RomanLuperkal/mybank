@@ -1,14 +1,13 @@
 package org.ivanov.front.client;
 
-import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountInfoDto;
-import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.LoginException;
+import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.response.ApiError;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,8 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -29,7 +27,6 @@ import java.util.Set;
 public class AccountClientImpl implements AccountClient {
     private final WebClient client;
     private final OAuth2AuthorizedClientManager clientManager;
-    private final CircuitBreakerRegistry circuitBreakerRegistry;
 
 
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackRegistration")
@@ -39,13 +36,13 @@ public class AccountClientImpl implements AccountClient {
                 .uri("http://gateway/account/registration")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto).retrieve()
-                .onStatus(status -> status == HttpStatus.CONFLICT,
+                .onStatus(status -> status == HttpStatus.CONFLICT || status == HttpStatus.FORBIDDEN || status == HttpStatus.GATEWAY_TIMEOUT,
                         response -> response.bodyToMono(ApiError.class)
-                                .flatMap(body -> Mono.error(new AccountException(dto,
+                                .flatMap(body -> Mono.error(new RegistrationException(dto,
                                         body.getMessage()))))
-
-                .bodyToMono(ResponseAccountDto.class).
-                block();
+                .bodyToMono(ResponseAccountDto.class)
+                .retry(3)
+                .block();
     }
 
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackGetAccount")
@@ -58,9 +55,12 @@ public class AccountClientImpl implements AccountClient {
                         response -> Mono.error(new UsernameNotFoundException(username)))
                 .onStatus(status -> status == HttpStatus.FORBIDDEN,
                         response -> Mono.error(new LoginException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
-
-                .bodyToMono(ResponseAccountInfoDto.class).
-                block();
+                .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new LoginException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                .bodyToMono(ResponseAccountInfoDto.class)
+                .retry(3)
+                . block();
     }
 
     private String getAccessToken() {
@@ -70,13 +70,27 @@ public class AccountClientImpl implements AccountClient {
         return system.getAccessToken().getTokenValue();
     }
 
-    private ResponseAccountDto fallbackRegistration(Exception ex) {
-        log.info("execute fallbackRegistration: {}", ex.getMessage());
-        return new ResponseAccountDto(-1L, Set.of(), "error", "error", "error", LocalDate.now());
+    private ResponseAccountDto fallbackRegistration(RuntimeException e) {
+        final String message  = "Аккаунт сервис недоступен";
+        var stubDto = new CreateAccountDto(null, null, null, null, null, null);
+        log.info("execute fallbackRegistration: {}", e.getMessage());
+        handleCircuitBreakerFailure(e, List.of(LoginException.class, RegistrationException.class), ResponseAccountDto.class);
+        throw new RegistrationException(stubDto, message);
     }
 
-    private ResponseAccountInfoDto fallbackGetAccount(Throwable ex) {
-        log.info("execute fallbackGetAccount: {}", ex.getMessage());
-        return null;
+    private ResponseAccountInfoDto fallbackGetAccount(RuntimeException e) {
+        final String message  = "Аккаунт сервис недоступен";
+        log.info("execute fallbackGetAccount: {}", e.getMessage());
+        handleCircuitBreakerFailure(e, List.of(LoginException.class, UsernameNotFoundException.class),
+                 ResponseAccountInfoDto.class);
+        throw new LoginException(message, HttpStatus.INTERNAL_SERVER_ERROR.toString());
+    }
+
+    private <T> void handleCircuitBreakerFailure(RuntimeException e, List<Class<? extends RuntimeException>> exceptions, Class<T> clazz) {
+        for (Class<? extends RuntimeException> exceptionClass : exceptions) {
+            if (exceptionClass.isInstance(e)) {
+                throw e;
+            }
+        }
     }
 }

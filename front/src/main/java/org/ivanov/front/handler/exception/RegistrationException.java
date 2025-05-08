@@ -6,7 +6,7 @@ import org.ivanov.accountdto.account.CreateAccountDto;
 
 @AllArgsConstructor
 @Getter
-public class AccountException extends RuntimeException {
+public class RegistrationException extends RuntimeException {
     private CreateAccountDto dto;
     private String message;
 }
