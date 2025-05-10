@@ -46,7 +46,7 @@ public class AccountClientImpl implements AccountClient {
     }
 
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackGetAccount")
-    public ResponseAccountInfoDto getAccount(String username) {
+    public ResponseAccountDto getAccount(String username) {
         return client.get()
                 .uri("http://gateway/account/" + username)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
@@ -58,7 +58,7 @@ public class AccountClientImpl implements AccountClient {
                 .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
                         response -> response.bodyToMono(ApiError.class)
                                 .flatMap(body -> Mono.error(new LoginException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
-                .bodyToMono(ResponseAccountInfoDto.class)
+                .bodyToMono(ResponseAccountDto.class)
                 .retry(3)
                 . block();
     }
@@ -78,7 +78,7 @@ public class AccountClientImpl implements AccountClient {
         throw new RegistrationException(stubDto, message);
     }
 
-    private ResponseAccountInfoDto fallbackGetAccount(RuntimeException e) {
+    private ResponseAccountDto fallbackGetAccount(RuntimeException e) {
         final String message  = "Аккаунт сервис недоступен";
         log.info("execute fallbackGetAccount: {}", e.getMessage());
         handleCircuitBreakerFailure(e, List.of(LoginException.class, UsernameNotFoundException.class),

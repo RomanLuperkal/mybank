@@ -1,0 +1,37 @@
+server:
+  port: ${ACCOUNT_SERVICE_PORT:8081}
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${ACCOUNT_DB_HOST:localhost}:${ACCOUNT_DB_PORT:5432}/${ACCOUNT_DB_NAME:account}
+    username: ${ACCOUNT_DB_USERNAME:postgres}
+    password: ${ACCOUNT_DB_PASSWORD}
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+
+  cloud:
+    consul:
+      host: ${CONSUL_HOST_NAME:localhost}          # Адрес Consul (по умолчанию localhost)
+      port: 8500               # Порт Consul (8500 по умолчанию)
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+
+
+logging:
+  level:
+    org.springframework.security: DEBUG

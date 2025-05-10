@@ -1,0 +1,50 @@
+server:
+  port: ${FRONT_SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+
+spring:
+
+  cloud:
+    consul:
+      host: ${CONSUL_HOST_NAME:localhost}        # Адрес Consul (по умолчанию localhost)
+      port: 8500               # Порт Consul (8500 по умолчанию)
+      discovery:
+        enabled: true
+        prefer-ip-address: true
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+        registration:
+          account-client:
+            provider: keycloak
+            client-id: account-client
+            client-secret: 3r4NjD2qmgzfBR6iA3cYF4zPcH8xQGwg
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post
+
+  resilience4j:
+    circuitbreaker:
+      configs:
+        default:
+          slidingWindowSize: 10
+          permittedNumberOfCallsInHalfOpenState: 3
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10s
+          minimumNumberOfCalls: 3
+          ignoreExceptions:
+            - org.ivanov.front.handler.exception.RegistrationException
+            - org.springframework.security.core.userdetails.UsernameNotFoundException
+            - org.ivanov.front.handler.exception.LoginException
+      instances:
+        front-circuitbreaker:
+          baseConfig: default

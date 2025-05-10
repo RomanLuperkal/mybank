@@ -31,12 +31,30 @@
         .btn-custom:hover {
             transform: scale(1.05);
         }
+        .logout-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .user-info {
+            position: absolute;
+            top: 10px;
+            right: 120px;
+            font-size: 14px;
+            color: #333;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
-<input type="hidden"
-       th:name="${_csrf.parameterName}"
-       th:value="${_csrf.token}" />
+
+<span class="user-info">Вы вошли как <span th:text="${user.firstName + ' ' + user.lastName}"></span></span>
+<form th:action="@{/logout}" method="post" class="logout-button">
+    <input type="hidden"
+           th:name="${_csrf.parameterName}"
+           th:value="${_csrf.token}" />
+    <button type="submit" class="btn btn-outline-danger btn-sm">Выход</button>
+</form>
 
 <div class="button-container text-center">
     <a th:href="@{/account-settings}" class="btn btn-primary btn-custom">Настройки аккаунта</a>

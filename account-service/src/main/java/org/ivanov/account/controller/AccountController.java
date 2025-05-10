@@ -3,11 +3,8 @@ package org.ivanov.account.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ivanov.account.service.AccountService;
-
-
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
-import org.ivanov.accountdto.account.ResponseAccountInfoDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +21,7 @@ public class AccountController {
     }
 
     @GetMapping("{username}")
-    public ResponseEntity<ResponseAccountInfoDto> getAccountInfo(@PathVariable String username) {
+    public ResponseEntity<ResponseAccountDto> getAccountInfo(@PathVariable String username) {
         return ResponseEntity.status(HttpStatus.OK).body(accountService.getAccountInfo(username));
     }
 }

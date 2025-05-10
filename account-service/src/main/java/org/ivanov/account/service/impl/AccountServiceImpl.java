@@ -8,7 +8,6 @@ import org.ivanov.account.repository.AccountRepository;
 import org.ivanov.account.service.AccountService;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
-import org.ivanov.accountdto.account.ResponseAccountInfoDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,12 +36,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
-    public ResponseAccountInfoDto getAccountInfo(String username) {
+    public ResponseAccountDto getAccountInfo(String username) {
         if (!accountRepository.existsAccountByUsername(username)) {
             throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + username + " не существует.");
         }
 
         Account account = accountRepository.findAccountByUsername(username);
-        return accountMapper.mapToResponseAccountInfoDto(account);
+        return accountMapper.mapToResponseAccount(account);
     }
 }

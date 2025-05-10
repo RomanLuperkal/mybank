@@ -3,6 +3,7 @@ package org.ivanov.accountdto.account;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.ivanov.accountdto.validator.ValidBirthdate;
 
 import java.time.LocalDate;
 
@@ -18,6 +19,7 @@ public record CreateAccountDto(
         String firstName,
         @NotBlank(message = "фамилия не может быть пустой")
         String lastName,
+        @ValidBirthdate(field = "birthDate")
         @NotNull
         LocalDate birthDate
 ) {

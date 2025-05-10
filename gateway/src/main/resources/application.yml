@@ -4,60 +4,6 @@ server:
 spring:
   application:
     name: gateway
-  cloud:
-    gateway:
-      routes:
-        - id: account-service
-          uri: lb://account-service
-          predicates:
-            - Path=/account/**
-          filters:
-            - name: Retry
-              args:
-               name: gateway
-               retries: 3
-               statuses: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE
-               methods: GET, POST
-            - name: CircuitBreaker
-              args:
-                name: gateway
-                fallbackUri: forward:/fallback
 
-    consul:
-      host: ${CONSUL_HOST_NAME:localhost}          # Адрес Consul (по умолчанию localhost)
-      port: 8500               # Порт Consul (8500 по умолчанию)
-
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        slidingWindowSize: 10
-        permittedNumberOfCallsInHalfOpenState: 3
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        minimumNumberOfCalls: 3
-    instances:
-      gateway:
-        baseConfig: default
-
-  retry:
-    configs:
-      default:
-        maxAttempts: 4
-        waitDuration: 1s
-        enableExponentialBackoff: true
-        exponentialBackoffMultiplier: 2
-    instances:
-      gateway:
-        baseConfig: default
-
-
-
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty.http.client: DEBUG
-    org.springframework.security: DEBUG
-    reactor.netty.http.client.HttpClientOperations: DEBUG
-    org.springframework.cloud.gateway.filter.factory.TokenRelayGatewayFilterFactory: TRACE
-    io.github.resilience4j: DEBUG
+  config:
+    import: configserver:http://${CONFIG_SERVER_NAME:localhost}:${CONFIG_SERVER_PORT:9090}
