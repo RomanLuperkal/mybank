@@ -57,6 +57,13 @@ public class AccountController {
         return "home";
     }
 
+    @GetMapping("/account-settings")
+    public String accountSettings(Authentication authentication, Model model) {
+        AccountUserDetails userDetails = (AccountUserDetails) authentication.getPrincipal();
+        model.addAttribute("user", userDetails);
+        return "account-settings";
+    }
+
     private void authUser(ResponseAccountDto accountDto, HttpServletRequest request) {
         AccountUserDetails newUser = AccountUserDetails.builder()
                 .accountId(accountDto.accountId())

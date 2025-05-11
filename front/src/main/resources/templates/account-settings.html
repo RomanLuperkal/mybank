@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Настройки аккаунта</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #f5f7fa;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .form-wrapper {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .accounts-list {
+            margin-top: 20px;
+        }
+
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-wrapper">
+        <h2>Настройки аккаунта</h2>
+
+        <!-- Логин -->
+        <div class="form-group">
+            <label for="login">Логин:</label>
+            <input type="text" id="login" th:value="${user.username}" readonly />
+            <button onclick="deleteUser()">Удалить аккаунт</button>
+            <p id="deleteError" class="error"></p>
+        </div>
+
+        <!-- Смена пароля -->
+        <div class="form-group">
+            <label for="newPassword">Новый пароль:</label>
+            <input type="password" id="newPassword" placeholder="Введите новый пароль" />
+            <button onclick="changePassword()">Изменить пароль</button>
+            <p id="passwordError" class="error"></p>
+        </div>
+
+        <!-- Редактирование данных -->
+        <form id="profileForm" onsubmit="saveProfile(event)">
+            <div class="form-group">
+                <label for="lastName">Фамилия:</label>
+                <input type="text" id="lastName" th:value="${user.lastName}" required />
+            </div>
+            <div class="form-group">
+                <label for="firstName">Имя:</label>
+                <input type="text" id="firstName" th:value="${user.firstName}" required />
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" th:value="${user.email}" required />
+            </div>
+            <div class="form-group">
+                <label for="birthDate">Дата рождения:</label>
+                <input type="date" id="birthDate" th:value="${user.dateOfBirth}" required />
+            </div>
+            <button type="submit">Сохранить изменения</button>
+            <p id="profileError" class="error"></p>
+        </form>
+
+        <!-- Счета -->
+        <div class="form-group accounts-list">
+            <h3>Ваши счета:</h3>
+            <div id="accountList">
+                <div th:each="wallet : ${user.wallets}" class="account-item">
+                    <span><strong>[[${wallet.currency}]]: [[${wallet.balance}]]</strong></span>
+                    <button onclick="deleteAccount([[${wallet.id}]])">Удалить</button>
+                </div>
+            </div>
+            <button onclick="addAccount()">Добавить счёт</button>
+            <p id="accountError" class="error"></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Изменение пароля
+    function changePassword() {
+        const newPassword = document.getElementById('newPassword').value.trim();
+        const error = document.getElementById('passwordError');
+        if (!newPassword) {
+            error.textContent = 'Пароль не может быть пустым.';
+            return;
+        }
+        error.textContent = '';
+        // Отправка запроса на изменение пароля
+        fetch('/user/change-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password: newPassword })
+        }).then(response => {
+            if (response.ok) {
+                alert('Пароль успешно изменён.');
+            } else {
+                alert('Ошибка при изменении пароля.');
+            }
+        });
+    }
+
+    // Сохранение профиля
+    function saveProfile(event) {
+        event.preventDefault();
+        const lastName = document.getElementById('lastName').value.trim();
+        const firstName = document.getElementById('firstName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const birthDateStr = document.getElementById('birthDate').value;
+        const error = document.getElementById('profileError');
+
+        if (!lastName || !firstName || !email || !birthDateStr) {
+            error.textContent = 'Заполните все поля.';
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        const age = new Date().getFullYear() - birthDate.getFullYear();
+        if (age < 18) {
+            error.textContent = 'Вам должно быть больше 18 лет.';
+            return;
+        }
+
+        error.textContent = '';
+        // Отправка обновленных данных
+        fetch('/user/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                lastName: lastName,
+                firstName: firstName,
+                email: email,
+                birthDate: birthDateStr
+            })
+        }).then(response => {
+            if (response.ok) {
+                alert('Профиль обновлён.');
+            } else {
+                alert('Ошибка при сохранении профиля.');
+            }
+        });
+    }
+
+    // Удаление счёта
+    function deleteAccount(id) {
+        if (confirm('Вы уверены, что хотите удалить этот счёт?')) {
+            fetch(`/user/delete-account/${id}`, { method: 'DELETE' })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // Перезагрузка страницы после удаления
+                    } else {
+                        alert('Ошибка при удалении счёта.');
+                    }
+                });
+        }
+    }
+</script>
+</body>
+</html>
