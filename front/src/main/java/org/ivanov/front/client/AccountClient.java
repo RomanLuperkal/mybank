@@ -7,4 +7,6 @@ public interface AccountClient {
     ResponseAccountDto registration(CreateAccountDto dto);
 
     ResponseAccountDto getAccount(String username);
+
+    void deleteAccount(Long accountId);
 }

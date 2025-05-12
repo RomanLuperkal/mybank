@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LoginException extends RuntimeException {
+public class AccountException extends RuntimeException {
     private String message;
     private String status;
 }

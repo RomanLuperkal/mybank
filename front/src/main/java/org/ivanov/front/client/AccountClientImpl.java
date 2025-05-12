@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountInfoDto;
-import org.ivanov.front.handler.exception.LoginException;
+import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.response.ApiError;
 import org.springframework.http.HttpHeaders;
@@ -54,11 +54,30 @@ public class AccountClientImpl implements AccountClient {
                 .onStatus(status -> status == HttpStatus.CONFLICT,
                         response -> Mono.error(new UsernameNotFoundException(username)))
                 .onStatus(status -> status == HttpStatus.FORBIDDEN,
-                        response -> Mono.error(new LoginException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
+                        response -> Mono.error(new AccountException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
                 .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
                         response -> response.bodyToMono(ApiError.class)
-                                .flatMap(body -> Mono.error(new LoginException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
                 .bodyToMono(ResponseAccountDto.class)
+                .retry(3)
+                . block();
+    }
+
+    @Override
+    public void deleteAccount(Long accountId) {
+        client.delete()
+                .uri("http://gateway/account/" + accountId + "/delete-account")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .retrieve()
+                .onStatus(status -> status == HttpStatus.CONFLICT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.CONFLICT.toString()))))
+                .onStatus(status -> status == HttpStatus.FORBIDDEN,
+                        response -> Mono.error(new AccountException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
+                .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                .bodyToMono(Void.class)
                 .retry(3)
                 . block();
     }
@@ -74,16 +93,16 @@ public class AccountClientImpl implements AccountClient {
         final String message  = "Аккаунт сервис недоступен";
         var stubDto = new CreateAccountDto(null, null, null, null, null, null);
         log.info("execute fallbackRegistration: {}", e.getMessage());
-        handleCircuitBreakerFailure(e, List.of(LoginException.class, RegistrationException.class), ResponseAccountDto.class);
+        handleCircuitBreakerFailure(e, List.of(AccountException.class, RegistrationException.class), ResponseAccountDto.class);
         throw new RegistrationException(stubDto, message);
     }
 
     private ResponseAccountDto fallbackGetAccount(RuntimeException e) {
         final String message  = "Аккаунт сервис недоступен";
         log.info("execute fallbackGetAccount: {}", e.getMessage());
-        handleCircuitBreakerFailure(e, List.of(LoginException.class, UsernameNotFoundException.class),
+        handleCircuitBreakerFailure(e, List.of(AccountException.class, UsernameNotFoundException.class),
                  ResponseAccountInfoDto.class);
-        throw new LoginException(message, HttpStatus.INTERNAL_SERVER_ERROR.toString());
+        throw new AccountException(message, HttpStatus.INTERNAL_SERVER_ERROR.toString());
     }
 
     private <T> void handleCircuitBreakerFailure(RuntimeException e, List<Class<? extends RuntimeException>> exceptions, Class<T> clazz) {

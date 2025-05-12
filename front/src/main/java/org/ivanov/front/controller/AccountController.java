@@ -8,6 +8,7 @@ import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -16,10 +17,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
@@ -52,16 +50,23 @@ public class AccountController {
 
     @GetMapping("/home")
     public String home(Authentication authentication, Model model) {
-        AccountUserDetails userDetails = (AccountUserDetails) authentication.getPrincipal();
+        AccountUserDetails userDetails = getAccountUserDetails(authentication);
         model.addAttribute("user", userDetails);
         return "home";
     }
 
-    @GetMapping("/account-settings")
+    @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
-        AccountUserDetails userDetails = (AccountUserDetails) authentication.getPrincipal();
+        AccountUserDetails userDetails = getAccountUserDetails(authentication);
         model.addAttribute("user", userDetails);
         return "account-settings";
+    }
+
+    @DeleteMapping("/account/{accountId}/delete-account")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount(@PathVariable Long accountId, Authentication authentication, Model model) {
+        AccountUserDetails userDetails = getAccountUserDetails(authentication);
+        accountService.deleteAccount(accountId, userDetails.getWallets());
     }
 
     private void authUser(ResponseAccountDto accountDto, HttpServletRequest request) {
@@ -82,5 +87,9 @@ public class AccountController {
         HttpSession session = request.getSession(true);
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                 SecurityContextHolder.getContext());
+    }
+
+    private AccountUserDetails getAccountUserDetails(Authentication authentication) {
+        return (AccountUserDetails) authentication.getPrincipal();
     }
 }

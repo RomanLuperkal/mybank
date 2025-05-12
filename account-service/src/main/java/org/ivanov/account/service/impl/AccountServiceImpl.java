@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
 public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    @PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
     public ResponseAccountDto createAccount(CreateAccountDto dto) {
         if (accountRepository.existsAccountByUsername(dto.username())) {
             throw new AccountException(HttpStatus.CONFLICT, "Аккаунт с именем: " + dto.username() + " уже существует.");
@@ -35,7 +35,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
     public ResponseAccountDto getAccountInfo(String username) {
         if (!accountRepository.existsAccountByUsername(username)) {
             throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + username + " не существует.");
@@ -43,5 +42,13 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepository.findAccountByUsername(username);
         return accountMapper.mapToResponseAccount(account);
+    }
+
+    @Override
+    public void deleteAccount(long accountId) {
+        if (!accountRepository.existsById(accountId)) {
+            throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует.");
+        }
+        accountRepository.deleteById(accountId);
     }
 }

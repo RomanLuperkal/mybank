@@ -3,7 +3,7 @@ package org.ivanov.front.handler;
 
 import org.ivanov.front.handler.exception.GatewayException;
 import org.ivanov.front.handler.exception.RegistrationException;
-import org.ivanov.front.handler.exception.LoginException;
+import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.response.ApiError;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,8 +21,8 @@ public class ErrorHandler {
         return modelAndView;
     }
 
-    @ExceptionHandler(LoginException.class)
-    private ResponseEntity<ApiError> handleException(LoginException e) {
+    @ExceptionHandler(AccountException.class)
+    private ResponseEntity<ApiError> handleException(AccountException e) {
         ApiError apiError = new ApiError();
         apiError.setMessage(e.getMessage());
         apiError.setStatus(e.getStatus());

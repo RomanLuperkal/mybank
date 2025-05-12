@@ -24,4 +24,10 @@ public class AccountController {
     public ResponseEntity<ResponseAccountDto> getAccountInfo(@PathVariable String username) {
         return ResponseEntity.status(HttpStatus.OK).body(accountService.getAccountInfo(username));
     }
+
+    @DeleteMapping("{accountId}/delete-account")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteAccount(@PathVariable long accountId) {
+        accountService.deleteAccount(accountId);
+    }
 }

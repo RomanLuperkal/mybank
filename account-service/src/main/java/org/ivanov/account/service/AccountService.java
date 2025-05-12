@@ -9,4 +9,6 @@ public interface AccountService {
 
     ResponseAccountDto getAccountInfo(String username);
 
+    void deleteAccount(long accountId);
+
 }
