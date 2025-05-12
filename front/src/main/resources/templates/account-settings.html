@@ -141,7 +141,7 @@
         <div class="form-group">
             <label for="newPassword">Новый пароль:</label>
             <input type="password" id="newPassword" placeholder="Введите новый пароль" />
-            <button onclick="changePassword()">Изменить пароль</button>
+            <button th:onclick="'changePassword(' + ${user.accountId} + ')'">Изменить пароль</button>
             <p id="passwordError" class="error"></p>
         </div>
 
@@ -184,7 +184,7 @@
 
 <script>
     // Изменение пароля
-    function changePassword() {
+    function changePassword(accountId) {
         const newPassword = document.getElementById('newPassword').value.trim();
         const error = document.getElementById('passwordError');
         if (!newPassword) {
@@ -192,12 +192,17 @@
             return;
         }
         error.textContent = '';
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
         // Отправка запроса на изменение пароля
-        fetch('/user/change-password', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+
+        fetch(`/account/${accountId}/change-password`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken },
             body: JSON.stringify({ password: newPassword })
         }).then(response => {
+            console.log(response.status)
             if (response.ok) {
                 alert('Пароль успешно изменён.');
             } else {
@@ -273,8 +278,6 @@
 
         const csrfToken = document.querySelector('meta[name="_csrf"]').content;
         const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
-        console.log('csrfToken:' + csrfToken);
-        console.log('csrfHeader:' + csrfHeader);
 
         fetch(`/account/${accountId}/delete-account`, {
             method: 'DELETE',
@@ -285,11 +288,26 @@
             .then(response => {
                 if (response.ok) {
                     alert("Аккаунт успешно удалён.");
-                    window.location.href = "/logout"; // или редирект на другую страницу
+
+                    // Теперь делаем POST-запрос на logout
+                    return fetch('/logout', {
+                        method: 'POST',
+                        headers: {
+                            [csrfHeader]: csrfToken,
+                        },
+                        credentials: 'include' // важно для кук
+                    });
                 } else {
                     return response.json().then(data => {
                         throw new Error(data.message || "Ошибка при удалении аккаунта");
                     });
+                }
+            })
+            .then(logoutResponse => {
+                if (logoutResponse.redirected) {
+                    window.location.href = logoutResponse.url; // редирект Spring Security
+                } else {
+                    window.location.href = '/'; // или '/login'
                 }
             })
             .catch(error => {
@@ -297,6 +315,7 @@
                 document.getElementById("deleteError").textContent = error.message;
             });
     }
+
 </script>
 </body>
 </html>

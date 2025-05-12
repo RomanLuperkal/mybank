@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
+import org.ivanov.accountdto.account.UpdatePasswordDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,14 @@ public class AccountController {
     public void deleteAccount(@PathVariable Long accountId, Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
         accountService.deleteAccount(accountId, userDetails.getWallets());
+    }
+
+    @PatchMapping("/account/{accountId}/change-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void changePassword(@PathVariable Long accountId, Authentication authentication,
+                               @RequestBody UpdatePasswordDto newPassword) {
+        String updatedPassword = accountService.updatePassword(accountId, newPassword);
+        getAccountUserDetails(authentication).setPassword(updatedPassword);
     }
 
     private void authUser(ResponseAccountDto accountDto, HttpServletRequest request) {

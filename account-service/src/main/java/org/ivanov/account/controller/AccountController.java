@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.ivanov.account.service.AccountService;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
+import org.ivanov.accountdto.account.UpdatePasswordDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +30,12 @@ public class AccountController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable long accountId) {
         accountService.deleteAccount(accountId);
+    }
+
+    @PatchMapping("/{accountId}/change-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void changePassword(@PathVariable Long accountId,
+                               @RequestBody UpdatePasswordDto newPassword) {
+        accountService.updatePassword(accountId, newPassword);
     }
 }
