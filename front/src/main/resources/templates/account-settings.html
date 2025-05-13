@@ -109,6 +109,36 @@
             padding: 6px 12px;
             font-size: 14px;
         }
+        .account-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .account-item span {
+            font-size: 16px;
+            flex-grow: 1;
+            margin-right: 10px; /* добавляем небольшой отступ между текстом и кнопкой */
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            min-width: 70px; /* минимальная ширина кнопки */
+            text-align: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
@@ -172,14 +202,24 @@
             <h3>Ваши счета:</h3>
             <div id="accountList">
                 <div th:each="wallet : ${user.wallets}" class="account-item">
-                    <span><strong>[[${wallet.currency}]]: [[${wallet.balance}]]</strong></span>
-                    <button onclick="deleteAccount([[${wallet.id}]])">Удалить</button>
+                    <span><strong>[[${wallet.walletType}]]: [[${wallet.balance}]]</strong></span>
+                    <button onclick="deleteAccount([[${wallet.id}]], this)" class="delete-button">Удалить</button>
                 </div>
             </div>
-            <button onclick="addAccount()">Добавить счёт</button>
-            <p id="accountError" class="error"></p>
+
+            <!-- Форма для создания счёта -->
+            <form id="createWalletForm" onsubmit="event.preventDefault(); addAccount()">
+                <label for="currency">Выберите валюту:</label>
+                <select id="currency" required>
+                    <option value="">-- Выберите валюту --</option>
+                    <option value="RUB">RUB</option>
+                    <option value="USD">USD</option>
+                    <option value="CNY">CNY</option>
+                </select>
+                <button type="submit">Создать счёт</button>
+                <p id="accountError" class="error"></p>
+            </form>
         </div>
-    </div>
 </div>
 
 <script>
@@ -250,7 +290,14 @@
             if (response.ok) {
                 alert('Профиль обновлён.');
             } else {
-                alert('Ошибка при сохранении профиля.');
+                response.json().then(body => {
+                    console.log(body.message);
+                    console.log("Весь body:", body); // <-- вот это важно
+                    const message = body?.message || "Произошла ошибка";
+                    alert(message);
+                }).catch(() => {
+                    alert("Не удалось получить сообщение об ошибке");
+                });
             }
         });
     }
@@ -316,6 +363,52 @@
             .catch(error => {
                 console.error("Ошибка:", error);
                 document.getElementById("deleteError").textContent = error.message;
+            });
+    }
+
+    function createWallet() {
+        const currency = document.getElementById('currency').value;
+        const error = document.getElementById('accountError');
+        if (!currency) {
+            error.textContent = 'Пожалуйста, выберите валюту.';
+            return;
+        }
+
+        // Получаем CSRF-токен
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch('/wallet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({ walletType: currency })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error("Ошибка при создании счёта");
+                }
+            })
+            .then(wallet => {
+                const accountList = document.getElementById('accountList');
+
+                // Добавляем новый счёт в DOM
+                const item = document.createElement('div');
+                item.className = 'account-item';
+                item.innerHTML = `<span><strong>${wallet.walletType}: ${wallet.balance}</strong></span>`;
+                accountList.appendChild(item);
+
+                // Очистка формы
+                document.getElementById('currency').value = '';
+                error.textContent = '';
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                error.textContent = error.message;
             });
     }
 

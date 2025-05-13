@@ -1,9 +1,10 @@
-package org.ivanov.front.client;
+package org.ivanov.front.client.impl;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.account.*;
+import org.ivanov.front.client.AccountClient;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.response.ApiError;

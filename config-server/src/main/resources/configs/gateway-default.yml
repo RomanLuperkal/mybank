@@ -9,6 +9,7 @@ spring:
           uri: lb://account-service
           predicates:
             - Path=/account/**
+            - Path=/wallet/**
           filters:
             - name: Retry
               args:
@@ -20,6 +21,7 @@ spring:
               args:
                 name: gateway
                 fallbackUri: forward:/fallback
+
 
     consul:
       host: ${CONSUL_HOST_NAME:localhost}

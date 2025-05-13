@@ -5,7 +5,9 @@ import org.ivanov.front.handler.exception.GatewayException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.response.ApiError;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -35,5 +37,12 @@ public class ErrorHandler {
         apiError.setMessage(e.getMessage());
         apiError.setStatus(e.getStatus().toString());
         return ResponseEntity.status(Integer.parseInt(apiError.getStatus())).body(apiError);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    private ResponseEntity<ApiError> handleException(MethodArgumentNotValidException e) {
+        ApiError apiError = new ApiError();
+        apiError.setMessage(e.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 }

@@ -8,9 +8,11 @@ import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
 import org.ivanov.accountdto.account.UpdateProfileDto;
+import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -19,7 +21,11 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.Set;
 
 @Controller
 @RequiredArgsConstructor
@@ -60,6 +66,7 @@ public class AccountController {
     @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
+        userDetails.setWallets(Set.of(new ResponseWalletDto("RUB",  BigDecimal.ONE), new ResponseWalletDto("USD",  new BigDecimal("2.2"))));
         model.addAttribute("user", userDetails);
         return "account-settings";
     }
@@ -79,11 +86,11 @@ public class AccountController {
         getAccountUserDetails(authentication).setPassword(updatedPassword);
     }
     @PatchMapping("/account/{accountId}/update-profile")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateProfile(@PathVariable Long accountId, Authentication authentication, @Valid @RequestBody UpdateProfileDto dto) {
+    public ResponseEntity<Void> updateProfile(@PathVariable Long accountId, Authentication authentication, @Valid @RequestBody UpdateProfileDto dto) {
         accountService.updateProfile(accountId, dto);
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
         updateUserProfile(userDetails, dto);
+        return ResponseEntity.ok().build();
     }
 
     private void updateUserProfile(AccountUserDetails userDetails, UpdateProfileDto dto) {
