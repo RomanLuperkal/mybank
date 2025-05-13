@@ -9,6 +9,7 @@ import org.ivanov.account.service.AccountService;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
+import org.ivanov.accountdto.account.UpdateProfileDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -55,10 +56,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public void updatePassword(Long accountId, UpdatePasswordDto newPassword) {
-       Account account = accountRepository.findById(accountId)
-               .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует."));
+       Account account = findAccountById(accountId);
 
        account.setPassword(newPassword.password());
        accountRepository.save(account);
+    }
+
+    @Override
+    public void updateProfile(Long accountId, UpdateProfileDto newProfile) {
+        Account account = findAccountById(accountId);
+        Account updatedAccount = accountMapper.mapToProduct(account, newProfile);
+        accountRepository.save(updatedAccount);
+    }
+
+    private Account findAccountById(long accountId) {
+        return accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует."));
     }
 }

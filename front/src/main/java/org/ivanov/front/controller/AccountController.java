@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
+import org.ivanov.accountdto.account.UpdateProfileDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
 import org.springframework.http.HttpStatus;
@@ -76,6 +77,20 @@ public class AccountController {
                                @RequestBody UpdatePasswordDto newPassword) {
         String updatedPassword = accountService.updatePassword(accountId, newPassword);
         getAccountUserDetails(authentication).setPassword(updatedPassword);
+    }
+    @PatchMapping("/account/{accountId}/update-profile")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProfile(@PathVariable Long accountId, Authentication authentication, @Valid @RequestBody UpdateProfileDto dto) {
+        accountService.updateProfile(accountId, dto);
+        AccountUserDetails userDetails = getAccountUserDetails(authentication);
+        updateUserProfile(userDetails, dto);
+    }
+
+    private void updateUserProfile(AccountUserDetails userDetails, UpdateProfileDto dto) {
+        userDetails.setEmail(dto.email());
+        userDetails.setFirstName(dto.firstName());
+        userDetails.setLastName(dto.lastName());
+        userDetails.setDateOfBirth(dto.birthDate());
     }
 
     private void authUser(ResponseAccountDto accountDto, HttpServletRequest request) {

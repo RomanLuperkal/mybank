@@ -146,7 +146,7 @@
         </div>
 
         <!-- Редактирование данных -->
-        <form id="profileForm" onsubmit="saveProfile(event)">
+        <form id="profileForm" th:onsubmit="'saveProfile(' + ${user.accountId} + ')'">
             <div class="form-group">
                 <label for="lastName">Фамилия:</label>
                 <input type="text" id="lastName" th:value="${user.lastName}" required />
@@ -212,7 +212,7 @@
     }
 
     // Сохранение профиля
-    function saveProfile(event) {
+    function saveProfile(accountId) {
         event.preventDefault();
         const lastName = document.getElementById('lastName').value.trim();
         const firstName = document.getElementById('firstName').value.trim();
@@ -234,9 +234,12 @@
 
         error.textContent = '';
         // Отправка обновленных данных
-        fetch('/user/update-profile', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+        fetch(`/account/${accountId}/update-profile`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json',
+                        [csrfHeader]: csrfToken },
             body: JSON.stringify({
                 lastName: lastName,
                 firstName: firstName,

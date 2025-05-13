@@ -3,10 +3,7 @@ package org.ivanov.front.client;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ivanov.accountdto.account.CreateAccountDto;
-import org.ivanov.accountdto.account.ResponseAccountDto;
-import org.ivanov.accountdto.account.ResponseAccountInfoDto;
-import org.ivanov.accountdto.account.UpdatePasswordDto;
+import org.ivanov.accountdto.account.*;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.response.ApiError;
@@ -84,7 +81,7 @@ public class AccountClientImpl implements AccountClient {
     }
 
     @Override
-    public void changePassword(Long accountId, UpdatePasswordDto password) {
+    public void updatePassword(Long accountId, UpdatePasswordDto password) {
         client.patch()
                 .uri("http://gateway/account/" + accountId + "/change-password")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
@@ -100,6 +97,26 @@ public class AccountClientImpl implements AccountClient {
                                 .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
                 .bodyToMono(Void.class)
                 .retry(3)
+                . block();
+    }
+
+    @Override
+    public void updateProfile(Long accountId, UpdateProfileDto profile) {
+        client.patch()
+                .uri("http://gateway/account/" + accountId + "/update-profile")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .bodyValue(profile)
+                .retrieve()
+                .onStatus(status -> status == HttpStatus.CONFLICT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.CONFLICT.toString()))))
+                .onStatus(status -> status == HttpStatus.FORBIDDEN,
+                        response -> Mono.error(new AccountException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
+                .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                .bodyToMono(Void.class)
+                //.retry(3)
                 . block();
     }
 

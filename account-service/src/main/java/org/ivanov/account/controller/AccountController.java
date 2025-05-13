@@ -6,8 +6,10 @@ import org.ivanov.account.service.AccountService;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
+import org.ivanov.accountdto.account.UpdateProfileDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,8 +36,14 @@ public class AccountController {
 
     @PatchMapping("/{accountId}/change-password")
     @ResponseStatus(HttpStatus.OK)
-    public void changePassword(@PathVariable Long accountId,
+    public void updatePassword(@PathVariable Long accountId,
                                @RequestBody UpdatePasswordDto newPassword) {
         accountService.updatePassword(accountId, newPassword);
+    }
+
+    @PatchMapping("/{accountId}/update-profile")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProfile(@PathVariable Long accountId, @RequestBody UpdateProfileDto dto) {
+        accountService.updateProfile(accountId, dto);
     }
 }

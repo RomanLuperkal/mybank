@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
+import org.ivanov.accountdto.account.UpdateProfileDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.client.AccountClient;
 import org.ivanov.front.handler.exception.AccountException;
@@ -38,7 +39,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String updatePassword(Long accountId, UpdatePasswordDto newPassword) {
         String encodedPassword = passwordEncoder.encode(newPassword.password());
-        accountClient.changePassword(accountId, new UpdatePasswordDto(encodedPassword));
+        accountClient.updatePassword(accountId, new UpdatePasswordDto(encodedPassword));
         return encodedPassword;
+    }
+
+    @Override
+    public void updateProfile(Long accountId, UpdateProfileDto profile) {
+        accountClient.updateProfile(accountId, profile);
     }
 }
