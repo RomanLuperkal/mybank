@@ -69,7 +69,7 @@ public class AccountController {
     @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        userDetails.setWallets(Set.of(new ResponseWalletDto("RUB",  BigDecimal.ONE), new ResponseWalletDto("USD",  new BigDecimal("2.2"))));
+        //userDetails.setWallets(Set.of(new ResponseWalletDto("RUB",  BigDecimal.ONE), new ResponseWalletDto("USD",  new BigDecimal("2.2"))));
         model.addAttribute("user", userDetails);
         return "account-settings";
     }
@@ -98,8 +98,13 @@ public class AccountController {
 
     @PostMapping("account/{accountId}/wallet")
     public ResponseEntity<ResponseWalletDto> createWallet(@PathVariable Long accountId,
-                                                          @Valid @RequestBody CreateWalletDto createWalletDto) {
-        return ResponseEntity.ok(walletService.createWallet(accountId, createWalletDto));
+                                                          @Valid @RequestBody CreateWalletDto createWalletDto,
+                                                          Authentication authentication, Model model) {
+        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto);
+        AccountUserDetails userDetails = getAccountUserDetails(authentication);
+        userDetails.getWallets().add(createdWallet);
+        model.addAttribute("user", userDetails);
+        return ResponseEntity.ok(createdWallet);
     }
 
     private void updateUserProfile(AccountUserDetails userDetails, UpdateProfileDto dto) {

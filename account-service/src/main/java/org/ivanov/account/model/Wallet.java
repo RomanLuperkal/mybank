@@ -22,7 +22,7 @@ public class Wallet {
     @Column(name = "wallet_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private WalletType walletType;
-    private BigDecimal balance = BigDecimal.ZERO;
+    private BigDecimal balance = new BigDecimal("0.00");
 
     public enum WalletType {
         RUB, USD, CNY

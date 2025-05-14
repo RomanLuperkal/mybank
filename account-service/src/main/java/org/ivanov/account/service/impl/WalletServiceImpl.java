@@ -27,9 +27,11 @@ public class WalletServiceImpl implements WalletService {
         Account account = accountRepository.findById(accountId)
                 .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует."));
         Wallet wallet = walletMapper.mapToWallet(dto);
+        wallet.setAccount(account);
         account.getWallets().add(wallet);
-        Account savedAccount = accountRepository.save(account);
 
-        return walletMapper.mapToResponseWalletDto(wallet);
+        //Account savedAccount = accountRepository.save(account);
+
+        return walletMapper.mapToResponseWalletDto(walletRepository.save(wallet));
     }
 }

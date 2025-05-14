@@ -166,6 +166,14 @@ public class AccountClientImpl implements AccountClient {
         throw new AccountException(message, HttpStatus.INTERNAL_SERVER_ERROR.toString());
     }
 
+    private ResponseWalletDto fallbackCreateWallet(RuntimeException e) {
+        final String message  = "Аккаунт сервис недоступен";
+        var stubDto = new CreateAccountDto(null, null, null, null, null, null);
+        log.info("execute fallbackCreateWallet: {}", e.getMessage());
+        handleCircuitBreakerFailure(e, List.of(AccountException.class, RegistrationException.class), ResponseAccountDto.class);
+        throw new AccountException(message, HttpStatus.SERVICE_UNAVAILABLE.toString());
+    }
+
     private <T> void handleCircuitBreakerFailure(RuntimeException e, List<Class<? extends RuntimeException>> exceptions, Class<T> clazz) {
         for (Class<? extends RuntimeException> exceptionClass : exceptions) {
             if (exceptionClass.isInstance(e)) {
