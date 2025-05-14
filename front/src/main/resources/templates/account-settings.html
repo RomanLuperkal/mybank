@@ -4,32 +4,29 @@
     <meta charset="UTF-8">
     <title>Настройки аккаунта</title>
     <style>
-        html, body {
+        /* Основные стили */
+        body {
             margin: 0;
             padding: 0;
-            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f5f7fa;
-            font-family: Arial, sans-serif;
         }
 
         .container {
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            width: 100vw;
+            min-height: 100vh;
             padding: 20px;
-            box-sizing: border-box;
         }
 
         .form-wrapper {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             max-width: 600px;
             width: 100%;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            box-sizing: border-box;
         }
 
         h2 {
@@ -55,19 +52,19 @@
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         button {
             padding: 10px 20px;
-            border: none;
             background-color: #007bff;
             color: white;
-            border-radius: 4px;
+            border: none;
+            border-radius: 6px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
         }
 
         button:hover {
@@ -76,7 +73,7 @@
 
         .error {
             color: red;
-            font-size: 0.9em;
+            font-size: 12px;
             margin-top: 5px;
         }
 
@@ -89,13 +86,32 @@
             justify-content: space-between;
             align-items: center;
             padding: 10px 0;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #eee;
         }
+
+        .account-item span {
+            font-size: 14px;
+        }
+
+        .delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .delete-button:hover {
+            background-color: #c82333;
+        }
+
         .header-user {
             display: flex;
-            justify-content: flex-end; /* выравнивание по правому краю */
+            justify-content: flex-end;
             align-items: center;
-            gap: 15px; /* расстояние между элементами */
+            gap: 15px;
             margin-bottom: 20px;
         }
 
@@ -106,38 +122,26 @@
         }
 
         .logout-button .btn {
-            padding: 6px 12px;
             font-size: 14px;
         }
-        .account-item {
+
+        form {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .wallet-form {
+            display: flex;
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #ddd;
+            gap: 10px;
         }
 
-        .account-item span {
-            font-size: 16px;
-            flex-grow: 1;
-            margin-right: 10px; /* добавляем небольшой отступ между текстом и кнопкой */
-        }
-
-        .delete-button {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            min-width: 70px; /* минимальная ширина кнопки */
-            text-align: center;
-            transition: background-color 0.2s ease;
-        }
-
-        .delete-button:hover {
-            background-color: #c82333;
+        select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -208,7 +212,7 @@
             </div>
 
             <!-- Форма для создания счёта -->
-            <form id="createWalletForm" onsubmit="event.preventDefault(); addAccount()">
+            <form id="createWalletForm" class="wallet-form" th:onsubmit="'saveProfile(' + ${user.accountId} + ')'">
                 <label for="currency">Выберите валюту:</label>
                 <select id="currency" required>
                     <option value="">-- Выберите валюту --</option>
@@ -366,7 +370,7 @@
             });
     }
 
-    function createWallet() {
+    function createWallet(accountId) {
         const currency = document.getElementById('currency').value;
         const error = document.getElementById('accountError');
         if (!currency) {

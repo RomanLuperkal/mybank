@@ -8,8 +8,7 @@ spring:
         - id: account-service
           uri: lb://account-service
           predicates:
-            - Path=/account/**
-            - Path=/wallet/**
+            - Path=/account/**, /wallet/**
           filters:
             - name: Retry
               args:

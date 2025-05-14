@@ -6,5 +6,5 @@ import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import java.math.BigDecimal;
 
 public interface WalletService {
-    ResponseWalletDto createWallet(CreateWalletDto createWalletDto);
+    ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto);
 }

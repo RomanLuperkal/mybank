@@ -8,9 +8,11 @@ import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
 import org.ivanov.accountdto.account.UpdateProfileDto;
+import org.ivanov.accountdto.wallet.CreateWalletDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
+import org.ivanov.front.service.WalletService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +33,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class AccountController {
     private final AccountService accountService;
+    private final WalletService walletService;
 
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String error, Model model) {
@@ -91,6 +94,12 @@ public class AccountController {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
         updateUserProfile(userDetails, dto);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("account/{accountId}/wallet")
+    public ResponseEntity<ResponseWalletDto> createWallet(@PathVariable Long accountId,
+                                                          @Valid @RequestBody CreateWalletDto createWalletDto) {
+        return ResponseEntity.ok(walletService.createWallet(accountId, createWalletDto));
     }
 
     private void updateUserProfile(AccountUserDetails userDetails, UpdateProfileDto dto) {
