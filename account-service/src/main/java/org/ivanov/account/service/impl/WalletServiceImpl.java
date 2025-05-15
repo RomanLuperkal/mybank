@@ -13,7 +13,7 @@ import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +30,17 @@ public class WalletServiceImpl implements WalletService {
         wallet.setAccount(account);
         account.getWallets().add(wallet);
 
-        //Account savedAccount = accountRepository.save(account);
-
         return walletMapper.mapToResponseWalletDto(walletRepository.save(wallet));
+    }
+
+    @Override
+    public void deleteWallet(Long accountId, Long walletId) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует."));
+
+        Optional<Wallet> wallet = account.getWallets().stream().filter(w -> w.getWalletId().equals(walletId)).findFirst();
+        wallet.ifPresentOrElse(w -> account.getWallets().remove(w), () -> {
+            throw new AccountException(HttpStatus.CONFLICT, "");
+        });
     }
 }

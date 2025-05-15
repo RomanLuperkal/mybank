@@ -23,11 +23,9 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.util.Set;
+import java.util.stream.Stream;
 
 @Controller
 @RequiredArgsConstructor
@@ -97,14 +95,29 @@ public class AccountController {
     }
 
     @PostMapping("account/{accountId}/wallet")
-    public ResponseEntity<ResponseWalletDto> createWallet(@PathVariable Long accountId,
+    public ResponseEntity<?> createWallet(@PathVariable Long accountId,
                                                           @Valid @RequestBody CreateWalletDto createWalletDto,
                                                           Authentication authentication, Model model) {
-        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto);
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
+        if (isWalidWalletType(userDetails.getWallets().stream(), createWalletDto.walletType())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Кошелёк этого типа уже существует");
+        }
+        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto);
         userDetails.getWallets().add(createdWallet);
         model.addAttribute("user", userDetails);
         return ResponseEntity.ok(createdWallet);
+    }
+
+    @DeleteMapping("account/{accountId}/wallet/{walletId}")
+    public ResponseEntity<Void> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId) {
+        walletService.deleteWallet(accountId, walletId);
+        //TODO добавить проверку, что счет не нулевой
+        return ResponseEntity.noContent().build();
+    }
+
+    private boolean isWalidWalletType(Stream<ResponseWalletDto> stream, String type) {
+        return stream.anyMatch(w -> w.walletType().equals(type));
     }
 
     private void updateUserProfile(AccountUserDetails userDetails, UpdateProfileDto dto) {

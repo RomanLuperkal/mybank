@@ -143,6 +143,26 @@ public class AccountClientImpl implements AccountClient {
                 .block();
     }
 
+    @Override
+    @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackCreateWallet")
+    public void deleteWallet(Long accountId, Long walletId) {
+        client.delete()
+                .uri("http://gateway/account/" + accountId + "/wallet/" + walletId)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .retrieve()
+                .onStatus(status -> status == HttpStatus.CONFLICT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.CONFLICT.toString()))))
+                .onStatus(status -> status == HttpStatus.FORBIDDEN,
+                        response -> Mono.error(new AccountException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
+                .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                .bodyToMono(ResponseWalletDto.class)
+                .retry(3)
+                .block();
+    }
+
     private String getAccessToken() {
         OAuth2AuthorizedClient system = clientManager.authorize(OAuth2AuthorizeRequest
                 .withClientRegistrationId("account-client")

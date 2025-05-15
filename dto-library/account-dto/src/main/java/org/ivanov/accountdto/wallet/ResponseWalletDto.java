@@ -2,5 +2,5 @@ package org.ivanov.accountdto.wallet;
 
 import java.math.BigDecimal;
 
-public record ResponseWalletDto(String walletType, BigDecimal balance) {
+public record ResponseWalletDto(Long walletId, String walletType, BigDecimal balance) {
 }

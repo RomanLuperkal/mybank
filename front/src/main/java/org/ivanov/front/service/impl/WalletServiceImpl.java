@@ -16,4 +16,9 @@ public class WalletServiceImpl implements WalletService {
     public ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto) {
         return client.createWallet(accountId, createWalletDto);
     }
+
+    @Override
+    public void deleteWallet(Long accountId, Long walletId) {
+        client.deleteWallet(accountId, walletId);
+    }
 }

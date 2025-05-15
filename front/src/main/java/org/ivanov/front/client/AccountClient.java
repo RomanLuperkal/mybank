@@ -19,4 +19,6 @@ public interface AccountClient {
     void updateProfile(Long accountId, UpdateProfileDto profile);
 
     ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto);
+
+    void deleteWallet(Long accountId, Long walletId);
 }

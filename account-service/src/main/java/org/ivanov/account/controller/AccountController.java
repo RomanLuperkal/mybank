@@ -55,4 +55,10 @@ public class AccountController {
                                                           @Valid @RequestBody CreateWalletDto createWalletDto) {
         return ResponseEntity.ok(walletService.createWallet(accountId, createWalletDto));
     }
+
+    @DeleteMapping("/{accountId}/wallet/{walletId}")
+    public ResponseEntity<Void> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId) {
+        walletService.deleteWallet(accountId, walletId);
+        return ResponseEntity.noContent().build();
+    }
 }

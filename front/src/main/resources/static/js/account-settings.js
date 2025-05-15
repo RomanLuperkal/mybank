@@ -77,7 +77,7 @@ function saveProfile(accountId) {
 }
 
 // Удаление счёта
-function deleteWallet(id) {
+function deleteWallet(accountId, walletId) {
     if (confirm('Вы уверены, что хотите удалить этот счёт?')) {
         fetch(`/user/delete-account/${id}`, { method: 'DELETE' })
             .then(response => {
@@ -167,7 +167,9 @@ function createWallet(accountId) {
             if (response.ok) {
                 return response.json();
             } else {
-                throw new Error("Ошибка при создании счёта");
+                return response.text().then(text => {
+                    throw new Error(text);
+                });
             }
         })
         .then(wallet => {
@@ -187,6 +189,6 @@ function createWallet(accountId) {
         })
         .catch(error => {
             console.error('Ошибка:', error);
-            error.textContent = error.message;
+            alert(error);
         });
 }
