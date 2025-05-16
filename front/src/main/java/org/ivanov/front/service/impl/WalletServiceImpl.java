@@ -27,11 +27,12 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public void deleteWallet(Long accountId, Long walletId, Set<ResponseWalletDto> wallets) {
-        boolean isValidWallet = wallets.stream().noneMatch(w -> w.balance().compareTo(BigDecimal.ZERO) == 0);
+    public ResponseWalletDto deleteWallet(Long accountId, Long walletId, Set<ResponseWalletDto> wallets) {
+        boolean isValidWallet = wallets.stream().filter(w -> w.walletId().equals(walletId)).noneMatch(w -> w.balance()
+                .compareTo(BigDecimal.ZERO) != 0);
         if (!isValidWallet) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Нельзя удалить ненулевой счет");
         }
-        client.deleteWallet(accountId, walletId);
+        return client.deleteWallet(accountId, walletId);
     }
 }

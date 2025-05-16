@@ -205,7 +205,7 @@
         <div class="form-group accounts-list">
             <h3>Ваши счета:</h3>
             <div id="accountList">
-                <div th:each="wallet : ${user.wallets}" class="account-item">
+                <div th:each="wallet : ${user.wallets}" class="account-item" th:data-wallet-id="${wallet.walletId()}">
                     <span><strong>[[${wallet.walletType}]]: [[${wallet.balance}]]</strong></span>
                     <button th:onclick="'deleteWallet(' + ${user.accountId} + ',' + ${wallet.walletId()} + ')'" class="delete-button">Удалить</button>
                 </div>
@@ -224,8 +224,8 @@
                 <p id="accountError" class="error"></p>
             </form>
         </div>
+    </div>
 </div>
-
-    <script src="/js/account-settings.js"></script>
+<script src="/js/account-settings.js"></script>
 </body>
 </html>

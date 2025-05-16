@@ -78,20 +78,37 @@ function saveProfile(accountId) {
 
 // Удаление счёта
 function deleteWallet(accountId, walletId) {
-    if (confirm('Вы уверены, что хотите удалить этот счёт?')) {
-        fetch(`account/${accountId}/wallet/${walletId}`, { method: 'DELETE',
-            headers: {
-                [csrfHeader]: csrfToken
-                    }
-        })
-            .then(response => {
-                if (response.ok) {
-                    location.reload(); // Перезагрузка страницы после удаления
-                } else {
-                    alert('Ошибка при удалении счёта.');
-                }
-            });
+    if (!confirm("Вы уверены, что хотите удалить этот счёт?")) {
+        return;
     }
+
+    // Получаем CSRF-токен
+    const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+    fetch(`/account/${accountId}/wallet/${walletId}`, {
+        method: 'DELETE',
+        headers: {
+            [csrfHeader]: csrfToken
+        }
+    })
+        .then(response => {
+            if (response.ok) {
+                // Находим элемент счёта и удаляем его из DOM
+                const item = document.querySelector(`.account-item[data-wallet-id="${walletId}"]`);
+                if (item) {
+                    item.remove();
+                } else {
+                    alert("Не удалось найти счёт в списке.");
+                }
+            } else {
+                throw new Error("Ошибка при удалении счёта");
+            }
+        })
+        .catch(error => {
+            console.error("Ошибка:", error);
+            alert(error.message);
+        });
 }
 
 function deleteAccount(accountId) {
@@ -182,8 +199,6 @@ function createWallet(accountId) {
             // Добавляем новый счёт в DOM
             const item = document.createElement('div');
             item.className = 'account-item';
-            console.log(wallet.walletType);
-            console.log(wallet.balance);
             item.innerHTML = `<span><strong>${wallet.walletType.toString()}: ${wallet.balance.toString()}</strong></span>`;
             accountList.appendChild(item);
 

@@ -8,5 +8,5 @@ import java.util.Set;
 public interface WalletService {
     ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto, Set<ResponseWalletDto> wallets);
 
-    void deleteWallet(Long accountId, Long walletId, Set<ResponseWalletDto> wallets);
+    ResponseWalletDto deleteWallet(Long accountId, Long walletId, Set<ResponseWalletDto> wallets);
 }

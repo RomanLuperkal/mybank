@@ -25,8 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.stream.Stream;
-
 @Controller
 @RequiredArgsConstructor
 public class AccountController {
@@ -106,13 +104,12 @@ public class AccountController {
     }
 
     @DeleteMapping("account/{accountId}/wallet/{walletId}")
-    public ResponseEntity<Void> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId,
+    public ResponseEntity<ResponseWalletDto> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId,
                                              Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        //TODO необходимо репсонс удаленного счета
-        walletService.deleteWallet(accountId, walletId, userDetails.getWallets());
-        //userDetails.getWallets().remove();
-        return ResponseEntity.noContent().build();
+        ResponseWalletDto responseWalletDto = walletService.deleteWallet(accountId, walletId, userDetails.getWallets());
+        userDetails.getWallets().remove(responseWalletDto);
+        return ResponseEntity.ok(responseWalletDto);
     }
 
 

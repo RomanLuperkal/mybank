@@ -6,5 +6,5 @@ import org.ivanov.accountdto.wallet.ResponseWalletDto;
 public interface WalletService {
     ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto);
 
-    void deleteWallet(Long accountId, Long walletId);
+    ResponseWalletDto deleteWallet(Long accountId, Long walletId);
 }

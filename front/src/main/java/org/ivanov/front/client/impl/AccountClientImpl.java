@@ -124,7 +124,7 @@ public class AccountClientImpl implements AccountClient {
     }
 
     @Override
-    @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackCreateWallet")
+    @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackWalletOperation")
     public ResponseWalletDto createWallet(Long accountId, CreateWalletDto dto) {
         return client.post()
                 .uri("http://gateway/account/" + accountId + "/wallet")
@@ -144,9 +144,9 @@ public class AccountClientImpl implements AccountClient {
     }
 
     @Override
-    @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackCreateWallet")
-    public void deleteWallet(Long accountId, Long walletId) {
-        client.delete()
+    @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackWalletOperation")
+    public ResponseWalletDto deleteWallet(Long accountId, Long walletId) {
+        return client.delete()
                 .uri("http://gateway/account/" + accountId + "/wallet/" + walletId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .retrieve()
@@ -186,9 +186,8 @@ public class AccountClientImpl implements AccountClient {
         throw new AccountException(message, HttpStatus.INTERNAL_SERVER_ERROR.toString());
     }
 
-    private ResponseWalletDto fallbackCreateWallet(RuntimeException e) {
+    private ResponseWalletDto fallbackWalletOperation(RuntimeException e) {
         final String message  = "Аккаунт сервис недоступен";
-        var stubDto = new CreateAccountDto(null, null, null, null, null, null);
         log.info("execute fallbackCreateWallet: {}", e.getMessage());
         handleCircuitBreakerFailure(e, List.of(AccountException.class, RegistrationException.class), ResponseAccountDto.class);
         throw new AccountException(message, HttpStatus.SERVICE_UNAVAILABLE.toString());

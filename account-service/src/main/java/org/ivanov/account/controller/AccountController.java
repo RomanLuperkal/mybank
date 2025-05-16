@@ -57,8 +57,7 @@ public class AccountController {
     }
 
     @DeleteMapping("/{accountId}/wallet/{walletId}")
-    public ResponseEntity<Void> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId) {
-        walletService.deleteWallet(accountId, walletId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ResponseWalletDto> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId) {
+        return ResponseEntity.ok(walletService.deleteWallet(accountId, walletId));
     }
 }
