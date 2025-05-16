@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.ModelAndView;
 
 @ControllerAdvice
@@ -44,5 +45,10 @@ public class ErrorHandler {
         ApiError apiError = new ApiError();
         apiError.setMessage(e.getBindingResult().getAllErrors().getFirst().getDefaultMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    private ResponseEntity<?> handleException(ResponseStatusException e) {
+        return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
     }
 }

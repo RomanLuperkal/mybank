@@ -79,7 +79,11 @@ function saveProfile(accountId) {
 // Удаление счёта
 function deleteWallet(accountId, walletId) {
     if (confirm('Вы уверены, что хотите удалить этот счёт?')) {
-        fetch(`/user/delete-account/${id}`, { method: 'DELETE' })
+        fetch(`account/${accountId}/wallet/${walletId}`, { method: 'DELETE',
+            headers: {
+                [csrfHeader]: csrfToken
+                    }
+        })
             .then(response => {
                 if (response.ok) {
                     location.reload(); // Перезагрузка страницы после удаления

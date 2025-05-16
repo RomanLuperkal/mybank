@@ -207,7 +207,7 @@
             <div id="accountList">
                 <div th:each="wallet : ${user.wallets}" class="account-item">
                     <span><strong>[[${wallet.walletType}]]: [[${wallet.balance}]]</strong></span>
-                    <button onclick="deleteWallet([[${wallet.id}]], this)" class="delete-button">Удалить</button>
+                    <button th:onclick="'deleteWallet(' + ${user.accountId} + ',' + ${wallet.walletId()} + ')'" class="delete-button">Удалить</button>
                 </div>
             </div>
 

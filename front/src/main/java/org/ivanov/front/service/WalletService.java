@@ -3,8 +3,10 @@ package org.ivanov.front.service;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 
-public interface WalletService {
-    ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto);
+import java.util.Set;
 
-    void deleteWallet(Long accountId, Long walletId);
+public interface WalletService {
+    ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto, Set<ResponseWalletDto> wallets);
+
+    void deleteWallet(Long accountId, Long walletId, Set<ResponseWalletDto> wallets);
 }

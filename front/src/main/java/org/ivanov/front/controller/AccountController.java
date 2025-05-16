@@ -99,26 +99,22 @@ public class AccountController {
                                                           @Valid @RequestBody CreateWalletDto createWalletDto,
                                                           Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        if (isWalidWalletType(userDetails.getWallets().stream(), createWalletDto.walletType())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Кошелёк этого типа уже существует");
-        }
-        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto);
+        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto, userDetails.getWallets());
         userDetails.getWallets().add(createdWallet);
         model.addAttribute("user", userDetails);
         return ResponseEntity.ok(createdWallet);
     }
 
     @DeleteMapping("account/{accountId}/wallet/{walletId}")
-    public ResponseEntity<Void> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId) {
-        walletService.deleteWallet(accountId, walletId);
-        //TODO добавить проверку, что счет не нулевой
+    public ResponseEntity<Void> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId,
+                                             Authentication authentication, Model model) {
+        AccountUserDetails userDetails = getAccountUserDetails(authentication);
+        //TODO необходимо репсонс удаленного счета
+        walletService.deleteWallet(accountId, walletId, userDetails.getWallets());
+        //userDetails.getWallets().remove();
         return ResponseEntity.noContent().build();
     }
 
-    private boolean isWalidWalletType(Stream<ResponseWalletDto> stream, String type) {
-        return stream.anyMatch(w -> w.walletType().equals(type));
-    }
 
     private void updateUserProfile(AccountUserDetails userDetails, UpdateProfileDto dto) {
         userDetails.setEmail(dto.email());
