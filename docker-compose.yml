@@ -68,6 +68,44 @@ services:
       timeout: 5s
       retries: 10
 
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    ports:
+      - "${NOTIFICATION_SERVICE_PORT}:${NOTIFICATION_SERVICE_PORT}"
+    environment:
+      - NOTIFICATION_DB_HOST=${NOTIFICATION_DB_HOST}
+      - NOTIFICATION_DB_PORT=${NOTIFICATION_DB_PORT}
+      - NOTIFICATION_DB_NAME=${NOTIFICATION_DB_NAME}
+      - NOTIFICATION_DB_USERNAME=${NOTIFICATION_DB_USERNAME}
+      - NOTIFICATION_DB_PASSWORD=${NOTIFICATION_DB_PASSWORD}
+      - NOTIFICATION_SERVICE_PORT=${NOTIFICATION_SERVICE_PORT}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    depends_on:
+      config-server:
+        condition: service_healthy
+      notification-db:
+        condition: service_healthy
+
+  notification-db:
+    image: postgres:15.1-alpine
+    container_name: notification-db
+    environment:
+      POSTGRES_DB: ${NOTIFICATION_DB_NAME}
+      POSTGRES_USER: ${NOTIFICATION_DB_USERNAME}
+      POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${NOTIFICATION_DB_USERNAME}", "-d", "${NOTIFICATION_DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
   config-server:
     build:
       context: ./config-server
