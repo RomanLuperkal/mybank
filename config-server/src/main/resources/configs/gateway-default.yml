@@ -5,7 +5,21 @@ spring:
   cloud:
     gateway:
       routes:
-
+        - id: account-service
+          uri: lb://account-service
+          predicates:
+            - Path=/account/**, /wallet/**
+          filters:
+            - name: Retry
+              args:
+                name: gateway
+                retries: 3
+                statuses: INTERNAL_SERVER_ERROR, SERVICE_UNAVAILABLE
+                methods: GET, POST
+            - name: CircuitBreaker
+              args:
+                name: gateway
+                fallbackUri: forward:/fallback
         - id: notification-service
           uri: lb://notification-service
           predicates:

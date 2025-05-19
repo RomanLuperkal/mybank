@@ -14,7 +14,7 @@ public class NotificationClientImpl implements NotificationClient {
     public void sentMessage(CreateMessageDto dto) {
 
          client.post()
-                .uri("http://gateway/notification/")
+                .uri("http://gateway/notification")
                 //.header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto).retrieve()
                 .bodyToMono(Void.class)

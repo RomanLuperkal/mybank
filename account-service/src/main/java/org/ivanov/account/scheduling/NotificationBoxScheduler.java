@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class NotificationBoxScheduler {
     private final NotificationOutBoxService notificationOutBoxService;
 
-    @Scheduled(fixedRate = 5000)
+    @Scheduled(fixedDelay = 10000)
     public void performAsyncScheduledTask() {
         System.out.println(Thread.currentThread().getName() + " выполняет асинхронную задачу по расписанию");
         notificationOutBoxService.sentMessage();
