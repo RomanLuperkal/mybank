@@ -1,15 +1,16 @@
 package org.ivanov.account.scheduling;
 
-import org.springframework.scheduling.annotation.Async;
+import lombok.RequiredArgsConstructor;
+import org.ivanov.account.service.NotificationOutBoxService;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 public class NotificationBoxScheduler {
+    private final NotificationOutBoxService notificationOutBoxService;
 
-    @Async
     @Scheduled(fixedRate = 5000)
     public void performAsyncScheduledTask() {
         System.out.println(Thread.currentThread().getName() + " выполняет асинхронную задачу по расписанию");
-        // Логика асинхронной задачи
+        notificationOutBoxService.sentMessage();
     }
 }

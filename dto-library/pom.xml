@@ -18,6 +18,7 @@
 
     <modules>
         <module>account-dto</module>
+        <module>notification-dto</module>
     </modules>
 
     <dependencies>

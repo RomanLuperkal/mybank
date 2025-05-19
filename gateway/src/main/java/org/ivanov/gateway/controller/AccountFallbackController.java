@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/fallback")
 public class AccountFallbackController {
 
-    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE, RequestMethod.PATCH})
     @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
     public Mono<ApiError> fallback() {
         return Mono.just(new ApiError("Service is unavailable.", HttpStatus.SERVICE_UNAVAILABLE.toString()));

@@ -18,3 +18,8 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/changelog-master.xml
+
+  cloud:
+    consul:
+      host: ${CONSUL_HOST_NAME:localhost}
+      port: 8500

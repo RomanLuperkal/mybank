@@ -13,10 +13,6 @@
     <version>1.0.0</version>
     <name>account-dto</name>
     <description>account-dto</description>
-
-    <properties>
-        <java.version>21</java.version>
-    </properties>
     <dependencies>
     </dependencies>
 
