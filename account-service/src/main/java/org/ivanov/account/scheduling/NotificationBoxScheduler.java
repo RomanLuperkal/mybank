@@ -10,7 +10,6 @@ public class NotificationBoxScheduler {
 
     @Scheduled(fixedDelay = 10000)
     public void performAsyncScheduledTask() {
-        System.out.println(Thread.currentThread().getName() + " выполняет асинхронную задачу по расписанию");
         notificationOutBoxService.sentMessage();
     }
 }

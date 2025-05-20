@@ -2,7 +2,9 @@ package org.ivanov.account.client;
 
 import org.blog.notificationdto.notificationoutbox.CreateMessageDto;
 
+import java.util.List;
+
 public interface NotificationClient {
-    void sentMessage(CreateMessageDto dto);
+    void sentMessage(List<CreateMessageDto> dto);
 
 }

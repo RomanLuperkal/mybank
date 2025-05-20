@@ -6,12 +6,14 @@ import org.ivanov.account.client.NotificationClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class NotificationClientImpl implements NotificationClient {
     private final WebClient client;
 
-    public void sentMessage(CreateMessageDto dto) {
+    public void sentMessage(List<CreateMessageDto> dto) {
 
          client.post()
                 .uri("http://gateway/notification")

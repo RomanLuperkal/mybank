@@ -16,7 +16,7 @@ public class NotificationOutBox {
     private String email;
     private String message;
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.WAITING;
 
     public enum Status {
         WAITING, SENT, ERROR
