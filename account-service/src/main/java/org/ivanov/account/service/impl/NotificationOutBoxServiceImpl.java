@@ -24,6 +24,10 @@ public class NotificationOutBoxServiceImpl implements NotificationOutBoxService 
     @Transactional
     public void sentMessage() {
         List<NotificationOutBox> messages = outboxRepository.getPreparedMessages(PageRequest.of(0, 10));
+        if (messages.isEmpty()) {
+            return;
+        }
+
         client.sentMessage(outboxMapper.mapToMessageDtoList(messages));
         messages.forEach(m -> m.setStatus(NotificationOutBox.Status.SENT));
     }

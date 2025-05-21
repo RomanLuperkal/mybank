@@ -23,3 +23,18 @@ spring:
     consul:
       host: ${CONSUL_HOST_NAME:localhost}
       port: 8500
+
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username: dik93@bk.ru
+    password: a6RZTVszbWeCrEMVKKEw
+    protocol: smtps
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: false
+          ssl:
+            enable: true
