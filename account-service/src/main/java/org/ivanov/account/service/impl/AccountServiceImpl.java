@@ -37,7 +37,9 @@ public class AccountServiceImpl implements AccountService {
         Account newAccount = accountMapper.mapToAccount(dto);
         newAccount.setPassword(passwordEncoder.encode(dto.password()));
         Account createdAccount = accountRepository.save(newAccount);
-        NotificationOutBox prepareMessage = createNotificationOutBoxMessage("Аккаунт успешно создан", createdAccount.getEmail());
+        NotificationOutBox prepareMessage = notificationOutBoxService
+                .createNotificationOutBoxMessage("Действия над учетной записью пользователя",
+                        "Аккаунт успешно создан", createdAccount.getEmail());
         notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
 
         //TODO отправка уведомления в NOTIFICATION
@@ -55,11 +57,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional
     public void deleteAccount(long accountId) {
-        if (!accountRepository.existsById(accountId)) {
-            throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует.");
-        }
-        accountRepository.deleteById(accountId);
+        Account account = findAccountById(accountId);
+
+        accountRepository.delete(account);
+        NotificationOutBox prepareMessage = notificationOutBoxService
+                .createNotificationOutBoxMessage("Действия над учетной записью пользователя",
+                        "Аккаунт успешно удален", account.getEmail());
+        notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
     }
 
     @Override
@@ -68,6 +74,10 @@ public class AccountServiceImpl implements AccountService {
 
        account.setPassword(newPassword.password());
        accountRepository.save(account);
+        NotificationOutBox prepareMessage = notificationOutBoxService
+                .createNotificationOutBoxMessage("Действия над учетной записью пользователя",
+                        "Ваш пароль от аккаунта успешно обновлен", account.getEmail());
+        notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
     }
 
     @Override
@@ -75,15 +85,13 @@ public class AccountServiceImpl implements AccountService {
         Account account = findAccountById(accountId);
         Account updatedAccount = accountMapper.mapToProduct(account, newProfile);
         accountRepository.save(updatedAccount);
+
+        NotificationOutBox prepareMessage = notificationOutBoxService
+                .createNotificationOutBoxMessage("Действия над учетной записью пользователя",
+                        "Ваш профиль аккаунта успешно обновлен", account.getEmail());
+        notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
     }
 
-
-    private NotificationOutBox createNotificationOutBoxMessage(String message, String email) {
-        NotificationOutBox notificationOutBox = new NotificationOutBox();
-        notificationOutBox.setEmail(email);
-        notificationOutBox.setMessage(message);
-        return notificationOutBox;
-    }
 
     private Account findAccountById(long accountId) {
         return accountRepository.findById(accountId)

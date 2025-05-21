@@ -6,4 +6,6 @@ public interface NotificationOutBoxService {
     void sentMessage();
 
     void createNotificationOutBoxMessage(NotificationOutBox notificationOutBox);
+
+    NotificationOutBox createNotificationOutBoxMessage(String theme, String message, String email);
 }

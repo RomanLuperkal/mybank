@@ -1,4 +1,4 @@
-package org.ivanov.account.model;
+package org.ivanov.notificationservice.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "notification_outbox")
-public class NotificationOutBox {
+public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "message_id")

@@ -1,6 +1,8 @@
 package org.ivanov.notificationservice.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.blog.notificationdto.notificationoutbox.CreateMessageDto;
+import org.ivanov.notificationservice.service.NotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,13 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/notification")
+@RequiredArgsConstructor
 public class NotificationController {
+    private final NotificationService notificationService;
+
     @PostMapping
     public ResponseEntity<Void> saveMessage(@RequestBody List<CreateMessageDto> dto) {
-        dto.forEach(d -> {
-            System.out.println(d.message());
-            System.out.println(d.email());
-        });
+        notificationService.saveMessage(dto);
         return ResponseEntity.ok().build();
     }
 }

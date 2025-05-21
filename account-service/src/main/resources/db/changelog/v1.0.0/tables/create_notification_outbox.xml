@@ -18,6 +18,9 @@
             <column name="status" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
+            <column name="theme" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
         </createTable>
     </changeSet>
 

@@ -33,4 +33,13 @@ public class NotificationOutBoxServiceImpl implements NotificationOutBoxService 
     public void createNotificationOutBoxMessage(NotificationOutBox notificationOutBox) {
         outboxRepository.save(notificationOutBox);
     }
+
+    @Override
+    public NotificationOutBox createNotificationOutBoxMessage(String theme, String message, String email) {
+        NotificationOutBox notificationOutBox = new NotificationOutBox();
+        notificationOutBox.setEmail(email);
+        notificationOutBox.setMessage(message);
+        notificationOutBox.setTheme(theme);
+        return notificationOutBox;
+    }
 }
