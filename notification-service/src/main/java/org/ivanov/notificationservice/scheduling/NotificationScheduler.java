@@ -11,10 +11,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 public class NotificationScheduler {
     private final NotificationService notificationService;
 
-    @Scheduled(fixedRate  = 10000)
+    @Scheduled(fixedRate  = 1000)
     @Async("taskExecutor")
     public void scheduledSentMessage() {
-        log.info("{} выполняет асинхронную отправку уведомлений", Thread.currentThread().getName());
         notificationService.sentMessage();
     }
 }
