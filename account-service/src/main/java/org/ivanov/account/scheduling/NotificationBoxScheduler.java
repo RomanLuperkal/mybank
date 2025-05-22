@@ -9,7 +9,7 @@ public class NotificationBoxScheduler {
     private final NotificationOutBoxService notificationOutBoxService;
 
     @Scheduled(fixedDelay = 10000)
-    public void performAsyncScheduledTask() {
+    public void scheduledSenMessage() {
         notificationOutBoxService.sentMessage();
     }
 }

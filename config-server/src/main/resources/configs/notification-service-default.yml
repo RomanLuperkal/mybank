@@ -28,7 +28,7 @@ spring:
     host: smtp.mail.ru
     port: 465
     username: dik93@bk.ru
-    password: a6RZTVszbWeCrEMVKKEw
+    password: ${NOTIFICATION_SERVICE_EMAIL_PASSWORD}
     protocol: smtps
     properties:
       mail:
