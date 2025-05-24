@@ -7,26 +7,29 @@
         <artifactId>mybank</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>dto-library</artifactId>
+    <artifactId>exchange-generator</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>dto-library</name>
-    <description>dto-library</description>
-    <packaging>pom</packaging>
-    <properties>
-        <java.version>21</java.version>
-    </properties>
+    <name>exchange-generator</name>
+    <description>exchange-generator</description>
 
-    <modules>
-        <module>account-dto</module>
-        <module>notification-dto</module>
-        <module>exchange-dto</module>
-    </modules>
 
     <dependencies>
+
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>org.ivanov</groupId>
+            <artifactId>exchange-dto</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

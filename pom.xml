@@ -21,6 +21,8 @@
         <module>config-server</module>
         <module>gateway</module>
         <module>notification-service</module>
+        <module>exchange-generator</module>
+        <module>exchange-service</module>
     </modules>
 
     <properties>
