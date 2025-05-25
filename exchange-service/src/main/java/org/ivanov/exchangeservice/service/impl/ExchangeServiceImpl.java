@@ -12,6 +12,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final ExchangeRateProvider provider;
 
     @Override
+    //TODO реализовать авторизацию на уровне методов
     public void changeExchange(CreateCurrencyDto dto) {
         provider.setCNY(dto.cny());
         provider.setCNY(dto.usd());

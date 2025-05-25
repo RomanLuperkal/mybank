@@ -1,0 +1,33 @@
+server:
+  port: ${EXCHANGE_GENERATOR_SERVER_PORT:8083}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh
+
+spring:
+
+  cloud:
+    consul:
+      host: ${CONSUL_HOST_NAME:localhost}
+      port: 8500
+      discovery:
+        enabled: true
+        prefer-ip-address: true
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+        registration:
+          account-client:
+            provider: keycloak
+            client-id: account-client
+            client-secret: 3r4NjD2qmgzfBR6iA3cYF4zPcH8xQGwg
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post

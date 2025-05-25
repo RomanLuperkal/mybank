@@ -121,6 +121,38 @@ services:
       timeout: 5s
       retries: 5
 
+  exchange-generator:
+    build:
+      context: ./exchange-generator
+      dockerfile: Dockerfile
+    ports:
+      - "${EXCHANGE_GENERATOR_SERVER_PORT}:${EXCHANGE_GENERATOR_SERVER_PORT}"
+    environment:
+      - EXCHANGE_GENERATOR_SERVER_PORT=${EXCHANGE_GENERATOR_SERVER_PORT}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    depends_on:
+      config-server:
+        condition: service_healthy
+
+  exchange-service:
+    build:
+      context: ./exchange-service
+      dockerfile: Dockerfile
+    ports:
+      - "${EXCHANGE_SERVICE_PORT}:${EXCHANGE_SERVICE_PORT}"
+    environment:
+      - EXCHANGE_SERVICE_PORT=${EXCHANGE_SERVICE_PORT}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    depends_on:
+      config-server:
+        condition: service_healthy
+
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.3
     container_name: keycloak

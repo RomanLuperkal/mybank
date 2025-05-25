@@ -27,6 +27,7 @@ public class NotificationServiceImpl implements NotificationService {
     private String FROM;
 
     @Override
+    //TODO реализовать авторизацию на уровне методов
     public void saveMessage(List<CreateMessageDto> dto) {
         List<Notification> notifications = notificationMapper.mapToNotificationList(dto);
         notificationRepository.saveAll(notifications);
