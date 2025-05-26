@@ -15,6 +15,7 @@ import org.ivanov.account.service.WalletService;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@PreAuthorize("hasAuthority('ACCOUNT_ROLE')")
 public class WalletServiceImpl implements WalletService {
     private final WalletRepository walletRepository;
     private final AccountRepository accountRepository;
@@ -35,7 +37,6 @@ public class WalletServiceImpl implements WalletService {
                 .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует."));
         Wallet wallet = walletMapper.mapToWallet(dto);
         wallet.setAccount(account);
-        //account.getWallets().add(wallet);
         Wallet savedWallet = walletRepository.save(wallet);
         NotificationOutBox prepareMessage = notificationOutBoxService
                 .createNotificationOutBoxMessage("Создание нового счета",

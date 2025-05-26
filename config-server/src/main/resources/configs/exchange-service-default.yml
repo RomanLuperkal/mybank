@@ -6,7 +6,7 @@ server:
       host: ${CONSUL_HOST_NAME:localhost}
       port: 8500
 
-
+spring:
   security:
     oauth2:
       resourceserver:
