@@ -20,7 +20,6 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@PreAuthorize("hasAuthority('NOTIFICATION_ROLE')")
 public class NotificationServiceImpl implements NotificationService {
     private final NotificationRepository notificationRepository;
     private final NotificationMapper notificationMapper;
@@ -29,7 +28,7 @@ public class NotificationServiceImpl implements NotificationService {
     private String FROM;
 
     @Override
-    //TODO реализовать авторизацию на уровне методов
+    @PreAuthorize("hasAuthority('NOTIFICATION_ROLE')")
     public void saveMessage(List<CreateMessageDto> dto) {
         List<Notification> notifications = notificationMapper.mapToNotificationList(dto);
         notificationRepository.saveAll(notifications);

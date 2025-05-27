@@ -24,7 +24,7 @@ spring:
           keycloak:
             issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
         registration:
-          account-client:
+          exchange-client:
             provider: keycloak
             client-id: exchange-client
             client-secret: FPMcaxvSBkPz7nLllGSCKvSEvDy4X2Rs

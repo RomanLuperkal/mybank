@@ -1,6 +1,7 @@
 package org.ivanov.account.confiruration;
 
 import io.netty.channel.ChannelOption;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -13,15 +14,27 @@ import java.time.Duration;
 
 @Configuration
 public class WebClientConfiguration {
-    @Bean
+    @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
+    private String KEYCLOAK_HOST_NAME;
+
+    @Bean("notification-client")
     @LoadBalanced
-    public WebClient webClient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+    public WebClient notificationClient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
         return WebClient.builder().
                 filter(lbFunction).
                 clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)
                                 .responseTimeout(Duration.ofSeconds(30))))
+                .build();
+    }
+
+    @Bean("keycloak-client")
+    public WebClient keycloakClient() {
+        return WebClient.builder().
+                baseUrl(KEYCLOAK_HOST_NAME + "/protocol/openid-connect/token").
+                clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create().responseTimeout(Duration.ofSeconds(30))))
                 .build();
     }
 }
