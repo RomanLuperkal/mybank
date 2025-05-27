@@ -21,6 +21,8 @@ public class ExchangeClientImpl implements ExchangeClient {
     private final WebClient client;
     private final OAuth2AuthorizedClientService authorizedClientService;
     private final ObjectMapper mapper;
+    private String accessToken;
+    private long tokenExpiryTime = 0;
 
     @Override
     public void changeExchange(CreateCurrencyDto dto) {
@@ -35,6 +37,17 @@ public class ExchangeClientImpl implements ExchangeClient {
 
     public String getAccessToken() {
         //TODO привести в человеческий вид а так же прописать все роли в клиентах в realm.json
+        long currentTime = System.currentTimeMillis();
+
+        if (accessToken != null && tokenExpiryTime > currentTime + 60_000) {
+            return accessToken;
+        }
+
+        // Иначе получаем новый токен
+        return fetchNewToken();
+    }
+
+    private String fetchNewToken() {
         String tokenUrl = "http://localhost:9092/realms/master/protocol/openid-connect/token";
         String clientId = "exchange-client";
         String clientSecret = "FPMcaxvSBkPz7nLllGSCKvSEvDy4X2Rs";
@@ -42,6 +55,8 @@ public class ExchangeClientImpl implements ExchangeClient {
         String credentials = Base64.getEncoder().encodeToString(
                 (clientId + ":" + clientSecret).getBytes()
         );
+
+        // В секундах
 
         return WebClient.builder()
                 .baseUrl(tokenUrl)
@@ -54,9 +69,12 @@ public class ExchangeClientImpl implements ExchangeClient {
                 .bodyToMono(String.class)
                 .<String>handle((json, sink) -> {
                     try {
-
                         JsonNode node = mapper.readTree(json);
-                        sink.next(node.get("access_token").asText());
+                        String accessToken1 = node.get("access_token").asText();
+                        int expiresIn = node.get("expires_in").asInt(); // В секундах
+                        this.accessToken = accessToken1;
+                        this.tokenExpiryTime = System.currentTimeMillis() + (expiresIn * 1000L);
+                        sink.next(accessToken1);
                     } catch (Exception e) {
                         sink.error(new RuntimeException("Ошибка парсинга JSON", e));
                     }
