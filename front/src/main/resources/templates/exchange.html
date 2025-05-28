@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Курсы валют</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 40px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 14px 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #ecf0f1;
+            font-weight: bold;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        .value {
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .header-user {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            font-size: 14px;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .logout-button .btn {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header-user">
+    <span class="user-info">Вы вошли как <span th:text="${user.firstName + ' ' + user.lastName}"></span></span>
+    <form th:action="@{/logout}" method="post" class="logout-button">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+        <button type="submit" class="btn btn-outline-danger btn-sm">Выход</button>
+    </form>
+</div>
+
+<div class="container">
+    <h1>Курсы валют</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Валюта</th>
+            <th>Обозначение</th>
+            <th>Курс</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>RUB</td>
+            <td>RUB</td>
+            <td class="value">1</td>
+        </tr>
+        <tr>
+            <td>USD</td>
+            <td>USD</td>
+            <td class="value" th:text="${currency.usd}"></td>
+        </tr>
+        <tr>
+            <td>CNY</td>
+            <td>CNY</td>
+            <td class="value" th:text="${currency.cny}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
