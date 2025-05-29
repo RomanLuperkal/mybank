@@ -65,7 +65,6 @@ public class AccountController {
     @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        //userDetails.setWallets(Set.of(new ResponseWalletDto("RUB",  BigDecimal.ONE), new ResponseWalletDto("USD",  new BigDecimal("2.2"))));
         model.addAttribute("user", userDetails);
         return "account-settings";
     }

@@ -20,6 +20,7 @@
         <module>account-dto</module>
         <module>notification-dto</module>
         <module>exchange-dto</module>
+        <module>cash-dto</module>
     </modules>
 
     <dependencies>

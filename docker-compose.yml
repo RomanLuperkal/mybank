@@ -13,6 +13,14 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
       - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
       - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar front.jar
+      "
     depends_on:
       config-server:
         condition: service_healthy
@@ -26,6 +34,8 @@ services:
     environment:
       - GATEWAY_SERVER_PORT=${GATEWAY_SERVER_PORT}
       - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
     depends_on:
       config-server:
         condition: service_healthy
@@ -47,6 +57,14 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
       - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
       - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar account-service.jar
+      "
     depends_on:
       config-server:
         condition: service_healthy
@@ -85,6 +103,14 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
       - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
       - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar notification-service.jar
+      "
     depends_on:
       config-server:
         condition: service_healthy
@@ -99,7 +125,7 @@ services:
       POSTGRES_USER: ${NOTIFICATION_DB_USERNAME}
       POSTGRES_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
     ports:
-      - "5434:5432"
+      - "5433:5432"
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${NOTIFICATION_DB_USERNAME}", "-d", "${NOTIFICATION_DB_NAME}" ]
       interval: 5s
@@ -133,6 +159,14 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
       - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
       - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar exchange-generator.jar
+      "
     depends_on:
       config-server:
         condition: service_healthy
@@ -149,9 +183,18 @@ services:
       - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
       - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
       - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar exchange-service.jar
+      "
     depends_on:
       config-server:
         condition: service_healthy
+
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.3
