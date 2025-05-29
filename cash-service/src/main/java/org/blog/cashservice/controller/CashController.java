@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class CashController {
 
-    @PatchMapping("{walletId}")
-    public ResponseEntity<ResponseCashDto> updateWallet(@PathVariable Long walletId, @RequestBody UpdateCashDto dto) {
+    @PatchMapping("/create")
+    public ResponseEntity<ResponseCashDto> updateWallet(@RequestBody UpdateCashDto dto) {
         return null;
     }
 }

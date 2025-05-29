@@ -6,7 +6,6 @@
         <groupId>org.ivanov</groupId>
         <artifactId>mybank</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <artifactId>exchange-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>

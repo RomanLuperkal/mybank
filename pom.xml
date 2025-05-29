@@ -23,6 +23,7 @@
         <module>notification-service</module>
         <module>exchange-generator</module>
         <module>exchange-service</module>
+        <module>cash-service</module>
     </modules>
 
     <properties>

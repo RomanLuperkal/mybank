@@ -2,8 +2,5 @@ package org.blog.cashdto.cash;
 
 import java.math.BigDecimal;
 
-public record UpdateCashDto(BigDecimal balance, Operation operation) {
-    public enum Operation {
-        ADD, REMOVE
-    }
+public record UpdateCashDto(Long accountId, Long walletId, BigDecimal amount, String email) {
 }

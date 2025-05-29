@@ -8,8 +8,24 @@ management:
         include: refresh
 
 spring:
-
   cloud:
     consul:
       host: ${CONSUL_HOST_NAME:localhost}
       port: 8500
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${CASH_DB_HOST:localhost}:${CASH_DB_PORT:5432}/${CASH_DB_NAME:cash}
+    username: ${CASH_DB_USERNAME:postgres}
+    password: ${CASH_DB_PASSWORD}
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
