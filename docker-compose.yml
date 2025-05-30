@@ -195,6 +195,52 @@ services:
       config-server:
         condition: service_healthy
 
+  cash-service:
+    build:
+      context: ./cash-service
+      dockerfile: Dockerfile
+    ports:
+      - "${CASH_SERVICE_PORT}:${CASH_SERVICE_PORT}"
+    environment:
+      - ACCOUNT_DB_HOST=${ACCOUNT_DB_HOST}
+      - CASH_DB_HOST=${CASH_DB_HOST}
+      - CASH_DB_NAME=${CASH_DB_NAME}
+      - CASH_DB_USERNAME=${CASH_DB_USERNAME}
+      - CASH_DB_PASSWORD=${CASH_DB_PASSWORD}
+      - CASH_SERVICE_PORT=${CASH_SERVICE_PORT}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar account-service.jar
+      "
+    depends_on:
+      config-server:
+        condition: service_healthy
+      cash-db:
+        condition: service_healthy
+
+  cash-db:
+    image: postgres:15.1-alpine
+    container_name: cash-db
+    environment:
+      POSTGRES_DB: ${CASH_DB_NAME}
+      POSTGRES_USER: ${CASH_DB_USERNAME}
+      POSTGRES_PASSWORD: ${CASH_DB_PASSWORD}
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${CASH_DB_USERNAME}", "-d", "${CASH_DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.1.3
