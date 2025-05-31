@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CashRepository extends JpaRepository<Transaction, Long> {
+    Transaction findFirstByStatus(Transaction.Status status);
 }

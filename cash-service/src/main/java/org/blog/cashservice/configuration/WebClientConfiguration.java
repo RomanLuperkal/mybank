@@ -28,8 +28,6 @@ public class WebClientConfiguration {
                 .build();
     }
 
-
-
     @Bean("keycloak-client")
     public WebClient keycloakClient() {
         return WebClient.builder().

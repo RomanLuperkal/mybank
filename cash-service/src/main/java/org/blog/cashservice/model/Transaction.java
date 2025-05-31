@@ -27,8 +27,15 @@ public class Transaction {
     private String email;
 
 
+    @Getter
     public enum TransactionType {
-        ADD, REMOVE
+        ADD("Пополнение счета"), REMOVE("Снятие со счета");
+
+        private final String message;
+
+        TransactionType(String message) {
+            this.message = message;
+        }
     }
 
     public enum Status {

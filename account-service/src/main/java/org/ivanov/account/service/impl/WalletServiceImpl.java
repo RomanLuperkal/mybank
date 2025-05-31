@@ -3,6 +3,7 @@ package org.ivanov.account.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.blog.cashdto.transaction.ApprovedTransactionDto;
 import org.ivanov.account.handler.exception.AccountException;
 import org.ivanov.account.mapper.WalletMapper;
 import org.ivanov.account.model.Account;
@@ -18,6 +19,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 @Service
@@ -63,5 +65,34 @@ public class WalletServiceImpl implements WalletService {
                         wallet.get().getWalletType() + " счет успешно удален", account.getEmail());
         notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
         return walletMapper.mapToResponseWalletDto(wallet.get());
+    }
+
+    @Override
+    public void updateWallet(Long accountId, Long walletId, ApprovedTransactionDto dto) {
+        Account account = accountRepository.findById(accountId)
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с id= " + accountId + " не существует."));
+        Wallet wallet = account.getWallets().stream().filter(w -> w.getWalletId().equals(walletId)).findFirst()
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Такого счета не существует"));
+        String operation = dto.transactionType();
+        NotificationOutBox prepareMessage;
+        switch (operation) {
+            case "ADD":
+                wallet.setBalance(wallet.getBalance().add(dto.amount()));
+                prepareMessage = notificationOutBoxService
+                        .createNotificationOutBoxMessage("Операции со счетом",
+                                "Счет успешно пополнен на " + dto.amount() + " " + wallet.getWalletType(), account.getEmail());
+                notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
+                break;
+            case "REMOVE":
+                BigDecimal currentBalance = wallet.getBalance();
+                if (currentBalance.compareTo(dto.amount()) < 0) {
+                    prepareMessage = notificationOutBoxService
+                            .createNotificationOutBoxMessage("Операции со счетом",
+                                    "На счете недостаточно средств", account.getEmail());
+                    notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
+                }
+                wallet.setBalance(wallet.getBalance().subtract(dto.amount()));
+        }
+        walletRepository.save(wallet);
     }
 }

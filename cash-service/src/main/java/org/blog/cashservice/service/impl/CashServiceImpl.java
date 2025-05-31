@@ -5,12 +5,17 @@ import org.blog.blockdto.block.ResponseValidatedTransactionDto;
 import org.blog.blockdto.block.UnvalidatedTransactionDto;
 import org.blog.cashdto.cash.ResponseCashDto;
 import org.blog.cashdto.cash.UpdateCashDto;
+import org.blog.cashdto.transaction.ApprovedTransactionDto;
+import org.blog.cashservice.client.AccountClient;
 import org.blog.cashservice.client.BlockClient;
 import org.blog.cashservice.mapper.CashMapper;
+import org.blog.cashservice.model.NotificationOutBox;
 import org.blog.cashservice.model.Transaction;
 import org.blog.cashservice.repository.CashRepository;
 import org.blog.cashservice.service.CashService;
+import org.blog.cashservice.service.NotificationOutBoxService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +24,8 @@ public class CashServiceImpl implements CashService {
     private final CashRepository cashRepository;
     private final CashMapper cashMapper;
     private final BlockClient blockClient;
+    private final AccountClient accountClient;
+    private final NotificationOutBoxService notificationOutBoxService;
 
     @Override
     public ResponseCashDto createTransaction(UpdateCashDto dto) {
@@ -28,11 +35,30 @@ public class CashServiceImpl implements CashService {
     }
 
     @Override
-    public void validateTransaction(Transaction transaction) {
+    @Transactional
+    public void validateTransaction() {
+        Transaction transaction = cashRepository.findFirstByStatus(Transaction.Status.WAITING);
         UnvalidatedTransactionDto unvalidatedTransaction = cashMapper.mapToUnvalidatedTransaction(transaction);
         ResponseValidatedTransactionDto validatedTransaction = blockClient.validateTransaction(unvalidatedTransaction);
-        //TODO проверить результат валидации и изменить статус\отправить уведомление в зависимости от результата
+        Transaction.Status status = Transaction.Status.valueOf(validatedTransaction.valid());
+        switch (status) {
+            case APPROVED -> {
+                saveValidationResult(status, transaction);
+            }
+            case BLOCKED -> {
+                saveValidationResult(status, transaction);
+                prepareMessageForNotification(transaction);
+            }
+        }
+    }
 
+    @Override
+    public void processApprovedTransaction() {
+        Transaction transaction = cashRepository.findFirstByStatus(Transaction.Status.APPROVED);
+        ApprovedTransactionDto dto = cashMapper.mapToApprovedTransaction(transaction);
+        accountClient.processTransaction(transaction.getAccountId(), transaction.getWalletId(), dto);
+        transaction.setStatus(Transaction.Status.DONE);
+        cashRepository.save(transaction);
     }
 
     private ResponseCashDto prepareResponse(Transaction.TransactionType type) {
@@ -40,5 +66,17 @@ public class CashServiceImpl implements CashService {
             case ADD -> new ResponseCashDto("Зачисление средств отправлено на обработку");
             case REMOVE -> new ResponseCashDto("Cписание средств отправлено на обработку");
         };
+    }
+
+    private void saveValidationResult(Transaction.Status status, Transaction transaction) {
+        transaction.setStatus(status);
+        cashRepository.save(transaction);
+    }
+
+    private void prepareMessageForNotification(Transaction transaction) {
+        NotificationOutBox message = notificationOutBoxService.prepareNotificationOutBoxMessage("Операции с личными счетами",
+                transaction.getTransactionType().getMessage() + ": " + transaction.getAmount() + " заблокирована",
+                transaction.getEmail());
+        notificationOutBoxService.createNotificationOutBoxMessage(message);
     }
 }

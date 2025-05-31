@@ -21,6 +21,7 @@
         <module>notification-dto</module>
         <module>exchange-dto</module>
         <module>cash-dto</module>
+        <module>block-dto</module>
     </modules>
 
     <dependencies>

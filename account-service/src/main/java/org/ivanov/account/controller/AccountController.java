@@ -2,6 +2,7 @@ package org.ivanov.account.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.blog.cashdto.transaction.ApprovedTransactionDto;
 import org.ivanov.account.service.AccountService;
 import org.ivanov.account.service.WalletService;
 import org.ivanov.accountdto.account.CreateAccountDto;
@@ -59,5 +60,12 @@ public class AccountController {
     @DeleteMapping("/{accountId}/wallet/{walletId}")
     public ResponseEntity<ResponseWalletDto> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId) {
         return ResponseEntity.ok(walletService.deleteWallet(accountId, walletId));
+    }
+
+    @PatchMapping("/{accountId}/wallet/{walletId}")
+    public ResponseEntity<Void> processTransaction(@PathVariable Long accountId, @PathVariable Long walletId,
+                                                   @RequestBody ApprovedTransactionDto dto) {
+        walletService.updateWallet(accountId, walletId, dto);
+        return ResponseEntity.ok().build();
     }
 }
