@@ -65,7 +65,7 @@ public class AccountController {
     @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        model.addAttribute("user", userDetails);
+        model.addAttribute("user", accountService.getAccountInfo(userDetails.getUsername()));
         return "account-settings";
     }
 

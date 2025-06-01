@@ -21,6 +21,7 @@ import java.util.Set;
 public class AccountServiceImpl implements AccountService {
     private final AccountClient accountClient;
     private final PasswordEncoder passwordEncoder;
+    private final AccountClient client;
 
     @Override
     public ResponseAccountDto registration(CreateAccountDto dto) {
@@ -46,5 +47,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void updateProfile(Long accountId, UpdateProfileDto profile) {
         accountClient.updateProfile(accountId, profile);
+    }
+
+    @Override
+    public ResponseAccountDto getAccountInfo(String username) {
+        return client.getAccount(username);
     }
 }

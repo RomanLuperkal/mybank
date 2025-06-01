@@ -4,7 +4,9 @@ import org.blog.cashservice.model.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CashRepository extends JpaRepository<Transaction, Long> {
-    Transaction findFirstByStatus(Transaction.Status status);
+    Optional<Transaction> findFirstByStatus(Transaction.Status status);
 }

@@ -16,4 +16,6 @@ public interface AccountService {
     String updatePassword(Long accountId, UpdatePasswordDto newPassword);
 
     void updateProfile(Long accountId, UpdateProfileDto profile);
+
+    ResponseAccountDto getAccountInfo(String username);
 }

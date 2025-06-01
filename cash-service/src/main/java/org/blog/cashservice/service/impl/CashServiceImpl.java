@@ -17,6 +17,8 @@ import org.blog.cashservice.service.NotificationOutBoxService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 //TODO закрыть эндпоинты
@@ -37,28 +39,32 @@ public class CashServiceImpl implements CashService {
     @Override
     @Transactional
     public void validateTransaction() {
-        Transaction transaction = cashRepository.findFirstByStatus(Transaction.Status.WAITING);
-        UnvalidatedTransactionDto unvalidatedTransaction = cashMapper.mapToUnvalidatedTransaction(transaction);
-        ResponseValidatedTransactionDto validatedTransaction = blockClient.validateTransaction(unvalidatedTransaction);
-        Transaction.Status status = Transaction.Status.valueOf(validatedTransaction.valid());
-        switch (status) {
-            case APPROVED -> {
-                saveValidationResult(status, transaction);
+        Optional<Transaction> tr = cashRepository.findFirstByStatus(Transaction.Status.WAITING);
+        tr.ifPresent(transaction -> {
+            UnvalidatedTransactionDto unvalidatedTransaction = cashMapper.mapToUnvalidatedTransaction(transaction);
+            ResponseValidatedTransactionDto validatedTransaction = blockClient.validateTransaction(unvalidatedTransaction);
+            Transaction.Status status = Transaction.Status.valueOf(validatedTransaction.valid());
+            switch (status) {
+                case APPROVED -> saveValidationResult(status, transaction);
+                case BLOCKED -> {
+                    saveValidationResult(status, transaction);
+                    prepareMessageForNotification(transaction);
+                }
             }
-            case BLOCKED -> {
-                saveValidationResult(status, transaction);
-                prepareMessageForNotification(transaction);
-            }
-        }
+        });
+
     }
 
     @Override
     public void processApprovedTransaction() {
-        Transaction transaction = cashRepository.findFirstByStatus(Transaction.Status.APPROVED);
-        ApprovedTransactionDto dto = cashMapper.mapToApprovedTransaction(transaction);
-        accountClient.processTransaction(transaction.getAccountId(), transaction.getWalletId(), dto);
-        transaction.setStatus(Transaction.Status.DONE);
-        cashRepository.save(transaction);
+        Optional<Transaction> tr= cashRepository.findFirstByStatus(Transaction.Status.APPROVED);
+        tr.ifPresent(transaction -> {
+            ApprovedTransactionDto dto = cashMapper.mapToApprovedTransaction(transaction);
+            accountClient.processTransaction(transaction.getAccountId(), transaction.getWalletId(), dto);
+            transaction.setStatus(Transaction.Status.DONE);
+            cashRepository.save(transaction);
+        });
+
     }
 
     private ResponseCashDto prepareResponse(Transaction.TransactionType type) {
