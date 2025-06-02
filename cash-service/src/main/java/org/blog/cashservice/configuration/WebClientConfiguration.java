@@ -1,6 +1,7 @@
 package org.blog.cashservice.configuration;
 
 import io.netty.channel.ChannelOption;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +14,7 @@ import java.time.Duration;
 
 @Configuration
 public class WebClientConfiguration {
-    //@Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
+    @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
     private String KEYCLOAK_HOST_NAME = "";
 
     @Bean("service-client")

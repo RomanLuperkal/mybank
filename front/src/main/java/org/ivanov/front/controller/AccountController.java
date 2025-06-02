@@ -98,7 +98,7 @@ public class AccountController {
         AccountUserDetails userDetails = getAccountUserDetails(authentication);
         ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto, userDetails.getWallets());
         userDetails.getWallets().add(createdWallet);
-        model.addAttribute("user", userDetails);
+        model.addAttribute("user", accountService.getAccountInfo(userDetails.getUsername()));
         return ResponseEntity.ok(createdWallet);
     }
 

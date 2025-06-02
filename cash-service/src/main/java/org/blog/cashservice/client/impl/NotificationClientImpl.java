@@ -1,7 +1,7 @@
 package org.blog.cashservice.client.impl;
 
 import org.blog.cashservice.client.NotificationClient;
-import org.blog.cashservice.configuration.KeycloakManageClient;
+import org.blog.cashservice.client.KeycloakManageClient;
 import org.blog.notificationdto.notificationoutbox.CreateMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

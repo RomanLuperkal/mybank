@@ -2,9 +2,10 @@ package org.blog.cashservice.client.impl;
 
 import org.blog.cashdto.transaction.ApprovedTransactionDto;
 import org.blog.cashservice.client.AccountClient;
-import org.blog.cashservice.configuration.KeycloakManageClient;
+import org.blog.cashservice.client.KeycloakManageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,7 +22,7 @@ public class AccountClientImpl implements AccountClient {
     public void processTransaction(Long accountId, Long walletId, ApprovedTransactionDto dto) {
          client.patch()
                 .uri("http://gateway/account/" + accountId + "/wallet/" + walletId)
-                //.header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .bodyValue(dto).retrieve()
                 .bodyToMono(Void.class)
                 //.retry(3)

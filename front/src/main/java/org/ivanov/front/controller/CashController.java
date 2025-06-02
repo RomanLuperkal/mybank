@@ -26,7 +26,8 @@ public class CashController {
 
     @PatchMapping
     @ResponseBody
-    public ResponseEntity<ResponseCashDto> updateCash(UpdateCashDto dto) {
+    //todo необходимо убедиться, что сумма списание меньше чем на счету
+    public ResponseEntity<ResponseCashDto> updateCash(@RequestBody UpdateCashDto dto) {
         return ResponseEntity.ok(cashService.updateCash(dto));
     }
 

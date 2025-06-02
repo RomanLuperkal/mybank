@@ -41,6 +41,26 @@ spring:
                 name: gateway
                 fallbackUri: forward:/fallback
 
+        - id: cash-service
+          uri: lb://cash-service
+          predicates:
+            - Path=/cash/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: gateway
+                fallbackUri: forward:/fallback
+
+        - id: block-service
+          uri: lb://block-service
+          predicates:
+            - Path=/block/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: gateway
+                fallbackUri: forward:/fallback
+
 
     consul:
       host: ${CONSUL_HOST_NAME:localhost}

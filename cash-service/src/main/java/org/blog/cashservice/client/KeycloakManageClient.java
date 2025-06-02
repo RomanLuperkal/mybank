@@ -1,9 +1,10 @@
-package org.blog.cashservice.configuration;
+package org.blog.cashservice.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -18,13 +19,12 @@ public class KeycloakManageClient {
     private ObjectMapper mapper;
     private String accessToken;
     private long tokenExpiryTime;
-    //@Value("${spring.security.oauth2.client.registration.notification-client.client-id}")
+    @Value("${spring.security.oauth2.client.registration.cash-client.client-id}")
     private String clientId;
-    //@Value("${spring.security.oauth2.client.registration.notification-client.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.cash-client.client-secret}")
     private String clientSecret;
 
     public String getAccessToken() {
-        //TODO привести в человеческий вид а так же прописать все роли в клиентах в realm.json
         long currentTime = System.currentTimeMillis();
 
         if (accessToken != null && tokenExpiryTime > currentTime) {

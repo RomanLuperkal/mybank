@@ -3,7 +3,7 @@ package org.blog.cashservice.client.impl;
 import org.blog.blockdto.block.ResponseValidatedTransactionDto;
 import org.blog.blockdto.block.UnvalidatedTransactionDto;
 import org.blog.cashservice.client.BlockClient;
-import org.blog.cashservice.configuration.KeycloakManageClient;
+import org.blog.cashservice.client.KeycloakManageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;

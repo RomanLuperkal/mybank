@@ -4,25 +4,25 @@
     <meta charset="UTF-8"/>
     <title>Операция со счётом</title>
     <script th:inline="javascript">
-        function performTransaction(accountId, walletId, transactionType) {
-            const amountInput = document.getElementById('amount');
-            const amount = amountInput.value.trim();
-            const errorElement = document.getElementById('transactionError');
-
-            if (!amount) {
-                errorElement.textContent = 'Сумма обязательна к заполнению.';
+        function performTransaction(accountId, walletId, amount, transactionType) {
+            if (!accountId || !walletId || !amount) {
+                alert("Выберите кошелёк и укажите сумму.");
                 return;
             }
 
             if (isNaN(amount)) {
-                errorElement.textContent = 'Сумма должна быть числом.';
+                alert("Сумма должна быть числом.");
                 return;
             }
 
-            errorElement.textContent = '';
-
             const csrfToken = document.querySelector('meta[name="_csrf"]').content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            console.log(parseInt(accountId));
+            console.log(parseInt(walletId));
+            console.log(parseFloat(amount));
+            console.log('[[${user.email}]]');
+            console.log(transactionType);
 
             fetch('/cash', {
                 method: 'PATCH',
@@ -34,7 +34,7 @@
                     accountId: parseInt(accountId),
                     walletId: parseInt(walletId),
                     amount: parseFloat(amount),
-                    email: 'user@example.com', // Можно подставить из Principal
+                    email: '[[${user.email}]]',
                     transactionType: transactionType
                 })
             }).then(response => {
@@ -49,7 +49,6 @@
                 alert('Произошла ошибка: ' + error.message);
             });
         }
-        /*]]>*/
     </script>
 </head>
 <body>
@@ -57,12 +56,13 @@
 <h2>Ваши счета:</h2>
 
 <div class="form-group accounts-list">
+    <h3>Ваши кошельки:</h3>
     <div id="walletList">
         <div th:each="wallet : ${user.wallets}"
              class="wallet-item"
              th:id="'wallet-' + ${wallet.walletId()}">
-            <!-- Тип кошелька -->
-            <strong th:text="${wallet.walletType()}">RUB</strong>
+            <!-- Название кошелька -->
+            <span><strong th:text="${wallet.walletType()}"></strong></span>
 
             <!-- Поле ввода суммы -->
             <input type="text"

@@ -67,6 +67,11 @@ public class CashServiceImpl implements CashService {
 
     }
 
+    //TODO отправка уведомлений
+    public void sentMessage() {
+
+    }
+
     private ResponseCashDto prepareResponse(Transaction.TransactionType type) {
         return switch (type) {
             case ADD -> new ResponseCashDto("Зачисление средств отправлено на обработку");

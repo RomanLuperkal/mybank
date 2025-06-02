@@ -14,7 +14,7 @@ public class BlockerServiceImpl implements BlockerService {
     @Override
     public ResponseValidatedTransactionDto validateTransaction(UnvalidatedTransactionDto dto) {
         BigDecimal amount = dto.amount();
-        if (!isValid(amount)) {
+        if (isValid(amount)) {
             return new ResponseValidatedTransactionDto("BLOCKED");
         } else {
             return new ResponseValidatedTransactionDto("APPROVED");
