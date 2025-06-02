@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Операция со счётом</title>
+    <script th:inline="javascript">
+        function performTransaction(accountId, walletId, transactionType) {
+            const amountInput = document.getElementById('amount');
+            const amount = amountInput.value.trim();
+            const errorElement = document.getElementById('transactionError');
+
+            if (!amount) {
+                errorElement.textContent = 'Сумма обязательна к заполнению.';
+                return;
+            }
+
+            if (isNaN(amount)) {
+                errorElement.textContent = 'Сумма должна быть числом.';
+                return;
+            }
+
+            errorElement.textContent = '';
+
+            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+            fetch('/cash', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    [csrfHeader]: csrfToken
+                },
+                body: JSON.stringify({
+                    accountId: parseInt(accountId),
+                    walletId: parseInt(walletId),
+                    amount: parseFloat(amount),
+                    email: 'user@example.com', // Можно подставить из Principal
+                    transactionType: transactionType
+                })
+            }).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Ошибка запроса');
+                }
+            }).then(data => {
+                alert(data.message || 'Операция прошла успешно!');
+            }).catch(error => {
+                alert('Произошла ошибка: ' + error.message);
+            });
+        }
+        /*]]>*/
+    </script>
+</head>
+<body>
+
+<h2>Ваши счета:</h2>
+
+<div class="form-group accounts-list">
+    <div id="walletList">
+        <div th:each="wallet : ${user.wallets}"
+             class="wallet-item"
+             th:id="'wallet-' + ${wallet.walletId()}">
+            <!-- Тип кошелька -->
+            <strong th:text="${wallet.walletType()}">RUB</strong>
+
+            <!-- Поле ввода суммы -->
+            <input type="text"
+                   class="amount-input"
+                   th:id="'amountInput-' + ${wallet.walletId()}"
+                   placeholder="Сумма"/>
+
+            <!-- Кнопки -->
+            <button type="button"
+                    th:onclick="'performTransaction(' + ${user.accountId} + ',' + ${wallet.walletId()} + ', document.getElementById(\'amountInput-' + ${wallet.walletId()} + '\').value, \'ADD\')'"
+                    class="btn add">Положить</button>
+            <button type="button"
+                    th:onclick="'performTransaction(' + ${user.accountId} + ',' + ${wallet.walletId()} + ', document.getElementById(\'amountInput-' + ${wallet.walletId()} + '\').value, \'REMOVE\')'"
+                    class="btn remove">Снять</button>
+        </div>
+    </div>
+</div>
+
+<!-- CSRF мета-теги -->
+<meta name="_csrf" th:content="${_csrf.token}"/>
+<meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
+</body>
+</html>

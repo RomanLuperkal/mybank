@@ -32,7 +32,7 @@ public class AccountUserDetailService implements UserDetailsService {
                 .firstName(account.firstName())
                 .lastName(account.lastName())
                 .email(account.email())
-                .dateOfBirth(account.birthDate())
+                .dateOfBirth(account.dateOfBirth())
                 .authorities(AuthorityUtils.createAuthorityList(account.role()))
                 .build();
     }

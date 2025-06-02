@@ -14,6 +14,6 @@ public record ResponseAccountDto(
         String firstName,
         String lastName,
         String email,
-        LocalDate birthDate
+        LocalDate dateOfBirth
 ) {
 }

@@ -66,7 +66,7 @@ function saveProfile(accountId) {
         } else {
             response.json().then(body => {
                 console.log(body.message);
-                console.log("Весь body:", body); // <-- вот это важно
+                console.log("Весь body:", body);
                 const message = body?.message || "Произошла ошибка";
                 alert(message);
             }).catch(() => {

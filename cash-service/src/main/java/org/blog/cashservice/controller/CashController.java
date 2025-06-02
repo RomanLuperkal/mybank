@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class CashController {
     private final CashService cashService;
 
-    @PatchMapping("/update")
+    @PatchMapping()
     public ResponseEntity<ResponseCashDto> updateWallet(@RequestBody UpdateCashDto dto) {
         return ResponseEntity.ok(cashService.createTransaction(dto));
     }

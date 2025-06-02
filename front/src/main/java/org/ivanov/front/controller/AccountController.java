@@ -128,7 +128,7 @@ public class AccountController {
                 .firstName(accountDto.firstName())
                 .lastName(accountDto.lastName())
                 .email(accountDto.email())
-                .dateOfBirth(accountDto.birthDate())
+                .dateOfBirth(accountDto.dateOfBirth())
                 .authorities(AuthorityUtils.createAuthorityList(accountDto.role()))
                 .build();
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
