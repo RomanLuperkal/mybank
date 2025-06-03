@@ -90,6 +90,11 @@ public class WalletServiceImpl implements WalletService {
                             .createNotificationOutBoxMessage("Операции со счетом",
                                     "На счете недостаточно средств", account.getEmail());
                     notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
+                } else {
+                    prepareMessage = notificationOutBoxService
+                            .createNotificationOutBoxMessage("Операции со счетом",
+                                    "С счета успешно снято" + dto.amount() + " " + wallet.getWalletType(), account.getEmail());
+                    notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
                 }
                 wallet.setBalance(wallet.getBalance().subtract(dto.amount()));
         }

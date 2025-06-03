@@ -16,7 +16,7 @@ public class CashServiceImpl implements CashService {
     public ResponseCashDto updateCash(UpdateCashDto updateCashDto, ResponseAccountDto userDetails) {
         if (updateCashDto.transactionType().equals("REMOVE")) {
             boolean isValidAmount = userDetails.wallets().stream()
-                    .filter(w -> w.walletId().equals(updateCashDto.walletId())).noneMatch(w -> w.balance().compareTo(updateCashDto.amount()) > 0);
+                    .filter(w -> w.walletId().equals(updateCashDto.walletId())).noneMatch(w -> w.balance().compareTo(updateCashDto.amount()) < 0);
             if (!isValidAmount) {
                 return new ResponseCashDto("Недостаточно средств");
             }

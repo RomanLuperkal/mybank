@@ -14,6 +14,7 @@ import org.blog.cashservice.model.Transaction;
 import org.blog.cashservice.repository.CashRepository;
 import org.blog.cashservice.service.CashService;
 import org.blog.cashservice.service.NotificationOutBoxService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +22,6 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-//TODO закрыть эндпоинты
 public class CashServiceImpl implements CashService {
     private final CashRepository cashRepository;
     private final CashMapper cashMapper;
@@ -30,6 +30,7 @@ public class CashServiceImpl implements CashService {
     private final NotificationOutBoxService notificationOutBoxService;
 
     @Override
+    @PreAuthorize("hasAuthority('CASH_ROLE')")
     public ResponseCashDto createTransaction(UpdateCashDto dto) {
         Transaction newTransaction = cashMapper.mapToTransaction(dto);
         cashRepository.save(newTransaction);

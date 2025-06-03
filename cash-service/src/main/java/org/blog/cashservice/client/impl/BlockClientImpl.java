@@ -6,6 +6,7 @@ import org.blog.cashservice.client.BlockClient;
 import org.blog.cashservice.client.KeycloakManageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -22,7 +23,7 @@ public class BlockClientImpl implements BlockClient {
     public ResponseValidatedTransactionDto validateTransaction(UnvalidatedTransactionDto dto) {
         return client.post()
                 .uri("http://gateway/block")
-                //.header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .bodyValue(dto).retrieve()
                 .bodyToMono(ResponseValidatedTransactionDto.class)
                 //.retry(3)

@@ -361,6 +361,17 @@
           "attributes": {}
         }
       ],
+      "cash-client": [
+        {
+          "id": "f84b81e8-528a-402c-b1e5-e4994611803e",
+          "name": "CASH_ROLE",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "82adba59-07c5-4815-8e7b-3742b4fb2ba5",
+          "attributes": {}
+        }
+      ],
       "account": [
         {
           "id": "62a9810e-66b1-4e7a-8266-6285690b7973",
@@ -448,6 +459,17 @@
           "containerId": "0efbf59f-ca71-4313-9b49-9d3e8db33f24",
           "attributes": {}
         }
+      ],
+      "block-client": [
+        {
+          "id": "abd6779a-1c1f-4676-bdb2-de35b40cde24",
+          "name": "BLOCK_ROLE",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "98e5dac0-7b69-42dd-bba2-5c7580b9076e",
+          "attributes": {}
+        }
       ]
     }
   },
@@ -524,6 +546,52 @@
         ],
         "exchange-client": [
           "EXCHANGE_ROLE"
+        ],
+        "cash-client": [
+          "CASH_ROLE"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "255ff263-b0f8-4321-a78f-234e41dde905",
+      "username": "service-account-block-client",
+      "emailVerified": false,
+      "createdTimestamp": 1748978128283,
+      "enabled": true,
+      "totp": false,
+      "serviceAccountClientId": "block-client",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-master"
+      ],
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "e95a4f1b-80ff-4f00-a169-92993278313b",
+      "username": "service-account-cash-client",
+      "emailVerified": false,
+      "createdTimestamp": 1748892547455,
+      "enabled": true,
+      "totp": false,
+      "serviceAccountClientId": "cash-client",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-master"
+      ],
+      "clientRoles": {
+        "notification-client": [
+          "NOTIFICATION_ROLE"
+        ],
+        "account-client": [
+          "ACCOUNT_ROLE"
+        ],
+        "block-client": [
+          "BLOCK_ROLE"
         ]
       },
       "notBefore": 0,
@@ -800,6 +868,63 @@
       ]
     },
     {
+      "id": "98e5dac0-7b69-42dd-bba2-5c7580b9076e",
+      "clientId": "block-client",
+      "name": "",
+      "description": "",
+      "rootUrl": "",
+      "adminUrl": "",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "2jzCp7H9SzxZMoa9t3KrYVXY2kSIkX1F",
+      "redirectUris": [
+        "/*"
+      ],
+      "webOrigins": [
+        "/*"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "realm_client": "false",
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1748978128",
+        "backchannel.logout.session.required": "true",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "service_account",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "organization",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
       "id": "ffb92206-5a4d-4120-a1cb-e92d76da2f6a",
       "clientId": "broker",
       "name": "${client_broker}",
@@ -828,6 +953,63 @@
       "nodeReRegistrationTimeout": 0,
       "defaultClientScopes": [
         "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "organization",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "id": "82adba59-07c5-4815-8e7b-3742b4fb2ba5",
+      "clientId": "cash-client",
+      "name": "",
+      "description": "",
+      "rootUrl": "",
+      "adminUrl": "",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "CxvnHnERGbn9VZglVr4OK8pKDf92yGJL",
+      "redirectUris": [
+        "/*"
+      ],
+      "webOrigins": [
+        "/*"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "realm_client": "false",
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1748892547",
+        "backchannel.logout.session.required": "true",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "service_account",
         "acr",
         "profile",
         "roles",

@@ -13,3 +13,9 @@ spring:
     consul:
       host: ${CONSUL_HOST_NAME:localhost}
       port: 8500
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master

@@ -3,12 +3,13 @@ package org.blog.blockservice.service.impl;
 import org.blog.blockdto.block.ResponseValidatedTransactionDto;
 import org.blog.blockdto.block.UnvalidatedTransactionDto;
 import org.blog.blockservice.service.BlockerService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 @Service
-//TODO Закрыть эндпоинты
+@PreAuthorize("hasAuthority('BLOCK_ROLE')")
 public class BlockerServiceImpl implements BlockerService {
 
     @Override

@@ -6,6 +6,7 @@ import org.blog.cashdto.cash.UpdateCashDto;
 import org.ivanov.front.client.CashClient;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.response.ApiError;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -24,7 +25,7 @@ public class CashClientImpl implements CashClient {
     public ResponseCashDto updateCash(UpdateCashDto dto) {
         return client.patch()
                 .uri("http://gateway/cash")
-                //.header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto).retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,
                         response -> response.bodyToMono(ApiError.class)
