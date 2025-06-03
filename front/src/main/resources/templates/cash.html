@@ -3,6 +3,94 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Операция со счётом</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+
+        .wallet-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+        }
+
+        .wallet-type {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .amount-input {
+            width: 100px;
+            padding: 6px 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn.add {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        .btn.remove {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .header-user {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .user-info {
+            font-size: 14px;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .logout-button .btn {
+            font-size: 14px;
+        }
+    </style>
     <script th:inline="javascript">
         function performTransaction(accountId, walletId, amount, transactionType) {
             if (!accountId || !walletId || !amount) {
@@ -18,11 +106,10 @@
             const csrfToken = document.querySelector('meta[name="_csrf"]').content;
             const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
 
-            console.log(parseInt(accountId));
-            console.log(parseInt(walletId));
-            console.log(parseFloat(amount));
-            console.log('[[${user.email}]]');
-            console.log(transactionType);
+            if (parseFloat(amount) <= 0) {
+                alert("Сумма не может быть отрицательной или равна 0.");
+                return;
+            }
 
             fetch('/cash', {
                 method: 'PATCH',
@@ -53,30 +140,42 @@
 </head>
 <body>
 
-<h2>Ваши счета:</h2>
+<div class="header-user">
+    <span class="user-info">Вы вошли как <span th:text="${user.firstName + ' ' + user.lastName}"></span></span>
+    <form th:action="@{/logout}" method="post" class="logout-button">
+        <input type="hidden"
+               th:name="${_csrf.parameterName}"
+               th:value="${_csrf.token}" />
+        <button type="submit" class="btn btn-outline-danger btn-sm">Выход</button>
+    </form>
+</div>
 
-<div class="form-group accounts-list">
-    <h3>Ваши кошельки:</h3>
-    <div id="walletList">
-        <div th:each="wallet : ${user.wallets}"
-             class="wallet-item"
-             th:id="'wallet-' + ${wallet.walletId()}">
-            <!-- Название кошелька -->
-            <span><strong th:text="${wallet.walletType()}"></strong></span>
+<div class="container">
+    <h2>Операция со счётом</h2>
 
-            <!-- Поле ввода суммы -->
-            <input type="text"
-                   class="amount-input"
-                   th:id="'amountInput-' + ${wallet.walletId()}"
-                   placeholder="Сумма"/>
+    <div class="form-group accounts-list">
+        <h3>Ваши кошельки:</h3>
+        <div id="walletList">
+            <div th:each="wallet : ${user.wallets}"
+                 class="wallet-item"
+                 th:id="'wallet-' + ${wallet.walletId()}">
+                <!-- Название кошелька -->
+                <span class="wallet-type" th:text="${wallet.walletType()}"></span>
 
-            <!-- Кнопки -->
-            <button type="button"
-                    th:onclick="'performTransaction(' + ${user.accountId} + ',' + ${wallet.walletId()} + ', document.getElementById(\'amountInput-' + ${wallet.walletId()} + '\').value, \'ADD\')'"
-                    class="btn add">Положить</button>
-            <button type="button"
-                    th:onclick="'performTransaction(' + ${user.accountId} + ',' + ${wallet.walletId()} + ', document.getElementById(\'amountInput-' + ${wallet.walletId()} + '\').value, \'REMOVE\')'"
-                    class="btn remove">Снять</button>
+                <!-- Поле ввода суммы -->
+                <input type="number"
+                       class="amount-input"
+                       th:id="'amountInput-' + ${wallet.walletId()}"
+                       placeholder="Сумма"/>
+
+                <!-- Кнопки -->
+                <button type="button"
+                        th:onclick="'performTransaction(' + ${user.accountId} + ',' + ${wallet.walletId()} + ', document.getElementById(\'amountInput-' + ${wallet.walletId()} + '\').value, \'ADD\')'"
+                        class="btn add">Положить</button>
+                <button type="button"
+                        th:onclick="'performTransaction(' + ${user.accountId} + ',' + ${wallet.walletId()} + ', document.getElementById(\'amountInput-' + ${wallet.walletId()} + '\').value, \'REMOVE\')'"
+                        class="btn remove">Снять</button>
+            </div>
         </div>
     </div>
 </div>

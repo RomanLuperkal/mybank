@@ -25,7 +25,6 @@ public class KeycloakManageClient {
     private String clientSecret;
 
     public String getAccessToken() {
-        //TODO привести в человеческий вид а так же прописать все роли в клиентах в realm.json
         long currentTime = System.currentTimeMillis();
 
         if (accessToken != null && tokenExpiryTime > currentTime) {

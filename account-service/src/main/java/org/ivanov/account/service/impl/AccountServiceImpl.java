@@ -42,7 +42,6 @@ public class AccountServiceImpl implements AccountService {
                         "Аккаунт успешно создан", createdAccount.getEmail());
         notificationOutBoxService.createNotificationOutBoxMessage(prepareMessage);
 
-        //TODO отправка уведомления в NOTIFICATION
         return accountMapper.mapToResponseAccount(createdAccount);
     }
 

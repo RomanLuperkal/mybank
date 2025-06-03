@@ -57,37 +57,32 @@ public class AccountController {
 
     @GetMapping("/home")
     public String home(Authentication authentication, Model model) {
-        AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        model.addAttribute("user", userDetails);
+        model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "home";
     }
 
     @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
-        AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        model.addAttribute("user", accountService.getAccountInfo(userDetails.getUsername()));
+        model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "account-settings";
     }
 
     @DeleteMapping("/account/{accountId}/delete-account")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable Long accountId, Authentication authentication, Model model) {
-        AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        accountService.deleteAccount(accountId, userDetails.getWallets());
+
+        accountService.deleteAccount(accountId, accountService.getAccountInfo(getUsername(authentication)).wallets());
     }
 
     @PatchMapping("/account/{accountId}/change-password")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long accountId, Authentication authentication,
                                @RequestBody UpdatePasswordDto newPassword) {
-        String updatedPassword = accountService.updatePassword(accountId, newPassword);
-        getAccountUserDetails(authentication).setPassword(updatedPassword);
+        accountService.updatePassword(accountId, newPassword);
     }
     @PatchMapping("/account/{accountId}/update-profile")
-    public ResponseEntity<Void> updateProfile(@PathVariable Long accountId, Authentication authentication, @Valid @RequestBody UpdateProfileDto dto) {
+    public ResponseEntity<Void> updateProfile(@PathVariable Long accountId, @Valid @RequestBody UpdateProfileDto dto) {
         accountService.updateProfile(accountId, dto);
-        AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        updateUserProfile(userDetails, dto);
         return ResponseEntity.ok().build();
     }
 
@@ -95,19 +90,17 @@ public class AccountController {
     public ResponseEntity<?> createWallet(@PathVariable Long accountId,
                                                           @Valid @RequestBody CreateWalletDto createWalletDto,
                                                           Authentication authentication, Model model) {
-        AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto, userDetails.getWallets());
-        userDetails.getWallets().add(createdWallet);
-        model.addAttribute("user", accountService.getAccountInfo(userDetails.getUsername()));
+        ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto, accountService
+                .getAccountInfo(getUsername(authentication)).wallets());
+        model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return ResponseEntity.ok(createdWallet);
     }
 
     @DeleteMapping("account/{accountId}/wallet/{walletId}")
     public ResponseEntity<ResponseWalletDto> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId,
                                              Authentication authentication, Model model) {
-        AccountUserDetails userDetails = getAccountUserDetails(authentication);
-        ResponseWalletDto responseWalletDto = walletService.deleteWallet(accountId, walletId, userDetails.getWallets());
-        userDetails.getWallets().remove(responseWalletDto);
+        ResponseWalletDto responseWalletDto = walletService.deleteWallet(accountId, walletId,
+                accountService.getAccountInfo(getUsername(authentication)).wallets());
         return ResponseEntity.ok(responseWalletDto);
     }
 
@@ -139,7 +132,8 @@ public class AccountController {
                 SecurityContextHolder.getContext());
     }
 
-    private AccountUserDetails getAccountUserDetails(Authentication authentication) {
-        return (AccountUserDetails) authentication.getPrincipal();
+    private String getUsername(Authentication authentication) {
+        AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
+        return principal.getUsername();
     }
 }
