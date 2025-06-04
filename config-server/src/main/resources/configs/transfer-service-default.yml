@@ -1,0 +1,46 @@
+server:
+  port: ${TRANSFER_SERVICE_PORT:8087}
+
+spring:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${TRANSFER_DB_HOST:localhost}:${TRANSFER_DB_PORT:5432}/${TRANSFER_DB_NAME:account}
+    username: ${TRANSFER_DB_USERNAME:postgres}
+    password: ${TRANSFER_DB_PASSWORD}
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+
+  cloud:
+    consul:
+      host: ${CONSUL_HOST_NAME:localhost}
+      port: 8500
+
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+
+
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+        registration:
+          notification-client:
+            provider: keycloak
+            client-id: notification-client
+            client-secret: WTBz90CRO2Q2D9d0rJSC0XVHA0IGvegP
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post

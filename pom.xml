@@ -25,6 +25,7 @@
         <module>exchange-service</module>
         <module>cash-service</module>
         <module>block-service</module>
+        <module>transfer-service</module>
     </modules>
 
     <properties>
