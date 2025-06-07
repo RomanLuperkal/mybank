@@ -8,6 +8,7 @@
         <tagDatabase tag="v.1.0.0"/>
     </changeSet>
 
-    <!--<include file="create_account.xml" relativeToChangelogFile="true"/>-->
+    <include file="create-transaction.xml" relativeToChangelogFile="true"/>
+    <include file="create_notification_outbox.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

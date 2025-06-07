@@ -12,7 +12,7 @@ spring:
 
   datasource:
     driverClassName: org.postgresql.Driver
-    url: jdbc:postgresql://${TRANSFER_DB_HOST:localhost}:${TRANSFER_DB_PORT:5432}/${TRANSFER_DB_NAME:account}
+    url: jdbc:postgresql://${TRANSFER_DB_HOST:localhost}:${TRANSFER_DB_PORT:5432}/${TRANSFER_DB_NAME:transfer}
     username: ${TRANSFER_DB_USERNAME:postgres}
     password: ${TRANSFER_DB_PASSWORD}
 

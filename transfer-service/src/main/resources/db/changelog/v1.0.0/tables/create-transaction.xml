@@ -4,30 +4,27 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
-    <changeSet id="create-account" author="Roman">
-        <createTable tableName="account">
-            <column name="account_id" type="BIGINT" autoIncrement="true">
+    <changeSet id="create-transaction" author="Roman">
+        <createTable tableName="transaction">
+            <column name="transaction_id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="username" type="VARCHAR">
+            <column name="source_wallet_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="password" type="VARCHAR">
-                <constraints nullable="false"/>
+            <column name="username_target_account" type="VARCHAR">
+                <constraints nullable="true"/>
             </column>
-            <column name="role" type="VARCHAR">
+            <column name="target_wallet_type" type="VARCHAR">
+                <constraints nullable="true"/>
+            </column>
+            <column name="amount" type="NUMERIC(19, 2)">
                 <constraints nullable="false"/>
             </column>
             <column name="email" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
-            <column name="first_name" type="VARCHAR">
-                <constraints nullable="false"/>
-            </column>
-            <column name="last_name" type="VARCHAR">
-                <constraints nullable="false"/>
-            </column>
-            <column name="birth_date" type="DATE">
+            <column name="status" type="VARCHAR">
                 <constraints nullable="false"/>
             </column>
         </createTable>

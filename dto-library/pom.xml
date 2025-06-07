@@ -22,6 +22,7 @@
         <module>exchange-dto</module>
         <module>cash-dto</module>
         <module>block-dto</module>
+        <module>transfer-dto</module>
     </modules>
 
     <dependencies>
