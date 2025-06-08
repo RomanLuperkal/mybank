@@ -37,9 +37,9 @@ spring:
           keycloak:
             issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
         registration:
-          notification-client:
+          transfer-client:
             provider: keycloak
-            client-id: notification-client
+            client-id: transfer-client
             client-secret: WTBz90CRO2Q2D9d0rJSC0XVHA0IGvegP
             scope: profile
             authorization-grant-type: client_credentials

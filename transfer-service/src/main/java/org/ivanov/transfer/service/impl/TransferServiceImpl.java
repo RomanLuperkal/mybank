@@ -3,7 +3,11 @@ package org.ivanov.transfer.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.blog.blockdto.block.ResponseValidatedTransactionDto;
 import org.blog.blockdto.block.UnvalidatedTransactionDto;
+import org.ivanov.accountdto.wallet.ResponseWalletDto;
+import org.ivanov.exchangedto.currency.ResponseCurrencyDto;
+import org.ivanov.transfer.client.AccountClient;
 import org.ivanov.transfer.client.BlockClient;
+import org.ivanov.transfer.client.ExchangeClient;
 import org.ivanov.transfer.mapper.TransactionMapper;
 import org.ivanov.transfer.model.NotificationOutBox;
 import org.ivanov.transfer.model.Transaction;
@@ -23,6 +27,8 @@ public class TransferServiceImpl implements TransferService {
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final BlockClient blockClient;
+    private final ExchangeClient exchangeClient;
+    private final AccountClient accountClient;
     private final NotificationOutBoxService notificationOutBoxService;
 
     @Override
@@ -47,6 +53,15 @@ public class TransferServiceImpl implements TransferService {
                     prepareMessageForNotification(transaction);
                 }
             }
+        });
+    }
+
+    @Override
+    public void processApprovedTransaction() {
+        Optional<Transaction> tr = transactionRepository.findFirstByStatus(Transaction.Status.APPROVED);
+        tr.ifPresent(transaction -> {
+            ResponseCurrencyDto exchange = exchangeClient.getExchange();
+            ResponseWalletDto targetWallet = accountClient.getWallet(transaction.getTargetWalletId());
         });
     }
 

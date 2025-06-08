@@ -10,4 +10,6 @@ public interface WalletService {
     ResponseWalletDto deleteWallet(Long accountId, Long walletId);
 
     void updateWallet(Long accountId,Long walletId, ApprovedTransactionDto dto);
+
+    ResponseWalletDto getWallet(Long walletId);
 }

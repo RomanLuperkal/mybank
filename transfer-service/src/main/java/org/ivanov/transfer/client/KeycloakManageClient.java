@@ -19,9 +19,9 @@ public class KeycloakManageClient {
     private ObjectMapper mapper;
     private String accessToken;
     private long tokenExpiryTime;
-    @Value("${spring.security.oauth2.client.registration.cash-client.client-id}")
+    @Value("${spring.security.oauth2.client.registration.transfer-client.client-id}")
     private String clientId;
-    @Value("${spring.security.oauth2.client.registration.cash-client.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.transfer-client.client-secret}")
     private String clientSecret;
 
     public String getAccessToken() {

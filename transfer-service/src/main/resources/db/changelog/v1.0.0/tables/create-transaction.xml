@@ -12,11 +12,8 @@
             <column name="source_wallet_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="username_target_account" type="VARCHAR">
-                <constraints nullable="true"/>
-            </column>
-            <column name="target_wallet_type" type="VARCHAR">
-                <constraints nullable="true"/>
+            <column name="target_wallet_id" type="BIGINT">
+                <constraints nullable="false"/>
             </column>
             <column name="amount" type="NUMERIC(19, 2)">
                 <constraints nullable="false"/>

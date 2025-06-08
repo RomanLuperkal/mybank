@@ -61,6 +61,16 @@ spring:
                 name: gateway
                 fallbackUri: forward:/fallback
 
+        - id: transfer-service
+          uri: lb://transfer-service
+          predicates:
+            - Path=/transfer/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: gateway
+                fallbackUri: forward:/fallback
+
 
     consul:
       host: ${CONSUL_HOST_NAME:localhost}

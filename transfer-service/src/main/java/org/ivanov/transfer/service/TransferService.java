@@ -7,4 +7,6 @@ public interface TransferService {
     ResponseTransferDto createInnerTransfer(InnerTransferReqDto dto);
 
     void validateTransaction();
+
+    void processApprovedTransaction();
 }

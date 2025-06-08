@@ -68,4 +68,9 @@ public class AccountController {
         walletService.updateWallet(accountId, walletId, dto);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/wallet/{walletId}")
+    public ResponseEntity<ResponseWalletDto> getWallet(@PathVariable Long walletId) {
+        return ResponseEntity.ok(walletService.getWallet(walletId));
+    }
 }

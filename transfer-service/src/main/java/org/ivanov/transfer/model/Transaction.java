@@ -16,10 +16,8 @@ public class Transaction {
     private Long transactionId;
     @Column(name = "source_wallet_id")
     private Long sourceWalletId;
-    @Column(name = "username_target_account")
-    private String usernameTargetAccount;
-    @Column(name = "target_wallet_type")
-    private String targetWalletType;
+    @Column(name = "target_wallet_id")
+    private Long targetWalletId;
     private BigDecimal amount;
     private String email;
     @Enumerated(EnumType.STRING)

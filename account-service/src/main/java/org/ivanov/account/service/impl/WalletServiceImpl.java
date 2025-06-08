@@ -100,4 +100,11 @@ public class WalletServiceImpl implements WalletService {
         }
         walletRepository.save(wallet);
     }
+
+    @Override
+    public ResponseWalletDto getWallet(Long walletId) {
+        Wallet wallet = walletRepository.findById(walletId)
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + walletId + " не существует"));
+        return walletMapper.mapToResponseWalletDto(wallet);
+    }
 }
