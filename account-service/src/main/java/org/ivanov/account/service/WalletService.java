@@ -2,7 +2,10 @@ package org.ivanov.account.service;
 
 import org.blog.cashdto.transaction.ApprovedTransactionDto;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
+import org.ivanov.accountdto.wallet.ResponseExchangeWalletsDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
+import org.ivanov.transferdto.ReqExchangeWalletsDto;
+import org.ivanov.transferdto.ReqTransferMoneyDto;
 
 public interface WalletService {
     ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto);
@@ -11,5 +14,7 @@ public interface WalletService {
 
     void updateWallet(Long accountId,Long walletId, ApprovedTransactionDto dto);
 
-    ResponseWalletDto getWallet(Long walletId);
+    ResponseExchangeWalletsDto getWallet(ReqExchangeWalletsDto dto);
+
+    void processTransferWallet(ReqTransferMoneyDto dto);
 }

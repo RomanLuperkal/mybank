@@ -1,6 +1,15 @@
 package org.ivanov.transferdto.innertransferdto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
-public record InnerTransferReqDto(Long sourceWalletId, Long targetWalletId, BigDecimal amount, String email) {
+@Getter
+@Setter
+public class InnerTransferReqDto {
+    private Long sourceWalletId;
+    private Long targetWalletId;
+    private BigDecimal amount;
+    private String email;
 }

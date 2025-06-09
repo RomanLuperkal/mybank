@@ -14,7 +14,10 @@ import org.ivanov.account.repository.WalletRepository;
 import org.ivanov.account.service.NotificationOutBoxService;
 import org.ivanov.account.service.WalletService;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
+import org.ivanov.accountdto.wallet.ResponseExchangeWalletsDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
+import org.ivanov.transferdto.ReqExchangeWalletsDto;
+import org.ivanov.transferdto.ReqTransferMoneyDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -102,9 +105,24 @@ public class WalletServiceImpl implements WalletService {
     }
 
     @Override
-    public ResponseWalletDto getWallet(Long walletId) {
-        Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + walletId + " не существует"));
-        return walletMapper.mapToResponseWalletDto(wallet);
+    public ResponseExchangeWalletsDto getWallet(ReqExchangeWalletsDto dto) {
+        Wallet sourceWallet = walletRepository.findById(dto.sourceWalletId())
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + dto.sourceWalletId() + " не существует"));
+        Wallet targetWallet = walletRepository.findById(dto.targetWalletId())
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + dto.targetWalletId() + " не существует"));
+
+        return new ResponseExchangeWalletsDto(ResponseExchangeWalletsDto.WalletType.valueOf(sourceWallet.getWalletType().name()),
+                ResponseExchangeWalletsDto.WalletType.valueOf(targetWallet.getWalletType().name()));
+    }
+
+    @Override
+    @Transactional
+    public void processTransferWallet(ReqTransferMoneyDto dto) {
+        Wallet sourceWallet = walletRepository.findById(dto.sourceWalletId())
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + dto.sourceWalletId() + " не существует"));
+        Wallet targetWallet = walletRepository.findById(dto.targetWalletId())
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + dto.targetWalletId() + " не существует"));
+        sourceWallet.setBalance(sourceWallet.getBalance().subtract(dto.sourceAmount()));
+        targetWallet.setBalance(targetWallet.getBalance().add(dto.targetAmount()));
     }
 }

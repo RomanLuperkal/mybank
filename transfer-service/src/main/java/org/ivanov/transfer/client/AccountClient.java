@@ -1,10 +1,14 @@
 package org.ivanov.transfer.client;
 
 
-import org.ivanov.accountdto.wallet.ResponseWalletDto;
+import org.ivanov.accountdto.wallet.ResponseExchangeWalletsDto;
+import org.ivanov.transferdto.ReqExchangeWalletsDto;
+import org.ivanov.transferdto.ReqTransferMoneyDto;
+
+import java.util.concurrent.CompletableFuture;
 
 public interface AccountClient {
-    //void processTransaction(Long accountId, Long walletId, ApprovedTransactionDto dto);
+    CompletableFuture<ResponseExchangeWalletsDto> getWalletsType(ReqExchangeWalletsDto dto);
 
-    ResponseWalletDto getWallet(Long walletId);
+    void processTransferTransaction(ReqTransferMoneyDto dto);
 }

@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.concurrent.CompletableFuture;
+
 @Component
 public class ExchangeClientImpl implements ExchangeClient {
     @Qualifier("service-client")
@@ -19,13 +21,13 @@ public class ExchangeClientImpl implements ExchangeClient {
 
     //TODO переделать на CompletableFeature
     @Override
-    public ResponseCurrencyDto getExchange() {
+    public CompletableFuture<ResponseCurrencyDto> getExchange() {
         return client.get()
                 .uri("http://gateway/exchange")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .retrieve()
                 .bodyToMono(ResponseCurrencyDto.class)
                 //.retry(3)
-                .block();
+                .toFuture();
     }
 }

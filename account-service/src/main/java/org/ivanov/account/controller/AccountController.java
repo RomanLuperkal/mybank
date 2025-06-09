@@ -10,7 +10,10 @@ import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
 import org.ivanov.accountdto.account.UpdateProfileDto;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
+import org.ivanov.accountdto.wallet.ResponseExchangeWalletsDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
+import org.ivanov.transferdto.ReqExchangeWalletsDto;
+import org.ivanov.transferdto.ReqTransferMoneyDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -69,8 +72,13 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/wallet/{walletId}")
-    public ResponseEntity<ResponseWalletDto> getWallet(@PathVariable Long walletId) {
-        return ResponseEntity.ok(walletService.getWallet(walletId));
+    @PostMapping("/wallet/types")
+    public ResponseEntity<ResponseExchangeWalletsDto> getWallet(@RequestBody ReqExchangeWalletsDto dto) {
+        return ResponseEntity.ok(walletService.getWallet(dto));
+    }
+
+    @PatchMapping("/wallet/transfer")
+    public void processTransferTransaction(@RequestBody ReqTransferMoneyDto dto) {
+        walletService.processTransferWallet(dto);
     }
 }

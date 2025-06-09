@@ -1,13 +1,17 @@
 package org.ivanov.transfer.client.impl;
 
-import org.ivanov.accountdto.wallet.ResponseWalletDto;
+import org.ivanov.accountdto.wallet.ResponseExchangeWalletsDto;
 import org.ivanov.transfer.client.AccountClient;
 import org.ivanov.transfer.client.KeycloakManageClient;
+import org.ivanov.transferdto.ReqExchangeWalletsDto;
+import org.ivanov.transferdto.ReqTransferMoneyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class AccountClientImpl implements AccountClient {
@@ -17,15 +21,27 @@ public class AccountClientImpl implements AccountClient {
     @Autowired
     private KeycloakManageClient keycloakManageClient;
 
-    //TODO переделать на CompletableFeature
     @Override
-    public ResponseWalletDto getWallet(Long walletId) {
-        return client.get()
-                .uri("http://gateway/account/wallet/" + walletId)
+    public CompletableFuture<ResponseExchangeWalletsDto> getWalletsType(ReqExchangeWalletsDto dto) {
+        return client.post()
+                .uri("http://gateway/account/wallet/types")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
+                .bodyValue(dto)
                 .retrieve()
-                .bodyToMono(ResponseWalletDto.class)
+                .bodyToMono(ResponseExchangeWalletsDto.class)
                 //.retry(3)
-                .block();
+                .toFuture();
+    }
+
+    @Override
+    public void processTransferTransaction(ReqTransferMoneyDto dto) {
+         client.patch()
+                .uri("http://gateway/account/wallet/transfer")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
+                .bodyValue(dto)
+                .retrieve()
+                .bodyToMono(Void.class)
+                //.retry(3)
+                .toFuture();
     }
 }
