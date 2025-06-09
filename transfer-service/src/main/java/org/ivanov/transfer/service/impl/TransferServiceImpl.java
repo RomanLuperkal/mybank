@@ -18,6 +18,7 @@ import org.ivanov.transferdto.ReqExchangeWalletsDto;
 import org.ivanov.transferdto.ReqTransferMoneyDto;
 import org.ivanov.transferdto.ResponseTransferDto;
 import org.ivanov.transferdto.innertransferdto.InnerTransferReqDto;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +40,7 @@ public class TransferServiceImpl implements TransferService {
     private final NotificationOutBoxService notificationOutBoxService;
 
     @Override
+    @PreAuthorize("hasAuthority('TRANSFER_ROLE')")
     public ResponseTransferDto createInnerTransfer(InnerTransferReqDto dto) {
         Transaction transaction = transactionMapper.mapToTransaction(dto);
         transactionRepository.save(transaction);
@@ -64,6 +66,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
+    @Transactional
     public void processApprovedTransaction() {
         Optional<Transaction> tr = transactionRepository.findFirstByStatus(Transaction.Status.APPROVED);
         tr.ifPresent(transaction -> {
@@ -78,6 +81,7 @@ public class TransferServiceImpl implements TransferService {
 
         accountClient.processTransferTransaction(prepeareReqTransferMoneyDto(transaction.getSourceWalletId(), transaction.getAmount(),
                 transaction.getTargetWalletId(), targetAmount.join()));
+        transaction.setStatus(Transaction.Status.DONE);
         });
     }
 
