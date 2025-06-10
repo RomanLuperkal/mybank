@@ -19,7 +19,9 @@
         <option value="">Выберите счет</option>
         <option th:each="wallet : ${user.wallets()}"
                 th:value="${wallet.walletId()}"
-                th:text="${wallet.walletType()}"></option>
+                th:text="${wallet.walletType()}"
+                th:attr="data-type=${wallet.walletType()}">
+        </option>
     </select>
 
     <!-- Сумма -->
@@ -32,7 +34,9 @@
         <option value="">Выберите счет</option>
         <option th:each="wallet : ${user.wallets()}"
                 th:value="${wallet.walletId()}"
-                th:text="${wallet.walletType()}"></option>
+                th:text="${wallet.walletType()}"
+                th:attr="data-type=${wallet.walletType()}">
+        </option>
     </select>
 
     <!-- Кнопка перевода -->
@@ -46,6 +50,21 @@
         const source = document.getElementById('sourceWallet').value;
         const target = document.getElementById('targetWallet').value;
         const amount = document.getElementById('amount').value;
+
+        const sourceSelect = document.getElementById('sourceWallet');
+        const targetSelect = document.getElementById('targetWallet');
+
+        // Получаем выбранные элементы
+        const sourceOption = sourceSelect.options[sourceSelect.selectedIndex];
+        const targetOption = targetSelect.options[targetSelect.selectedIndex];
+
+        // Получаем типы кошельков
+        const sourceType = sourceOption.getAttribute('data-type');
+        const targetType = targetOption.getAttribute('data-type');
+
+        console.log(sourceType);
+        console.log(targetType);
+
 
         if (!source || !target || !amount) {
             alert("Пожалуйста, заполните все поля.");
@@ -62,8 +81,11 @@
             return;
         }
 
-        // Получаем email из скрытого input
-        const email = document.getElementById('email').value;
+        if (sourceType === targetType) {
+            alert("Нельзя осуществлять перевод на тот же тип счета" +
+                "");
+            return;
+        }
 
         // CSRF токен
         const csrfToken = document.querySelector('meta[name="_csrf"]').content;
@@ -88,12 +110,9 @@
                 throw new Error('Ошибка запроса');
             }
         }).then(data => {
-            document.getElementById('responseMessage').innerHTML =
-                '<p style="color:green;">✅ Перевод успешно выполнен!</p>';
+            alert(data.message || 'Операция прошла успешно!');
         }).catch(error => {
-            document.getElementById('responseMessage').innerHTML =
-                '<p style="color:red;">❌ Произошла ошибка: ' + error.message + '</p>';
-            console.error(error);
+            alert('Произошла ошибка: ' + error.message);
         });
     }
 

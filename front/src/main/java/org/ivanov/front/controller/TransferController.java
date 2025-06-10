@@ -1,6 +1,7 @@
 package org.ivanov.front.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
 import org.ivanov.front.service.TransferService;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Set;
+
 @Controller
 @RequestMapping("/transfer")
 @RequiredArgsConstructor
@@ -23,8 +26,8 @@ public class TransferController {
     private final AccountService accountService;
 
     @PostMapping("/inner")
-    public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody InnerTransferReqDto dto) {
-        return ResponseEntity.status(202).body(transferService.createInnerTransfer(dto));
+    public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody InnerTransferReqDto dto, Authentication authentication) {
+        return ResponseEntity.status(202).body(transferService.createInnerTransfer(dto, getUserWallets(authentication)));
     }
 
     @GetMapping("/inner")
@@ -36,5 +39,9 @@ public class TransferController {
     private String getUsername(Authentication authentication) {
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         return principal.getUsername();
+    }
+
+    private Set<ResponseWalletDto> getUserWallets(Authentication authentication) {
+        return  accountService.getAccountInfo(getUsername(authentication)).wallets();
     }
 }
