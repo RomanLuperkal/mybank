@@ -5,7 +5,7 @@ import org.ivanov.front.client.TransferClient;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.response.ApiError;
 import org.ivanov.transferdto.ResponseTransferDto;
-import org.ivanov.transferdto.innertransferdto.InnerTransferReqDto;
+import org.ivanov.transferdto.TransferReqDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -22,7 +22,7 @@ public class TransferClientImpl implements TransferClient {
     private final OAuth2AuthorizedClientManager clientManager;
 
     @Override
-    public ResponseTransferDto createInnerTransfer(InnerTransferReqDto dto) {
+    public ResponseTransferDto createInnerTransfer(TransferReqDto dto) {
         return client.post()
                 .uri("http://gateway/transfer/inner")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())

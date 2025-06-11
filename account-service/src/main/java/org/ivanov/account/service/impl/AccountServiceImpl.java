@@ -47,11 +47,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseAccountDto getAccountInfo(String username) {
-        if (!accountRepository.existsAccountByUsername(username)) {
-            throw new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + username + " не существует.");
-        }
-
-        Account account = accountRepository.findAccountByUsername(username);
+        Account account = accountRepository.findAccountByUsername(username)
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + username + " не существует."));
         return accountMapper.mapToResponseAccount(account);
     }
 

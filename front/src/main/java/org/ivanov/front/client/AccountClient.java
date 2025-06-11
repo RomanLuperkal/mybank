@@ -5,7 +5,10 @@ import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
 import org.ivanov.accountdto.account.UpdateProfileDto;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
+import org.ivanov.accountdto.wallet.ReqWalletInfoDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
+
+import java.util.Set;
 
 public interface AccountClient {
     ResponseAccountDto registration(CreateAccountDto dto);
@@ -21,4 +24,6 @@ public interface AccountClient {
     ResponseWalletDto createWallet(Long accountId, CreateWalletDto createWalletDto);
 
     ResponseWalletDto deleteWallet(Long accountId, Long walletId);
+
+    Set<ResponseWalletDto> getWalletInfoByUsername(ReqWalletInfoDto dto);
 }

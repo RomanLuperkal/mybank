@@ -5,8 +5,9 @@ import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
 import org.ivanov.front.service.TransferService;
+import org.ivanov.transferdto.ExternalTransferDto;
 import org.ivanov.transferdto.ResponseTransferDto;
-import org.ivanov.transferdto.innertransferdto.InnerTransferReqDto;
+import org.ivanov.transferdto.TransferReqDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,7 @@ public class TransferController {
     private final AccountService accountService;
 
     @PostMapping("/inner")
-    public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody InnerTransferReqDto dto, Authentication authentication) {
+    public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody TransferReqDto dto, Authentication authentication) {
         return ResponseEntity.status(202).body(transferService.createInnerTransfer(dto, getUserWallets(authentication)));
     }
 
@@ -43,5 +44,9 @@ public class TransferController {
 
     private Set<ResponseWalletDto> getUserWallets(Authentication authentication) {
         return  accountService.getAccountInfo(getUsername(authentication)).wallets();
+    }
+
+    public ResponseEntity<ResponseTransferDto> createExternalTransfer(@RequestBody ExternalTransferDto dto, Authentication authentication) {
+
     }
 }

@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.account.*;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
+import org.ivanov.accountdto.wallet.ReqWalletInfoDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.client.AccountClient;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.response.ApiError;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +23,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
@@ -160,6 +163,27 @@ public class AccountClientImpl implements AccountClient {
                                 .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
                 .bodyToMono(ResponseWalletDto.class)
                 .retry(3)
+                .block();
+    }
+
+    @Override
+    //TODO решить вопрос с отсутствием пользователя
+    public Set<ResponseWalletDto> getWalletInfoByUsername(ReqWalletInfoDto dto) {
+        return client.post()
+                .uri("http://gateway/account/wallet/info")
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .retrieve()
+                .onStatus(status -> status == HttpStatus.CONFLICT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.CONFLICT.toString()))))
+                .onStatus(status -> status == HttpStatus.FORBIDDEN,
+                        response -> Mono.error(new AccountException("403 Forbidden from GET account service", HttpStatus.FORBIDDEN.toString())))
+                .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                .bodyToMono(new ParameterizedTypeReference<Set<ResponseWalletDto>>() {
+                })
+                //.retry(3)
                 .block();
     }
 

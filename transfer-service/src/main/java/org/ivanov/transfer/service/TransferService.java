@@ -1,10 +1,10 @@
 package org.ivanov.transfer.service;
 
 import org.ivanov.transferdto.ResponseTransferDto;
-import org.ivanov.transferdto.innertransferdto.InnerTransferReqDto;
+import org.ivanov.transferdto.TransferReqDto;
 
 public interface TransferService {
-    ResponseTransferDto createInnerTransfer(InnerTransferReqDto dto);
+    ResponseTransferDto createInnerTransfer(TransferReqDto dto);
 
     void validateTransaction();
 

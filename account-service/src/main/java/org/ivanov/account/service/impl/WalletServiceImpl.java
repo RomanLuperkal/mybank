@@ -14,6 +14,7 @@ import org.ivanov.account.repository.WalletRepository;
 import org.ivanov.account.service.NotificationOutBoxService;
 import org.ivanov.account.service.WalletService;
 import org.ivanov.accountdto.wallet.CreateWalletDto;
+import org.ivanov.accountdto.wallet.ReqWalletInfoDto;
 import org.ivanov.accountdto.wallet.ResponseExchangeWalletsDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.transferdto.ReqExchangeWalletsDto;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -124,5 +126,12 @@ public class WalletServiceImpl implements WalletService {
                 .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Счета с id= " + dto.targetWalletId() + " не существует"));
         sourceWallet.setBalance(sourceWallet.getBalance().subtract(dto.sourceAmount()));
         targetWallet.setBalance(targetWallet.getBalance().add(dto.targetAmount()));
+    }
+
+    @Override
+    public Set<ResponseWalletDto> getWalletInfo(ReqWalletInfoDto dto) {
+        Account account = accountRepository.findAccountByUsername(dto.username())
+                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + dto.username() + " не существует."));
+        return walletMapper.mapToSetWalletDto(account.getWallets());
     }
 }

@@ -3,7 +3,7 @@ package org.ivanov.transfer.controller;
 import lombok.RequiredArgsConstructor;
 import org.ivanov.transfer.service.TransferService;
 import org.ivanov.transferdto.ResponseTransferDto;
-import org.ivanov.transferdto.innertransferdto.InnerTransferReqDto;
+import org.ivanov.transferdto.TransferReqDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +17,7 @@ public class TransferController {
     private final TransferService transferService;
 
     @PostMapping("/inner")
-    public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody InnerTransferReqDto dto) {
+    public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody TransferReqDto dto) {
         return ResponseEntity.ok(transferService.createInnerTransfer(dto));
     }
 }

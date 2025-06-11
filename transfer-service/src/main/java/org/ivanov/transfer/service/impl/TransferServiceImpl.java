@@ -17,7 +17,7 @@ import org.ivanov.transfer.service.TransferService;
 import org.ivanov.transferdto.ReqExchangeWalletsDto;
 import org.ivanov.transferdto.ReqTransferMoneyDto;
 import org.ivanov.transferdto.ResponseTransferDto;
-import org.ivanov.transferdto.innertransferdto.InnerTransferReqDto;
+import org.ivanov.transferdto.TransferReqDto;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +41,7 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     @PreAuthorize("hasAuthority('TRANSFER_ROLE')")
-    public ResponseTransferDto createInnerTransfer(InnerTransferReqDto dto) {
+    public ResponseTransferDto createInnerTransfer(TransferReqDto dto) {
         Transaction transaction = transactionMapper.mapToTransaction(dto);
         transactionRepository.save(transaction);
         return new ResponseTransferDto("Ваш перевод отправлен на обработку");
