@@ -10,6 +10,7 @@ import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.client.AccountClient;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.RegistrationException;
+import org.ivanov.front.handler.exception.TransferException;
 import org.ivanov.front.handler.response.ApiError;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
@@ -167,11 +168,11 @@ public class AccountClientImpl implements AccountClient {
     }
 
     @Override
-    //TODO решить вопрос с отсутствием пользователя
     public Set<ResponseWalletDto> getWalletInfoByUsername(ReqWalletInfoDto dto) {
         return client.post()
                 .uri("http://gateway/account/wallet/info")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
+                .bodyValue(dto)
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,
                         response -> response.bodyToMono(ApiError.class)
@@ -181,6 +182,9 @@ public class AccountClientImpl implements AccountClient {
                 .onStatus(status -> status == HttpStatus.GATEWAY_TIMEOUT,
                         response -> response.bodyToMono(ApiError.class)
                                 .flatMap(body -> Mono.error(new AccountException(body.getMessage(), HttpStatus.GATEWAY_TIMEOUT.toString()))))
+                .onStatus(status -> status == HttpStatus.NOT_FOUND,
+                        response -> response.bodyToMono(ApiError.class)
+                                .flatMap(body -> Mono.error(new TransferException(body.getMessage(), HttpStatus.NOT_FOUND))))
                 .bodyToMono(new ParameterizedTypeReference<Set<ResponseWalletDto>>() {
                 })
                 //.retry(3)

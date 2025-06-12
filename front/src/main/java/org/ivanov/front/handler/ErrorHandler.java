@@ -4,7 +4,9 @@ package org.ivanov.front.handler;
 import org.ivanov.front.handler.exception.GatewayException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.exception.AccountException;
+import org.ivanov.front.handler.exception.TransferException;
 import org.ivanov.front.handler.response.ApiError;
+import org.ivanov.transferdto.ResponseTransferDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -50,5 +52,10 @@ public class ErrorHandler {
     @ExceptionHandler(ResponseStatusException.class)
     private ResponseEntity<?> handleException(ResponseStatusException e) {
         return ResponseEntity.status(e.getStatusCode()).body(e.getMessage());
+    }
+
+    @ExceptionHandler(TransferException.class)
+    private ResponseEntity<ResponseTransferDto> handleException(TransferException e) {
+        return ResponseEntity.status(e.getStatus()).body(new ResponseTransferDto(e.getMessage()));
     }
 }

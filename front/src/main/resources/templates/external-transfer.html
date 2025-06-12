@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:inline="javascript">
+<head>
+    <meta charset="UTF-8">
+    <title>Перевод другому пользователю</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- CSRF мета-теги -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body>
+
+<h2>Перевод средств другому пользователю</h2>
+
+<form id="transferForm" novalidate>
+    <!-- Источник -->
+    <label for="sourceWallet">Счет источник:</label>
+    <select id="sourceWallet" name="sourceWallet" required>
+        <option value="">Выберите счет</option>
+        <option th:each="wallet : ${user.wallets()}"
+                th:value="${wallet.walletId()}"
+                th:text="${wallet.walletType()}"
+                th:attr="data-type=${wallet.walletType()}">
+        </option>
+    </select>
+
+    <label for="amount">Сумма:</label>
+    <input type="number" id="amount" name="amount" step="0.01" min="0.01" required />
+
+    <label for="targetUsername">Имя пользователя:</label>
+    <input type="text" id="targetUsername" name="targetUsername" required />
+
+    <label for="targetAccountType">Тип счета:</label>
+    <select id="targetAccountType" name="targetAccountType" required>
+        <option value="">Выберите тип</option>
+        <option value="RUB">RUB</option>
+        <option value="USD">USD</option>
+        <option value="CNY">CNY</option>
+    </select>
+
+    <!-- Кнопка -->
+    <button type="button" id="transferButton">Перевести</button>
+</form>
+
+<div id="responseMessage"></div>
+
+<script>
+    function performTransfer() {
+        const source = document.getElementById('sourceWallet').value;
+        const username = document.getElementById('targetUsername').value.trim();
+        const accountType = document.getElementById('targetAccountType').value;
+        const amount = document.getElementById('amount').value;
+
+        if (!source || !username || !accountType || !amount) {
+            alert("Пожалуйста, заполните все поля.");
+            return;
+        }
+
+        if (isNaN(amount)) {
+            alert("Сумма должна быть числом.");
+            return;
+        }
+
+        if (parseFloat(amount) <= 0) {
+            alert("Сумма не может быть отрицательной или равна 0.");
+            return;
+        }
+
+        // CSRF токен
+        const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+        const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+
+        fetch('/transfer/external', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                [csrfHeader]: csrfToken
+            },
+            body: JSON.stringify({
+                sourceWalletId: parseInt(source),
+                username: username,
+                walletType: accountType,
+                amount: parseFloat(amount),
+                email: '[[${user.email}]]'.slice(1, -1)
+            })
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Ошибка запроса');
+            }
+        }).then(data => {
+            document.getElementById('responseMessage').innerHTML =
+                '<p style="color:green;">✅ Перевод успешно выполнен!</p>';
+        }).catch(error => {
+            document.getElementById('responseMessage').innerHTML =
+                '<p style="color:red;">❌ Произошла ошибка: ' + error.message + '</p>';
+            console.error(error);
+        });
+    }
+
+    // Привязываем функцию к кнопке
+    document.getElementById('transferButton').addEventListener('click', performTransfer);
+</script>
+
+</body>
+</html>

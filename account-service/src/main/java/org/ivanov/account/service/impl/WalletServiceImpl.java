@@ -131,7 +131,7 @@ public class WalletServiceImpl implements WalletService {
     @Override
     public Set<ResponseWalletDto> getWalletInfo(ReqWalletInfoDto dto) {
         Account account = accountRepository.findAccountByUsername(dto.username())
-                .orElseThrow(() -> new AccountException(HttpStatus.CONFLICT, "Аккаунта с именем: " + dto.username() + " не существует."));
+                .orElseThrow(() -> new AccountException(HttpStatus.NOT_FOUND, "Аккаунта с именем: " + dto.username() + " не существует."));
         return walletMapper.mapToSetWalletDto(account.getWallets());
     }
 }

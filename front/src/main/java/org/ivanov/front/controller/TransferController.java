@@ -37,6 +37,17 @@ public class TransferController {
         return "inner-transfer";
     }
 
+    @GetMapping("/external")
+    public String getExternalTransfer(Model model, Authentication authentication) {
+        model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
+        return "external-transfer";
+    }
+
+    @PostMapping("/external")
+    public ResponseEntity<ResponseTransferDto> createExternalTransfer(@RequestBody ExternalTransferDto dto, Authentication authentication) {
+        return ResponseEntity.ok(transferService.createExternalTransfer(dto, getUserWallets(authentication)));
+    }
+
     private String getUsername(Authentication authentication) {
         AccountUserDetails principal = (AccountUserDetails) authentication.getPrincipal();
         return principal.getUsername();
@@ -46,7 +57,5 @@ public class TransferController {
         return  accountService.getAccountInfo(getUsername(authentication)).wallets();
     }
 
-    public ResponseEntity<ResponseTransferDto> createExternalTransfer(@RequestBody ExternalTransferDto dto, Authentication authentication) {
 
-    }
 }
