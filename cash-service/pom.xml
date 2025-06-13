@@ -7,11 +7,9 @@
         <artifactId>mybank</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <groupId>org.blog</groupId>
     <artifactId>cash-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cash-service</name>
-    <description>cash-service</description>
 
     <dependencies>
         <dependency>
@@ -95,6 +93,19 @@
                             <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                    <executable>true</executable>
                 </configuration>
             </plugin>
         </plugins>

@@ -150,6 +150,9 @@
                th:value="${_csrf.token}" />
         <button type="submit" class="btn btn-outline-danger btn-sm">Выход</button>
     </form>
+    <form th:action="@{/home}" method="get" class="logout-button">
+        <button type="submit" class="btn btn-outline-danger btn-sm">Назад</button>
+    </form>
 </div>
 
 <div class="container">

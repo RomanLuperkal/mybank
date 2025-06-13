@@ -158,6 +158,17 @@
         }
       ],
       "security-admin-console": [],
+      "transfer-client": [
+        {
+          "id": "4358446d-bbb9-4fbe-809b-59f786666ac1",
+          "name": "TRANSFER_ROLE",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "containerId": "a2a7b3bc-eafe-405e-8b15-90e233d4ccab",
+          "attributes": {}
+        }
+      ],
       "admin-cli": [],
       "exchange-client": [
         {
@@ -544,6 +555,9 @@
         "account-client": [
           "ACCOUNT_ROLE"
         ],
+        "transfer-client": [
+          "TRANSFER_ROLE"
+        ],
         "exchange-client": [
           "EXCHANGE_ROLE"
         ],
@@ -634,6 +648,36 @@
       "clientRoles": {
         "notification-client": [
           "NOTIFICATION_ROLE"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    },
+    {
+      "id": "6bb7065d-ef2c-43a9-ac40-5cc1cdeb6fb9",
+      "username": "service-account-transfer-client",
+      "emailVerified": false,
+      "createdTimestamp": 1749499957446,
+      "enabled": true,
+      "totp": false,
+      "serviceAccountClientId": "transfer-client",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "default-roles-master"
+      ],
+      "clientRoles": {
+        "notification-client": [
+          "NOTIFICATION_ROLE"
+        ],
+        "account-client": [
+          "ACCOUNT_ROLE"
+        ],
+        "exchange-client": [
+          "EXCHANGE_ROLE"
+        ],
+        "block-client": [
+          "BLOCK_ROLE"
         ]
       },
       "notBefore": 0,
@@ -1238,6 +1282,63 @@
       ],
       "defaultClientScopes": [
         "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "organization",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    },
+    {
+      "id": "a2a7b3bc-eafe-405e-8b15-90e233d4ccab",
+      "clientId": "transfer-client",
+      "name": "",
+      "description": "",
+      "rootUrl": "",
+      "adminUrl": "",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "lrAXBuzBPOsWhaeFtND95xxLyqdRVX7z",
+      "redirectUris": [
+        "/*"
+      ],
+      "webOrigins": [
+        "/*"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": true,
+      "protocol": "openid-connect",
+      "attributes": {
+        "realm_client": "false",
+        "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1749499957",
+        "backchannel.logout.session.required": "true",
+        "oauth2.device.authorization.grant.enabled": "false",
+        "backchannel.logout.revoke.offline.tokens": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "defaultClientScopes": [
+        "web-origins",
+        "service_account",
         "acr",
         "profile",
         "roles",

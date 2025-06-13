@@ -102,11 +102,11 @@ spring:
 
 
 
-logging:
-  level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty.http.client: DEBUG
-    org.springframework.security: DEBUG
-    reactor.netty.http.client.HttpClientOperations: DEBUG
-    org.springframework.cloud.gateway.filter.factory.TokenRelayGatewayFilterFactory: TRACE
-    io.github.resilience4j: DEBUG
+#logging:
+#  level:
+#    org.springframework.cloud.gateway: DEBUG
+#    reactor.netty.http.client: DEBUG
+#    org.springframework.security: DEBUG
+#    reactor.netty.http.client.HttpClientOperations: DEBUG
+#    org.springframework.cloud.gateway.filter.factory.TokenRelayGatewayFilterFactory: TRACE
+#    io.github.resilience4j: DEBUG

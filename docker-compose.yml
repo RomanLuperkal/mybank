@@ -218,7 +218,7 @@ services:
           echo 'Waiting for Keycloak to start...';
           sleep 5;
         done &&
-        exec java -jar account-service.jar
+        exec java -jar cash-service.jar
       "
     depends_on:
       config-server:
@@ -237,6 +237,51 @@ services:
       - "5435:5432"
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "${CASH_DB_USERNAME}", "-d", "${CASH_DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  transfer-service:
+    build:
+      context: ./transfer-service
+      dockerfile: Dockerfile
+    ports:
+      - "${TRANSFER_SERVICE_PORT}:${TRANSFER_SERVICE_PORT}"
+    environment:
+      - TRANSFER_DB_HOST=${TRANSFER_DB_HOST}
+      - TRANSFER_DB_PORT=${TRANSFER_DB_PORT}
+      - TRANSFER_DB_NAME=${TRANSFER_DB_NAME}
+      - TRANSFER_DB_USERNAME=${TRANSFER_DB_USERNAME}
+      - TRANSFER_DB_PASSWORD=${TRANSFER_DB_PASSWORD}
+      - CONFIG_SERVER_NAME=${CONFIG_SERVER_NAME}
+      - CONFIG_SERVER_PORT=${CONFIG_SERVER_PORT}
+      - CONSUL_HOST_NAME=${CONSUL_HOST_NAME}
+      - KEYCLOAK_HOST_NAME=${KEYCLOAK_HOST_NAME}
+    entrypoint: >
+      sh -c "
+        until curl -f http://keycloak:9092/realms/master; do
+          echo 'Waiting for Keycloak to start...';
+          sleep 5;
+        done &&
+        exec java -jar transfer-service.jar
+      "
+    depends_on:
+      config-server:
+        condition: service_healthy
+      transfer-db:
+        condition: service_healthy
+
+  transfer-db:
+    image: postgres:15.1-alpine
+    container_name: transfer-db
+    environment:
+      POSTGRES_DB: ${TRANSFER_DB_NAME}
+      POSTGRES_USER: ${TRANSFER_DB_USERNAME}
+      POSTGRES_PASSWORD: ${TRANSFER_DB_PASSWORD}
+    ports:
+      - "5436:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${TRANSFER_DB_USERNAME}", "-d", "${TRANSFER_DB_USERNAME}" ]
       interval: 5s
       timeout: 5s
       retries: 10
