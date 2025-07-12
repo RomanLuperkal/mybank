@@ -334,3 +334,11 @@ services:
       - "8600:8600"
       - "8600:8600/udp"
     command: agent -dev -client 0.0.0.0 -log-level=INFO
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025"   # SMTP-порт
+      - "8025:8025"   # Веб-интерфейс
+

@@ -46,7 +46,7 @@ public class NotificationServiceImpl implements NotificationService {
                 message.setTo(notification.get().getEmail());
                 message.setSubject(notification.get().getTheme());
                 message.setText(notification.get().getMessage());
-                message.setFrom(FROM);
+                //message.setFrom(FROM);
 
                 javaMailSender.send(message);
                 notification.get().setStatus(Notification.Status.SENT);

@@ -25,19 +25,19 @@ spring:
       port: 8500
 
   mail:
-    host: smtp.mail.ru
-    port: 465
-    username: ${NOTIFICATION_SERVICE_EMAIL}
-    password: ${NOTIFICATION_SERVICE_EMAIL_PASSWORD}
-    protocol: smtps
+    host: localhost
+    port: 1025
+    username:
+    password:
+    protocol: smtp
     properties:
       mail:
         smtp:
-          auth: true
+          auth: false
           starttls:
             enable: false
           ssl:
-            enable: true
+            enable: false
 
   security:
     oauth2:

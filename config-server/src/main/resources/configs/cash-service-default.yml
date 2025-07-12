@@ -1,12 +1,6 @@
 server:
   port: ${CASH_SERVICE_PORT:8085}
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh
-
 spring:
   cloud:
     consul:
