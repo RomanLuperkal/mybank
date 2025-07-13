@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
@@ -27,12 +28,14 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class AccountController {
     private final AccountService accountService;
     private final WalletService walletService;
 
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String error, Model model) {
+        log.info("get login request");
         if (error != null) {
             model.addAttribute("error", "Неверные логин или пароль");
         }
@@ -41,12 +44,14 @@ public class AccountController {
 
     @GetMapping("/register")
     public String register(@ModelAttribute("createAccountDto") CreateAccountDto dto) {
+        log.info("get register request");
         return "registration";
     }
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute CreateAccountDto dto,
                            BindingResult bindingResult, HttpServletRequest request) {
+        log.info("Регистрация пользователя: {}", dto);
         if (bindingResult.hasErrors()) {
             return "registration";
         }
@@ -57,31 +62,34 @@ public class AccountController {
 
     @GetMapping("/home")
     public String home(Authentication authentication, Model model) {
+        log.info("get home request");
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "home";
     }
 
     @GetMapping("account/settings")
     public String accountSettings(Authentication authentication, Model model) {
+        log.info("get settings request");
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "account-settings";
     }
 
     @DeleteMapping("/account/{accountId}/delete-account")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteAccount(@PathVariable Long accountId, Authentication authentication, Model model) {
-
+    public void deleteAccount(@PathVariable Long accountId, Authentication authentication) {
+        log.info("Удаление аккаунта с id={}", accountId);
         accountService.deleteAccount(accountId, accountService.getAccountInfo(getUsername(authentication)).wallets());
     }
 
     @PatchMapping("/account/{accountId}/change-password")
     @ResponseStatus(HttpStatus.OK)
-    public void changePassword(@PathVariable Long accountId, Authentication authentication,
-                               @RequestBody UpdatePasswordDto newPassword) {
+    public void changePassword(@PathVariable Long accountId, @RequestBody UpdatePasswordDto newPassword) {
+        log.info("Изменения пароля для аккаунта с id={}", accountId);
         accountService.updatePassword(accountId, newPassword);
     }
     @PatchMapping("/account/{accountId}/update-profile")
     public ResponseEntity<Void> updateProfile(@PathVariable Long accountId, @Valid @RequestBody UpdateProfileDto dto) {
+        log.info("Обновление профиля с id={} updateProfileDtp={}", accountId, dto);
         accountService.updateProfile(accountId, dto);
         return ResponseEntity.ok().build();
     }
@@ -90,6 +98,7 @@ public class AccountController {
     public ResponseEntity<?> createWallet(@PathVariable Long accountId,
                                                           @Valid @RequestBody CreateWalletDto createWalletDto,
                                                           Authentication authentication, Model model) {
+        log.info("Cоздание счета - {} для аккаунта с id={}", createWalletDto, accountId);
         ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto, accountService
                 .getAccountInfo(getUsername(authentication)).wallets());
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
@@ -98,7 +107,8 @@ public class AccountController {
 
     @DeleteMapping("account/{accountId}/wallet/{walletId}")
     public ResponseEntity<ResponseWalletDto> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId,
-                                             Authentication authentication, Model model) {
+                                             Authentication authentication) {
+        log.info("Удаление счета с id= {} для аккаунта с id={}", walletId, accountId);
         ResponseWalletDto responseWalletDto = walletService.deleteWallet(accountId, walletId,
                 accountService.getAccountInfo(getUsername(authentication)).wallets());
         return ResponseEntity.ok(responseWalletDto);

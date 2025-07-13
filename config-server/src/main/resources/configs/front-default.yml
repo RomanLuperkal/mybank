@@ -42,3 +42,7 @@ spring:
       instances:
         front-circuitbreaker:
           baseConfig: default
+
+
+account-service:
+  host: ${ACCOUNT_SERVICE_HOST}

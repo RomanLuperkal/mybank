@@ -12,6 +12,7 @@ import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.exception.RegistrationException;
 import org.ivanov.front.handler.exception.TransferException;
 import org.ivanov.front.handler.response.ApiError;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,13 +33,15 @@ import java.util.Set;
 public class AccountClientImpl implements AccountClient {
     private final WebClient client;
     private final OAuth2AuthorizedClientManager clientManager;
+    @Value("${account-service.host}")
+    private String accountServiceHost;
 
 
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackRegistration")
     public ResponseAccountDto registration(CreateAccountDto dto) {
 
         return client.post()
-                .uri("http://gateway/account/registration")
+                .uri(accountServiceHost + "/account/registration")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto).retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT || status == HttpStatus.FORBIDDEN || status == HttpStatus.GATEWAY_TIMEOUT,
@@ -53,7 +56,7 @@ public class AccountClientImpl implements AccountClient {
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackGetAccount")
     public ResponseAccountDto getAccount(String username) {
         return client.get()
-                .uri("http://gateway/account/" + username)
+                .uri(accountServiceHost = "/account/" + username)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,
@@ -71,7 +74,7 @@ public class AccountClientImpl implements AccountClient {
     @Override
     public void deleteAccount(Long accountId) {
         client.delete()
-                .uri("http://gateway/account/" + accountId + "/delete-account")
+                .uri(accountServiceHost + "/account/" + accountId + "/delete-account")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,
@@ -90,7 +93,7 @@ public class AccountClientImpl implements AccountClient {
     @Override
     public void updatePassword(Long accountId, UpdatePasswordDto password) {
         client.patch()
-                .uri("http://gateway/account/" + accountId + "/change-password")
+                .uri(accountServiceHost + "/account/" + accountId + "/change-password")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(password)
                 .retrieve()
@@ -110,7 +113,7 @@ public class AccountClientImpl implements AccountClient {
     @Override
     public void updateProfile(Long accountId, UpdateProfileDto profile) {
         client.patch()
-                .uri("http://gateway/account/" + accountId + "/update-profile")
+                .uri(accountServiceHost + "/account/" + accountId + "/update-profile")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(profile)
                 .retrieve()
@@ -131,7 +134,7 @@ public class AccountClientImpl implements AccountClient {
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackWalletOperation")
     public ResponseWalletDto createWallet(Long accountId, CreateWalletDto dto) {
         return client.post()
-                .uri("http://gateway/account/" + accountId + "/wallet")
+                .uri(accountServiceHost + "/account/" + accountId + "/wallet")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto).retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,
@@ -151,7 +154,7 @@ public class AccountClientImpl implements AccountClient {
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackWalletOperation")
     public ResponseWalletDto deleteWallet(Long accountId, Long walletId) {
         return client.delete()
-                .uri("http://gateway/account/" + accountId + "/wallet/" + walletId)
+                .uri(accountServiceHost + "/account/" + accountId + "/wallet/" + walletId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,
@@ -170,7 +173,7 @@ public class AccountClientImpl implements AccountClient {
     @Override
     public Set<ResponseWalletDto> getWalletInfoByUsername(ReqWalletInfoDto dto) {
         return client.post()
-                .uri("http://gateway/account/wallet/info")
+                .uri(accountServiceHost + "/account/wallet/info")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto)
                 .retrieve()

@@ -6,7 +6,6 @@ import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.client.AccountClient;
 import org.ivanov.front.client.TransferClient;
 import org.ivanov.front.handler.exception.TransferException;
-import org.ivanov.front.service.AccountService;
 import org.ivanov.front.service.TransferService;
 import org.ivanov.transferdto.ExternalTransferDto;
 import org.ivanov.transferdto.ResponseTransferDto;
@@ -45,11 +44,11 @@ public class TransferServiceImpl implements TransferService {
     }
 
     private Boolean validateTransfer(TransferReqDto dto, Set<ResponseWalletDto> wallets) {
-        return wallets.stream().filter(w -> w.walletId().equals(dto.getSourceWalletId())).anyMatch(w -> w.balance().compareTo(dto.getAmount()) > 0);
+        return wallets.stream().filter(w -> w.walletId().equals(dto.getSourceWalletId())).anyMatch(w -> w.balance().compareTo(dto.getAmount()) >= 0);
     }
 
     private Boolean validateTransfer(ExternalTransferDto dto, Set<ResponseWalletDto> wallets) {
-        return wallets.stream().filter(w -> w.walletId().equals(dto.sourceWalletId())).anyMatch(w -> w.balance().compareTo(dto.amount()) > 0);
+        return wallets.stream().filter(w -> w.walletId().equals(dto.sourceWalletId())).anyMatch(w -> w.balance().compareTo(dto.amount()) >= 0);
     }
 
     private Optional<ResponseWalletDto> targetWalletTypeExists(Set<ResponseWalletDto> wallets, String targetWalletType) {
