@@ -35,7 +35,7 @@ public class AccountController {
 
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String error, Model model) {
-        log.info("get login request");
+        log.info("Поступил запрос get /login");
         if (error != null) {
             model.addAttribute("error", "Неверные логин или пароль");
         }
@@ -44,25 +44,28 @@ public class AccountController {
 
     @GetMapping("/register")
     public String register(@ModelAttribute("createAccountDto") CreateAccountDto dto) {
-        log.info("get register request");
+        log.info("Поступил запрос get /register");
         return "registration";
     }
 
     @PostMapping("/register")
     public String register(@Valid @ModelAttribute CreateAccountDto dto,
                            BindingResult bindingResult, HttpServletRequest request) {
-        log.info("Регистрация пользователя: {}", dto);
+        log.info("Поступил запрос post /register");
+        log.debug("Регистрация пользователя: {}", dto);
         if (bindingResult.hasErrors()) {
             return "registration";
         }
         ResponseAccountDto accountDto = accountService.registration(dto);
+        log.info("Пользователь {} зарегистрирован", accountDto.firstName());
+        log.debug("accountDto: {}", accountDto);
         authUser(accountDto, request);
         return "redirect:/home";
     }
 
     @GetMapping("/home")
     public String home(Authentication authentication, Model model) {
-        log.info("get home request");
+        log.info("Поступил запрос get /home");
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "home";
     }
@@ -77,19 +80,21 @@ public class AccountController {
     @DeleteMapping("/account/{accountId}/delete-account")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteAccount(@PathVariable Long accountId, Authentication authentication) {
-        log.info("Удаление аккаунта с id={}", accountId);
+        log.info("Поступил запрос delete /account/{accountId}/delete-account с id={}", accountId);
         accountService.deleteAccount(accountId, accountService.getAccountInfo(getUsername(authentication)).wallets());
     }
 
     @PatchMapping("/account/{accountId}/change-password")
     @ResponseStatus(HttpStatus.OK)
     public void changePassword(@PathVariable Long accountId, @RequestBody UpdatePasswordDto newPassword) {
-        log.info("Изменения пароля для аккаунта с id={}", accountId);
-        accountService.updatePassword(accountId, newPassword);
+        log.info("Получен запрос patch /account/{accountId}/change-password с id={}", accountId);
+        String updatedPassword = accountService.updatePassword(accountId, newPassword);
+        log.debug("updatedPassword: {}", updatedPassword);
     }
     @PatchMapping("/account/{accountId}/update-profile")
     public ResponseEntity<Void> updateProfile(@PathVariable Long accountId, @Valid @RequestBody UpdateProfileDto dto) {
-        log.info("Обновление профиля с id={} updateProfileDtp={}", accountId, dto);
+        log.info("Получен запрос patch /account/{accountId}/update-profile с accountId={} ", accountId);
+        log.debug("UpdateProfileDto: {}", dto);
         accountService.updateProfile(accountId, dto);
         return ResponseEntity.ok().build();
     }
@@ -98,19 +103,22 @@ public class AccountController {
     public ResponseEntity<?> createWallet(@PathVariable Long accountId,
                                                           @Valid @RequestBody CreateWalletDto createWalletDto,
                                                           Authentication authentication, Model model) {
-        log.info("Cоздание счета - {} для аккаунта с id={}", createWalletDto, accountId);
+        log.info("Получен запрос post account/{accountId}/wallet с accountId={}", accountId);
+        log.debug("createWalletDto: {}", createWalletDto);
         ResponseWalletDto createdWallet = walletService.createWallet(accountId, createWalletDto, accountService
                 .getAccountInfo(getUsername(authentication)).wallets());
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
+        log.debug("createdWallet: {}", createdWallet);
         return ResponseEntity.ok(createdWallet);
     }
 
     @DeleteMapping("account/{accountId}/wallet/{walletId}")
     public ResponseEntity<ResponseWalletDto> deleteWallet(@PathVariable Long accountId, @PathVariable Long walletId,
                                              Authentication authentication) {
-        log.info("Удаление счета с id= {} для аккаунта с id={}", walletId, accountId);
+        log.info("Получен запрос delete account/{accountId}/wallet/{walletId} с walletId= {}, accountId={}", walletId, accountId);
         ResponseWalletDto responseWalletDto = walletService.deleteWallet(accountId, walletId,
                 accountService.getAccountInfo(getUsername(authentication)).wallets());
+        log.debug("responseWalletDto: {}", responseWalletDto);
         return ResponseEntity.ok(responseWalletDto);
     }
 

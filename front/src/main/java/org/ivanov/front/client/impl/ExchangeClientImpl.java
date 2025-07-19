@@ -5,6 +5,7 @@ import org.ivanov.exchangedto.currency.ResponseCurrencyDto;
 import org.ivanov.front.client.ExchangeClient;
 import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.response.ApiError;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -19,11 +20,13 @@ import reactor.core.publisher.Mono;
 public class ExchangeClientImpl implements ExchangeClient {
     private final WebClient client;
     private final OAuth2AuthorizedClientManager clientManager;
+    @Value("${exchange-service.host}")
+    private String exchangeServiceHost;
 
     @Override
     public ResponseCurrencyDto getExchange() {
         return client.get()
-                .uri("http://gateway/exchange")
+                .uri(exchangeServiceHost + "/exchange")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.FORBIDDEN,

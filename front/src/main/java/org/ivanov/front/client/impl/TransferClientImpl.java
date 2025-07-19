@@ -6,6 +6,7 @@ import org.ivanov.front.handler.exception.AccountException;
 import org.ivanov.front.handler.response.ApiError;
 import org.ivanov.transferdto.ResponseTransferDto;
 import org.ivanov.transferdto.TransferReqDto;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
@@ -20,11 +21,13 @@ import reactor.core.publisher.Mono;
 public class TransferClientImpl implements TransferClient {
     private final WebClient client;
     private final OAuth2AuthorizedClientManager clientManager;
+    @Value("${transfer-service.host}")
+    private String transferServiceHost;
 
     @Override
     public ResponseTransferDto createInnerTransfer(TransferReqDto dto) {
         return client.post()
-                .uri("http://gateway/transfer/inner")
+                .uri(transferServiceHost + "/transfer/inner")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .bodyValue(dto).retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,

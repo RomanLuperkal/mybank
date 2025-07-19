@@ -1,6 +1,7 @@
 package org.ivanov.front.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.blog.cashdto.cash.ResponseCashDto;
 import org.blog.cashdto.cash.UpdateCashDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
@@ -16,12 +17,14 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/cash")
 @RequiredArgsConstructor
+@Slf4j
 public class CashController {
     private final CashService cashService;
     private final AccountService accountService;
 
     @GetMapping
     public String cash(Authentication authentication, Model model) {
+        log.info("Получен запрос get /cash");
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "cash";
     }
@@ -29,6 +32,7 @@ public class CashController {
     @PatchMapping
     @ResponseBody
     public ResponseEntity<ResponseCashDto> updateCash(@RequestBody UpdateCashDto dto, Authentication authentication) {
+        log.info("Получен запрос patch /cash");
         ResponseAccountDto accountInfo = accountService.getAccountInfo(getUsername(authentication));
         return ResponseEntity.ok(cashService.updateCash(dto, accountInfo));
     }

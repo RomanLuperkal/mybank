@@ -1,6 +1,7 @@
 package org.ivanov.front.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
 import org.ivanov.front.configuration.security.AccountUserDetails;
 import org.ivanov.front.service.AccountService;
@@ -22,23 +23,30 @@ import java.util.Set;
 @Controller
 @RequestMapping("/transfer")
 @RequiredArgsConstructor
+@Slf4j
 public class TransferController {
     private final TransferService transferService;
     private final AccountService accountService;
 
     @PostMapping("/inner")
     public ResponseEntity<ResponseTransferDto> createInnerTransfer(@RequestBody TransferReqDto dto, Authentication authentication) {
+        log.info("Поступил запрос post /inner");
+        Set<ResponseWalletDto> userWallets = getUserWallets(authentication);
+        log.debug("TransferReqDto: {}", dto);
+        log.debug("userWallets: {}", userWallets);
         return ResponseEntity.status(202).body(transferService.createInnerTransfer(dto, getUserWallets(authentication)));
     }
 
     @GetMapping("/inner")
     public String getInnerTransfer(Model model, Authentication authentication) {
+        log.info("Поступил запрос get /inner");
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "inner-transfer";
     }
 
     @GetMapping("/external")
     public String getExternalTransfer(Model model, Authentication authentication) {
+        log.info("Поступил запрос get /external");
         model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
         return "external-transfer";
     }

@@ -1,6 +1,7 @@
 package org.ivanov.front.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ivanov.accountdto.account.CreateAccountDto;
 import org.ivanov.accountdto.account.ResponseAccountDto;
 import org.ivanov.accountdto.account.UpdatePasswordDto;
@@ -18,6 +19,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AccountServiceImpl implements AccountService {
     private final AccountClient accountClient;
     private final PasswordEncoder passwordEncoder;
@@ -51,6 +53,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseAccountDto getAccountInfo(String username) {
-        return client.getAccount(username);
+        ResponseAccountDto account = client.getAccount(username);
+        log.debug("accountInfo: {}", account);
+        return account;
     }
 }
