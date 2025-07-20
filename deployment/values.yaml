@@ -1,0 +1,8 @@
+global:
+  disableStandardLabels: true
+
+replicaCount: 1
+
+keycloak_host_name: http://{{ .Release.Name }}-keycloak.{{ .Release.Namespace }}.svc.cluster.local:8080/realms/master
+
+test: test

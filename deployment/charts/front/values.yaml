@@ -1,0 +1,67 @@
+ports:
+  front_service_port: 8081
+
+user_service:
+  base_url: http://user-service.default.svc.cluster.local:8080
+
+replicaCount: 1
+
+image:
+  repository: front
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: mybank.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+volumeMounts:
+  mountPath: /app/config
+  value: file:/app/config/application.yaml
+
+volumes:
+  configMap:
+    items:
+      key: application.yaml  # Имя ключа в ConfigMap
+      path: application.yaml # Имя файла в контейнере
+
+resources: {}
+probe:
+  enabled: false
+livenessProbe:
+  httpGet:
+    port: 8071
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    port: 8071
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

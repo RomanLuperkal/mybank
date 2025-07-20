@@ -1,0 +1,6 @@
+dependencies:
+- name: front
+  repository: file://charts/front
+  version: 1.0.0
+digest: sha256:fdd801412429395732c3f02279b4d9801bf9879fd6c8fc032fd1129e4c22b2c7
+generated: "2025-07-20T20:53:38.1857501+03:00"

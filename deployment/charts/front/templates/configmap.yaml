@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "front.fullname" . }}-config
+data:
+  application.yml: |
+{{ .Files.Get "files/front.yml" | nindent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "front.fullname" . }}-env
+data:
+  FRONT_SERVER_PORT: {{ .Values.ports.front_service_port | quote }}
+

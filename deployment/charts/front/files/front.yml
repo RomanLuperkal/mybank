@@ -1,0 +1,61 @@
+server:
+  port: ${FRONT_SERVER_PORT}
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${KEYCLOAK_HOST_NAME}:9092/realms/master
+        registration:
+          account-client:
+            provider: keycloak
+            client-id: ${ACCOUNT_CLIENT_ID}
+            client-secret: ${ACCOUNT_CLIENT_SECRET:} #3r4NjD2qmgzfBR6iA3cYF4zPcH8xQGwg
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post
+
+  resilience4j:
+    circuitbreaker:
+      configs:
+        default:
+          slidingWindowSize: 10
+          permittedNumberOfCallsInHalfOpenState: 3
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10s
+          minimumNumberOfCalls: 3
+          ignoreExceptions:
+            - org.ivanov.front.handler.exception.RegistrationException
+            - org.springframework.security.core.userdetails.UsernameNotFoundException
+            - org.ivanov.front.handler.exception.LoginException
+      instances:
+        front-circuitbreaker:
+          baseConfig: default
+
+management:
+  server:
+    port: ${ACTUATOR_ENDPOINT_PORT:7080}
+  endpoints:
+    web:
+      base-path: /
+      exposure:
+        include: health,prometheus
+
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT}
+
+
+account-service:
+  host: ${ACCOUNT_SERVICE_HOST}
+
+cash-service:
+  host: ${CASH_SERVICE_HOST}
+
+exchange-service:
+  host: ${EXCHANGE_SERVICE_HOST}
+
+transfer-service:
+  host: ${TRANSFER_SERVICE_HOST}

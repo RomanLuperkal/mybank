@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "front.fullname" . }}
+  labels:
+    app: {{ include "front.name" . }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "front.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "front.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ports.front_service_port }}
+              name: app
+            - containerPort: {{ .Values.livenessProbe.httpGet.port }}
+              name: actuator
+          volumeMounts:
+            - name: {{ include "front.name" . }}
+              mountPath: /config
+          envFrom:
+            - configMapRef:
+                name: {{ include "front.fullname" . }}-env
+          startupProbe: #проба старта приложения
+            httpGet:
+              port: 8071
+              path: /health
+            failureThreshold: 30
+            periodSeconds: 10
+            initialDelaySeconds: 30
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: {{ include "front.name" . }}
+          configMap:
+            name: {{ include "front.fullname" . }}-config
