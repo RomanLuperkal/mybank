@@ -12,7 +12,7 @@ spring:
           account-client:
             provider: keycloak
             client-id: ${ACCOUNT_CLIENT_ID}
-            client-secret: ${ACCOUNT_CLIENT_SECRET:} #3r4NjD2qmgzfBR6iA3cYF4zPcH8xQGwg
+            client-secret: ${ACCOUNT_CLIENT_SECRET} #3r4NjD2qmgzfBR6iA3cYF4zPcH8xQGwg
             scope: profile
             authorization-grant-type: client_credentials
             clientAuthenticationMethod: client_secret_post
@@ -36,7 +36,7 @@ spring:
 
 management:
   server:
-    port: ${ACTUATOR_ENDPOINT_PORT:7080}
+    port: ${ACTUATOR_ENDPOINT_PORT}
   endpoints:
     web:
       base-path: /

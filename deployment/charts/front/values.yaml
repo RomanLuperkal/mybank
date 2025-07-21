@@ -1,5 +1,6 @@
 ports:
-  front_service_port: 8081
+  front_service_port: 8080
+  actuator_endpoint_port: 7080
 
 user_service:
   base_url: http://user-service.default.svc.cluster.local:8080
