@@ -1,0 +1,12 @@
+replicaCount: 1
+
+kc_http_port: 9092
+kc_health_enabled: true
+image:
+  repository: quay.io/keycloak/keycloak
+  tag: 26.1.3
+  pullPolicy: IfNotPresent
+
+service:
+  clusterIP: None
+  port: 9092
