@@ -43,26 +43,15 @@ probe:
   enabled: false
 livenessProbe:
   httpGet:
-    port: 8071
+    port: 7080
     path: /health
   failureThreshold: 3
   periodSeconds: 10
 readinessProbe:
   httpGet:
-    port: 8071
+    port: 7080
     path: /health
   failureThreshold: 3
   periodSeconds: 10
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+log_level_root: INFO

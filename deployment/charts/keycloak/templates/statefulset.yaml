@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "keycloak.name" . }}
+spec:
+  serviceName: {{ include "keycloak.name" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "keycloak.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "keycloak.name" . }}
+    spec:
+      containers:
+        - name: keycloak
+          image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args: ["start-dev", "--import-realm"]
+          ports:
+            - containerPort: {{ .Values.kc_http_port }}
+          env:
+            - name: KC_BOOTSTRAP_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-sc
+                  key: KC_BOOTSTRAP_ADMIN_USERNAME
+            - name: KC_BOOTSTRAP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-sc
+                  key: KC_BOOTSTRAP_ADMIN_PASSWORD
+          envFrom:
+            - configMapRef:
+                name: {{ include "keycloak.fullname" . }}-env
+          volumeMounts:
+            - name: keycloak-data
+              mountPath: /opt/jboss/data
+            - name: keycloak-volume
+              mountPath: /opt/keycloak/data/import/keycloak-config.json
+              subPath: realm-export.json
+      volumes:
+        - name: keycloak-volume
+          configMap:
+            name: {{ include "keycloak.fullname" . }}-realm
+        - name: keycloak-env
+          configMap:
+            name: {{ include "keycloak.fullname" . }}-env
+  volumeClaimTemplates:
+    - metadata:
+        name: keycloak-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 400Mi

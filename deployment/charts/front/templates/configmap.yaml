@@ -13,10 +13,11 @@ metadata:
   name: {{ include "front.fullname" . }}-env
 data:
   FRONT_SERVER_PORT: {{ .Values.ports.front_service_port | quote }}
-  KEYCLOAK_HOST_NAME: {{ .Values.global.keycloak_host_name | quote }}
+  KEYCLOAK_HOST_NAME: {{ tpl .Values.global.keycloak_host_name . | quote }}
   ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
-  ACCOUNT_SERVICE_HOST: {{ .Values.global.account_host_name | quote }}
-  CASH_SERVICE_HOST: {{ .Values.global.cash_host_name | quote }}
-  EXCHANGE_SERVICE_HOST: {{ .Values.global.exchange_host_name | quote }}
-  TRANSFER_SERVICE_HOST: {{ .Values.global.transfer_host_name | quote }}
+  ACCOUNT_SERVICE_HOST: {{ tpl .Values.global.account_host_name . | quote }}
+  CASH_SERVICE_HOST: {{ tpl .Values.global.cash_host_name . | quote }}
+  EXCHANGE_SERVICE_HOST: {{ tpl .Values.global.exchange_host_name . | quote }}
+  TRANSFER_SERVICE_HOST: {{ tpl .Values.global.transfer_host_name . | quote }}
+  LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
 

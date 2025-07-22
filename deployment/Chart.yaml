@@ -7,3 +7,6 @@ dependencies:
   - name: front
     version: 1.0.0
     repository: file://charts/front
+  - name: keycloak
+    version: 1.0.0
+    repository: file://charts/keycloak
