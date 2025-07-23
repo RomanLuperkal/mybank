@@ -2,6 +2,9 @@ server:
   port: ${FRONT_SERVER_PORT}
 
 spring:
+  application:
+    name: front
+
   security:
     oauth2:
       client:
