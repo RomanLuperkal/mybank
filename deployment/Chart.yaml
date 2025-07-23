@@ -4,9 +4,12 @@ description: A Helm chart for Kubernetes
 version: 1.0.0
 
 dependencies:
-  - name: front
-    version: 1.0.0
-    repository: file://charts/front
   - name: keycloak
     version: 1.0.0
     repository: file://charts/keycloak
+  - name: front
+    version: 1.0.0
+    repository: file://charts/front
+  - name: postgres
+    version: 1.0.0
+    repository: file://charts/postgres

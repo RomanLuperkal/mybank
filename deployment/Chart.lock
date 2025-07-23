@@ -1,9 +1,12 @@
 dependencies:
-- name: front
-  repository: file://charts/front
-  version: 1.0.0
 - name: keycloak
   repository: file://charts/keycloak
   version: 1.0.0
-digest: sha256:8f5e79eb93f197a8cd4287ff58cce88eee84624bf34bbe42fc547b0bd7f7de05
-generated: "2025-07-22T23:36:26.9490061+03:00"
+- name: front
+  repository: file://charts/front
+  version: 1.0.0
+- name: postgres
+  repository: file://charts/postgres
+  version: 1.0.0
+digest: sha256:56dd3a12c4bfaefef208379683fe739b8bdfa8245a78ed54ff1aff0ff4f70d11
+generated: "2025-07-24T00:22:05.8996914+03:00"

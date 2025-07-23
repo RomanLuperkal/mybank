@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "postgres.name" . }}
+spec:
+  serviceName: {{ include "postgres.name" . }}
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "postgres.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "postgres.name" . }}
+    spec:
+      containers:
+        - name: postgresql
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sc
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sc
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: {{ printf "%s/pgdata" .Values.volume.mountPath | quote }}
+          ports:
+            - containerPort: {{ .Values.ports.postgres_port }}
+          volumeMounts:
+            - name: {{.Values.volume.name}}
+              mountPath: {{.Values.volume.mountPath}}
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          readinessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - "pg_isready -U admin"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
+            timeoutSeconds: 1
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: {{ include "postgres.name" . }}-init
+  volumeClaimTemplates:
+    - metadata:
+        name: {{.Values.volume.name}}
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{.Values.volume.storage}}

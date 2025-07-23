@@ -23,6 +23,21 @@ spec:
               name: app
             - containerPort: {{ .Values.livenessProbe.httpGet.port }}
               name: actuator
+          livenessProbe:
+            httpGet:
+              port: 7080
+              path: actuator/health
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              port: 7080
+              path: actuator/health
+            initialDelaySeconds: 120
+            periodSeconds: 10
+            failureThreshold: 3
           volumeMounts:
             - name: {{ include "front.name" . }}
               mountPath: /config

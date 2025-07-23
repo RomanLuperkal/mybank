@@ -42,7 +42,6 @@ management:
     port: ${ACTUATOR_ENDPOINT_PORT}
   endpoints:
     web:
-      base-path: /
       exposure:
         include: health,prometheus
 

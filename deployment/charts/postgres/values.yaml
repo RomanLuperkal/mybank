@@ -1,0 +1,24 @@
+replicaCount: 1
+ports:
+  postgres_port: 5432
+image:
+  repository: postgres
+  pullPolicy: IfNotPresent
+  tag: 16
+database:
+  db1: db1
+  db2: db2
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+
+service:
+  clusterIP: None
+  port: 5432
+
+
+volume:
+  name: postgresql-data
+  storage: 200Mi
+  mountPath: /var/lib/postgresql/data

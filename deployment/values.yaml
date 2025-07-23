@@ -8,3 +8,4 @@ global:
   cash_host_name: "http://{{ .Release.Name }}-cash.{{ .Release.Namespace }}.svc.cluster.local:8085"
   exchange_host_name: "http://{{ .Release.Name }}-exchange-service.{{ .Release.Namespace }}.svc.cluster.local:8084"
   transfer_host_name: "http://{{ .Release.Name }}-transfer.{{ .Release.Namespace }}.svc.cluster.local:8087"
+  db_host: "postgresql-0.postgresql.{{ .Release.Namespace }}..svc.cluster.local:5432"
