@@ -2,9 +2,6 @@ ports:
   front_service_port: 8080
   actuator_endpoint_port: 7080
 
-user_service:
-  base_url: http://user-service.default.svc.cluster.local:8080
-
 replicaCount: 1
 
 image:
@@ -28,19 +25,7 @@ ingress:
           pathType: Prefix
   tls: []
 
-volumeMounts:
-  mountPath: /app/config
-  value: file:/app/config/application.yaml
 
-volumes:
-  configMap:
-    items:
-      key: application.yaml  # Имя ключа в ConfigMap
-      path: application.yaml # Имя файла в контейнере
-
-resources: {}
-probe:
-  enabled: false
 livenessProbe:
   httpGet:
     port: 7080

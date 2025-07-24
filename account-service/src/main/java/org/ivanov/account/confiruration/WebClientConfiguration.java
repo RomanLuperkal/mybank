@@ -2,8 +2,6 @@ package org.ivanov.account.confiruration;
 
 import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -18,10 +16,8 @@ public class WebClientConfiguration {
     private String KEYCLOAK_HOST_NAME;
 
     @Bean("notification-client")
-    @LoadBalanced
-    public WebClient notificationClient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+    public WebClient notificationClient() {
         return WebClient.builder().
-                filter(lbFunction).
                 clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)

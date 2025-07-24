@@ -8,5 +8,8 @@ dependencies:
 - name: postgres
   repository: file://charts/postgres
   version: 1.0.0
-digest: sha256:56dd3a12c4bfaefef208379683fe739b8bdfa8245a78ed54ff1aff0ff4f70d11
-generated: "2025-07-24T00:22:05.8996914+03:00"
+- name: account-service
+  repository: file://charts/account-service
+  version: 1.0.0
+digest: sha256:330b702e24b5c8d9b1f7562b7c2d6113a9c186ce69fc9a8ae9c0903a6b693cea
+generated: "2025-07-25T00:45:04.6254788+03:00"
