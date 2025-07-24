@@ -2,6 +2,7 @@ package org.ivanov.account.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.blog.cashdto.transaction.ApprovedTransactionDto;
 import org.ivanov.account.service.AccountService;
 import org.ivanov.account.service.WalletService;
@@ -24,6 +25,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
+@Slf4j
 public class AccountController {
     private final AccountService accountService;
     private final WalletService walletService;
