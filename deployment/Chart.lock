@@ -11,5 +11,8 @@ dependencies:
 - name: account-service
   repository: file://charts/account-service
   version: 1.0.0
-digest: sha256:330b702e24b5c8d9b1f7562b7c2d6113a9c186ce69fc9a8ae9c0903a6b693cea
-generated: "2025-07-25T00:45:04.6254788+03:00"
+- name: exchange-service
+  repository: file://charts/exchange-service
+  version: 1.0.0
+digest: sha256:9e467e439bcf72560ca14471f4a1d56fb1fb6ce28a196177c87560f504c1ac88
+generated: "2025-07-25T22:52:35.7657635+03:00"

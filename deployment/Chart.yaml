@@ -16,3 +16,6 @@ dependencies:
   - name: account-service
     version: 1.0.0
     repository: file://charts/account-service
+  - name: exchange-service
+    version: 1.0.0
+    repository: file://charts/exchange-service

@@ -1,0 +1,30 @@
+ports:
+  exchange_service_port: 8084
+  actuator_endpoint_port: 7084
+
+replicaCount: 1
+
+image:
+  repository: exchange-service
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8084
+  targetPort: 8084
+
+livenessProbe:
+  httpGet:
+    port: 7084
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    port: 7084
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+
+log_level_root: INFO
