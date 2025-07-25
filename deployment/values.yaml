@@ -9,4 +9,4 @@ global:
   exchange_host_name: "http://{{ .Release.Name }}-exchange-service.{{ .Release.Namespace }}.svc.cluster.local:8084"
   transfer_host_name: "http://{{ .Release.Name }}-transfer.{{ .Release.Namespace }}.svc.cluster.local:8087"
   notification_host: "http://{{ .Release.Name }}-notification-service.{{ .Release.Namespace }}.svc.cluster.local:8082"
-  db_host: "postgresql-0.postgresql.{{ .Release.Namespace }}..svc.cluster.local:5432"
+  db_host: "postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local:5432"

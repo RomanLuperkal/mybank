@@ -27,7 +27,7 @@ spec:
             httpGet:
               port: 7080
               path: actuator/health
-            initialDelaySeconds: 60
+            initialDelaySeconds: 20
             periodSeconds: 20
             timeoutSeconds: 10
             failureThreshold: 3
@@ -35,7 +35,7 @@ spec:
             httpGet:
               port: 7080
               path: actuator/health
-            initialDelaySeconds: 120
+            initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 3
           volumeMounts:

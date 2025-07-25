@@ -56,7 +56,7 @@ public class AccountClientImpl implements AccountClient {
     @CircuitBreaker(name = "front-circuitbreaker", fallbackMethod = "fallbackGetAccount")
     public ResponseAccountDto getAccount(String username) {
         return client.get()
-                .uri(accountServiceHost = "/account/" + username)
+                .uri(accountServiceHost + "/account/" + username)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + getAccessToken())
                 .retrieve()
                 .onStatus(status -> status == HttpStatus.CONFLICT,

@@ -14,6 +14,10 @@ spec:
       labels:
         app: {{ include "account-service.name" . }}
     spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16
+          command: [ 'sh', '-c', 'until pg_isready -h postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do echo waiting for postgres; sleep 2; done;' ]
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -27,7 +31,7 @@ spec:
             httpGet:
               port: 7081
               path: actuator/health
-            initialDelaySeconds: 60
+            initialDelaySeconds: 20
             periodSeconds: 20
             timeoutSeconds: 10
             failureThreshold: 3
@@ -35,7 +39,7 @@ spec:
             httpGet:
               port: 7081
               path: actuator/health
-            initialDelaySeconds: 120
+            initialDelaySeconds: 30
             periodSeconds: 10
             failureThreshold: 3
           volumeMounts:
@@ -50,7 +54,7 @@ spec:
                 secretKeyRef:
                   name: keycloak-sc
                   key: ACCOUNT_CLIENT_ID
-            - name: ACCOUNT_CLIENT_SECRET
+            - name: ACCOUNT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: keycloak-sc
