@@ -1,0 +1,36 @@
+server:
+  port: ${EXCHANGE_GENERATOR_SERVER_PORT}
+
+spring:
+  application:
+    name: exchange-generator
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${KEYCLOAK_HOST_NAME}/realms/master
+        registration:
+          exchange-client:
+            provider: keycloak
+            client-id: ${EXCHANGE_GENERATOR_CLIENT}
+            client-secret: ${EXCHANGE_GENERATOR_SECRET}
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post
+
+exchange-service:
+  host: ${EXCHANGE_SERVICE_HOST}
+
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT}
+
+management:
+  server:
+    port: ${ACTUATOR_ENDPOINT_PORT}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus

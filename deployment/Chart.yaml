@@ -19,3 +19,6 @@ dependencies:
   - name: exchange-service
     version: 1.0.0
     repository: file://charts/exchange-service
+  - name: exchange-generator
+    version: 1.0.0
+    repository: file://charts/exchange-generator

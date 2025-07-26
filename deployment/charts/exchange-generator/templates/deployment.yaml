@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "exchange-generator.fullname" . }}
+  labels:
+    app: {{ include "exchange-generator.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "exchange-generator.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "exchange-generator.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ports.exchange_generator_port }}
+              name: app
+            - containerPort: {{ .Values.livenessProbe.httpGet.port }}
+              name: actuator
+          livenessProbe:
+            httpGet:
+              port: 7083
+              path: actuator/health
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              port: 7083
+              path: actuator/health
+            initialDelaySeconds: 33
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: {{ include "exchange-generator.name" . }}
+              mountPath: /config
+          envFrom:
+            - configMapRef:
+                name: {{ include "exchange-generator.fullname" . }}-env
+          env:
+            - name: EXCHANGE_GENERATOR_CLIENT
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-sc
+                  key: EXCHANGE_GENERATOR_CLIENT_ID
+            - name: EXCHANGE_GENERATOR_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-sc
+                  key: EXCHANGE_GENERATOR_SECRET
+      volumes:
+        - name: {{ include "exchange-generator.name" . }}
+          configMap:
+            name: {{ include "exchange-generator.fullname" . }}-config

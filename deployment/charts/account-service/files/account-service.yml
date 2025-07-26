@@ -54,6 +54,7 @@ spring:
 logging:
   level:
     org.springframework.security: INFO
+    root: ${LOG_LEVEL_ROOT}
 
 notification-service:
   host: ${NOTIFICATION_HOST}

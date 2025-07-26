@@ -1,0 +1,30 @@
+ports:
+  exchange_generator_port: 8083
+  actuator_endpoint_port: 7083
+
+replicaCount: 1
+
+image:
+  repository: exchange-generator
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8083
+  targetPort: 8083
+
+livenessProbe:
+  httpGet:
+    port: 7083
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    port: 7083
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+
+log_level_root: DEBUG

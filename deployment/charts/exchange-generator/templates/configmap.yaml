@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "exchange-generator.fullname" . }}-config
+data:
+  application.yml: |
+{{ .Files.Get "files/exchange-generator.yml" | nindent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "exchange-generator.fullname" . }}-env
+data:
+  EXCHANGE_GENERATOR_SERVER_PORT: {{ .Values.ports.exchange_generator_port | quote }}
+  KEYCLOAK_HOST_NAME: {{ tpl .Values.global.keycloak_host_name . | quote }}
+  ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
+  EXCHANGE_SERVICE_HOST: {{ tpl .Values.global.exchange_host_name . | quote }}
+  LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
+

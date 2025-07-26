@@ -2,14 +2,8 @@ server:
   port: ${EXCHANGE_GENERATOR_SERVER_PORT:8083}
 
 spring:
-
-  cloud:
-    consul:
-      host: ${CONSUL_HOST_NAME:localhost}
-      port: 8500
-      discovery:
-        enabled: true
-        prefer-ip-address: true
+  application:
+    name: exchange-generator
 
   security:
     oauth2:
@@ -27,7 +21,7 @@ spring:
             clientAuthenticationMethod: client_secret_post
 
 exchange-service:
-  host: ${EXCHANGE_SERVICE_HOST}
+  host: ${EXCHANGE_SERVICE_HOST:test}
 
 logging:
   level:

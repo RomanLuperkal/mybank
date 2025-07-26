@@ -5,6 +5,7 @@ import org.ivanov.exchangegenerator.client.ExchangeClient;
 import org.ivanov.exchangegenerator.client.KeycloakManageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,13 +18,15 @@ public class ExchangeClientImpl implements ExchangeClient {
     private WebClient exchangeClient;
     @Autowired
     private KeycloakManageClient keycloakManageClient;
+    @Value("${exchange-service.host}")
+    private String exchangeServiceHost;
 
 
 
     @Override
     public void changeExchange(CreateCurrencyDto dto) {
         exchangeClient.patch()
-                .uri("http://gateway/exchange//change")
+                .uri(exchangeServiceHost + "/exchange/change")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .bodyValue(dto).retrieve()
                 .bodyToMono(Void.class)
