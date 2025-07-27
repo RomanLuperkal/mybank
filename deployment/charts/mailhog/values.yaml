@@ -1,0 +1,16 @@
+ports:
+  mailhog_service_port: 8025
+  smtp_port: 1025
+
+replicaCount: 1
+
+image:
+  repository: mailhog/mailhog
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8025
+  targetPort: 8025
+

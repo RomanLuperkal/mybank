@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "transfer-service.fullname" . }}-config
+data:
+  application.yml: |
+{{ .Files.Get "files/transfer-service.yml" | nindent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "transfer-service.fullname" . }}-env
+data:
+  TRANSFER_SERVICE_PORT: {{ .Values.ports.transfer_service_port | quote }}
+  NOTIFICATION_SERVICE_HOST: {{ tpl .Values.global.notification_host . | quote }}
+  DB_HOST: {{ tpl .Values.global.db_host . | quote }}
+  KEYCLOAK_HOST_NAME: {{ tpl .Values.global.keycloak_host_name . | quote }}
+  ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
+  LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
+  ACCOUNT_SERVICE_HOST: {{ tpl .Values.global.account_host_name . | quote }}
+  BLOCK_SERVICE_HOST: {{ tpl .Values.global.block_host_name . | quote }}
+  EXCHANGE_SERVICE_HOST: {{ tpl .Values.global.exchange_host_name . | quote }}
+
+

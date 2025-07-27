@@ -5,8 +5,9 @@ global:
 
   keycloak_host_name: "keycloak-0.keycloak.{{ .Release.Namespace }}.svc.cluster.local:9092"
   account_host_name: "http://{{ .Release.Name }}-account-service.{{ .Release.Namespace }}.svc.cluster.local:8081"
-  cash_host_name: "http://{{ .Release.Name }}-cash.{{ .Release.Namespace }}.svc.cluster.local:8085"
+  cash_host_name: "http://{{ .Release.Name }}-cash-service.{{ .Release.Namespace }}.svc.cluster.local:8085"
   exchange_host_name: "http://{{ .Release.Name }}-exchange-service.{{ .Release.Namespace }}.svc.cluster.local:8084"
-  transfer_host_name: "http://{{ .Release.Name }}-transfer.{{ .Release.Namespace }}.svc.cluster.local:8087"
+  transfer_host_name: "http://{{ .Release.Name }}-transfer-service.{{ .Release.Namespace }}.svc.cluster.local:8087"
   notification_host: "http://{{ .Release.Name }}-notification-service.{{ .Release.Namespace }}.svc.cluster.local:8082"
+  block_host_name: "http://{{ .Release.Name }}-block-service.{{ .Release.Namespace }}.svc.cluster.local:8086"
   db_host: "postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local:5432"

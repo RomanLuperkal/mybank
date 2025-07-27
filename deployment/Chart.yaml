@@ -22,3 +22,18 @@ dependencies:
   - name: exchange-generator
     version: 1.0.0
     repository: file://charts/exchange-generator
+  - name: mailhog
+    version: 1.0.0
+    repository: file://charts/mailhog
+  - name: notification-service
+    version: 1.0.0
+    repository: file://charts/notification-service
+  - name: block-service
+    version: 1.0.0
+    repository: file://charts/block-service
+  - name: cash-service
+    version: 1.0.0
+    repository: file://charts/cash-service
+  - name: transfer-service
+    version: 1.0.0
+    repository: file://charts/transfer-service

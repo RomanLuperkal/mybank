@@ -1,0 +1,30 @@
+ports:
+  transfer_service_port: 8087
+  actuator_endpoint_port: 7087
+
+replicaCount: 1
+
+image:
+  repository: transfer-service
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8087
+  targetPort: 8087
+
+livenessProbe:
+  httpGet:
+    port: 7087
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    port: 7087
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+
+log_level_root: INFO

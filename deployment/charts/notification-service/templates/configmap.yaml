@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "notification-service.fullname" . }}-config
+data:
+  application.yml: |
+{{ .Files.Get "files/notification-service.yml" | nindent 4 }}
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "notification-service.fullname" . }}-env
+data:
+  NOTIFICATION_SERVICE_PORT: {{ .Values.ports.notification_service_port | quote }}
+  DB_HOST: {{ tpl .Values.global.db_host . | quote }}
+  KEYCLOAK_HOST_NAME: {{ tpl .Values.global.keycloak_host_name . | quote }}
+  ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
+  LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
+  SMTP_HOST: {{ tpl .Values.smtp_host . | quote}}
+

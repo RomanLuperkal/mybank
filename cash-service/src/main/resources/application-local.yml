@@ -1,0 +1,64 @@
+server:
+  port: ${CASH_SERVICE_PORT:8085}
+
+spring:
+  application:
+    name: cash-service
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${CASH_DB_HOST:localhost}:${CASH_DB_PORT:5432}/${CASH_DB_NAME:cash}
+    username: ${CASH_DB_USERNAME:postgres}
+    password: ${CASH_DB_PASSWORD}
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+        registration:
+          cash-client:
+            provider: keycloak
+            client-id: cash-client
+            client-secret: CxvnHnERGbn9VZglVr4OK8pKDf92yGJL
+            scope: profile
+            authorization-grant-type: client_credentials
+            clientAuthenticationMethod: client_secret_post
+
+      resourceserver:
+        jwt:
+          issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
+
+management:
+  server:
+    port: ${ACTUATOR_ENDPOINT_PORT:7085}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+
+
+account-service:
+  host: ${ACCOUNT_SERVICE_HOST:http//localhost:8081}
+
+block-service:
+  host: ${BLOCK_SERVICE_HOST:http//localhost:8085}
+
+notification-service:
+  host: ${NOTIFICATION_SERVICE_HOST:http//localhost:8084}

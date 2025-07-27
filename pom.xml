@@ -20,14 +20,10 @@
         <module>account-service</module>
         <module>exchange-service</module>
         <module>exchange-generator</module>
-        <!--<module>config-server</module>
-        <module>gateway</module>
         <module>notification-service</module>
-
-
-        <module>cash-service</module>
         <module>block-service</module>
-        <module>transfer-service</module>-->
+        <module>cash-service</module>
+        <module>transfer-service</module>
     </modules>
 
     <properties>

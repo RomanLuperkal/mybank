@@ -1,0 +1,32 @@
+ports:
+  notification_service_port: 8082
+  actuator_endpoint_port: 7082
+
+smtp_host: "{{ .Release.Name }}-mailhog.{{ .Release.Namespace }}.svc.cluster.local"
+
+replicaCount: 1
+
+image:
+  repository: notification-service
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8082
+  targetPort: 8082
+
+livenessProbe:
+  httpGet:
+    port: 7082
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    port: 7082
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+
+log_level_root: INFO

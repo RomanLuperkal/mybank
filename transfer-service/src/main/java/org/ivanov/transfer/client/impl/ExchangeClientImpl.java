@@ -5,6 +5,7 @@ import org.ivanov.transfer.client.ExchangeClient;
 import org.ivanov.transfer.client.KeycloakManageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -18,12 +19,14 @@ public class ExchangeClientImpl implements ExchangeClient {
     private WebClient client;
     @Autowired
     private KeycloakManageClient keycloakManageClient;
+    @Value("${exchange-service.host}")
+    private String exchangeServiceHost;
 
-    //TODO переделать на CompletableFeature
+
     @Override
     public CompletableFuture<ResponseCurrencyDto> getExchange() {
         return client.get()
-                .uri("http://gateway/exchange")
+                .uri(exchangeServiceHost + "/exchange")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .retrieve()
                 .bodyToMono(ResponseCurrencyDto.class)

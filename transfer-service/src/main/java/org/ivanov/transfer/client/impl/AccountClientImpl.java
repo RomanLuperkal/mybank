@@ -7,6 +7,7 @@ import org.ivanov.transferdto.ReqExchangeWalletsDto;
 import org.ivanov.transferdto.ReqTransferMoneyDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,11 +21,13 @@ public class AccountClientImpl implements AccountClient {
     private WebClient client;
     @Autowired
     private KeycloakManageClient keycloakManageClient;
+    @Value("${account-service.host}")
+    private String accountServiceHost;
 
     @Override
     public CompletableFuture<ResponseExchangeWalletsDto> getWalletsType(ReqExchangeWalletsDto dto) {
         return client.post()
-                .uri("http://gateway/account/wallet/types")
+                .uri(accountServiceHost + "/account/wallet/types")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .bodyValue(dto)
                 .retrieve()
@@ -36,7 +39,7 @@ public class AccountClientImpl implements AccountClient {
     @Override
     public void processTransferTransaction(ReqTransferMoneyDto dto) {
          client.patch()
-                .uri("http://gateway/account/wallet/transfer")
+                .uri(accountServiceHost + "/account/wallet/transfer")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .bodyValue(dto)
                 .retrieve()

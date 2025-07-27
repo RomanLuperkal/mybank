@@ -5,6 +5,7 @@ import org.blog.cashservice.client.AccountClient;
 import org.blog.cashservice.client.KeycloakManageClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,12 +17,13 @@ public class AccountClientImpl implements AccountClient {
     private WebClient client;
     @Autowired
     private KeycloakManageClient keycloakManageClient;
+    @Value("${account-service.host}")
+    private String accountServiceHost;
 
     @Override
-            //TODO передать в эндпоинт accountId и walletId
     public void processTransaction(Long accountId, Long walletId, ApprovedTransactionDto dto) {
          client.patch()
-                .uri("http://gateway/account/" + accountId + "/wallet/" + walletId)
+                .uri(accountServiceHost + "/account/" + accountId + "/wallet/" + walletId)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + keycloakManageClient.getAccessToken())
                 .bodyValue(dto).retrieve()
                 .bodyToMono(Void.class)

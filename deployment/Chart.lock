@@ -17,5 +17,20 @@ dependencies:
 - name: exchange-generator
   repository: file://charts/exchange-generator
   version: 1.0.0
-digest: sha256:d80506ffc9a1f8cd0c93e2e2e1c25f0d407d0b88319528b3abfdc6589cabd3aa
-generated: "2025-07-26T17:30:14.8688187+03:00"
+- name: mailhog
+  repository: file://charts/mailhog
+  version: 1.0.0
+- name: notification-service
+  repository: file://charts/notification-service
+  version: 1.0.0
+- name: block-service
+  repository: file://charts/block-service
+  version: 1.0.0
+- name: cash-service
+  repository: file://charts/cash-service
+  version: 1.0.0
+- name: transfer-service
+  repository: file://charts/transfer-service
+  version: 1.0.0
+digest: sha256:16cea674caf3969c75259ff511cfd26f6ebec5547c580e0146007f64b3ad6589
+generated: "2025-07-27T19:50:59.3247049+03:00"

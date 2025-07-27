@@ -1,0 +1,30 @@
+ports:
+  cash_service_port: 8085
+  actuator_endpoint_port: 7085
+
+replicaCount: 1
+
+image:
+  repository: cash-service
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: ClusterIP
+  port: 8085
+  targetPort: 8085
+
+livenessProbe:
+  httpGet:
+    port: 7085
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    port: 7085
+    path: /health
+  failureThreshold: 3
+  periodSeconds: 10
+
+log_level_root: INFO

@@ -10,7 +10,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "front.fullname" . }}-env
+  name: {{ include "account-service.fullname" . }}-env
 data:
   ACCOUNT_SERVICE_PORT: {{ .Values.ports.account_service_port | quote }}
   NOTIFICATION_HOST: {{ tpl .Values.global.notification_host . | quote }}

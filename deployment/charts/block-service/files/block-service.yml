@@ -1,0 +1,24 @@
+server:
+  port: ${BLOCK_SERVICE_PORT:8086}
+
+spring:
+  application:
+    name: block-service
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://${KEYCLOAK_HOST_NAME}/realms/master
+
+management:
+  server:
+    port: ${ACTUATOR_ENDPOINT_PORT:7086}
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}

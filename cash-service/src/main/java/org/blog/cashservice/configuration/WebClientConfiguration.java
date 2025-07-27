@@ -2,8 +2,6 @@ package org.blog.cashservice.configuration;
 
 import io.netty.channel.ChannelOption;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
-import org.springframework.cloud.client.loadbalancer.reactive.ReactorLoadBalancerExchangeFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -15,13 +13,11 @@ import java.time.Duration;
 @Configuration
 public class WebClientConfiguration {
     @Value("${spring.security.oauth2.client.provider.keycloak.issuer-uri}")
-    private String KEYCLOAK_HOST_NAME = "";
+    private String KEYCLOAK_HOST_NAME;
 
     @Bean("service-client")
-    @LoadBalanced
-    public WebClient notificationClient(ReactorLoadBalancerExchangeFilterFunction lbFunction) {
+    public WebClient notificationClient() {
         return WebClient.builder().
-                filter(lbFunction).
                 clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 3000)

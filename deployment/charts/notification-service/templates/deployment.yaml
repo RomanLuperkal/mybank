@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "notification-service.fullname" . }}
+  labels:
+    app: {{ include "notification-service.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "notification-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "notification-service.name" . }}
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: postgres:16
+          command: [ 'sh', '-c', 'until pg_isready -h postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local -p 5432; do echo waiting for postgres; sleep 2; done;' ]
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.ports.notification_service_port }}
+              name: app
+            - containerPort: {{ .Values.livenessProbe.httpGet.port }}
+              name: actuator
+          livenessProbe:
+            httpGet:
+              port: 7082
+              path: actuator/health
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              port: 7082
+              path: actuator/health
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 3
+          volumeMounts:
+            - name: {{ include "notification-service.name" . }}
+              mountPath: /config
+          envFrom:
+            - configMapRef:
+                name: {{ include "notification-service.fullname" . }}-env
+          env:
+            - name: NOTIFICATION_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sc
+                  key: POSTGRES_USER
+            - name: NOTIFICATION_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sc
+                  key: POSTGRES_PASSWORD
+      volumes:
+        - name: {{ include "notification-service.name" . }}
+          configMap:
+            name: {{ include "notification-service.fullname" . }}-config
