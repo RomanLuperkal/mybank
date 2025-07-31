@@ -28,6 +28,8 @@ pipeline {
                     sh 'ls -la'
 
                     microservices.each { service ->
+                        echo "Текущая директория: ${pwd()}"
+                        sh 'ls -la'
                         echo "Building and testing ${service}"
                         dir("${service}") {
                             sh 'mvn clean test'
