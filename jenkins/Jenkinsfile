@@ -27,8 +27,7 @@ pipeline {
                     microservices.each { service ->
                         echo "Building and testing ${service}"
                         dir("${service}") {
-                            sh 'chmod +x gradlew'
-                            sh './gradlew clean test'
+                            sh 'mvn clean test'
                         }
                     }
                 }
@@ -50,7 +49,7 @@ pipeline {
                     ].each { service ->
                         echo "Building JAR for ${service}"
                         dir("${service}") {
-                            sh './gradlew build -x test'
+                            sh 'mvn clean package'
                         }
                     }
                 }
@@ -106,18 +105,18 @@ pipeline {
         stage('Deploy to TEST') {
             steps {
                 dir('mybank') {
-                     def servicesToRename = [
-                        'account-service',
-                        'block-service',
-                        'cash-service',
-                        'front',
-                        'exchange-service',
-                        'exchange-generator',
-                        'notification-service',
-                        'transfer-service'
-                    ]
-
                     script {
+                        def servicesToRename = [
+                            'account-service',
+                            'block-service',
+                            'cash-service',
+                            'front',
+                            'exchange-service',
+                            'exchange-generator',
+                            'notification-service',
+                            'transfer-service'
+                        ]
+
                         servicesToRename.each { service ->
                             sh """
                             helm upgrade --install ${service} . \\
@@ -126,13 +125,13 @@ pipeline {
                               --set ${service}.image.tag=${IMAGE_TAG}
                             """
                         }
-                    }
 
-                    sh """
-                    helm dependency update .
-                    helm upgrade --install mybank . \\
-                      --namespace test --create-namespace
-                    """
+                        sh """
+                        helm dependency update .
+                        helm upgrade --install mybank . \\
+                          --namespace test --create-namespace
+                        """
+                    }
                 }
             }
         }
