@@ -24,6 +24,9 @@ pipeline {
                         'transfer-service'
                     ]
 
+                    echo "Текущая директория: ${pwd()}"
+                    sh 'ls -la'
+
                     microservices.each { service ->
                         echo "Building and testing ${service}"
                         dir("${service}") {
