@@ -7,9 +7,16 @@ pipeline {
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
     }
 
+    stage('Check files (for debug)') {
+    			steps {
+    				sh """
+    				pwd
+    				ls -lh ./
+    				"""
+    			}
+    		}
+
     stages {
-
-
         stage('Build and execute tests') {
             steps {
                 script {
