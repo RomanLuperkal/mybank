@@ -86,7 +86,7 @@ pipeline {
             }
         } */
 
-        stages {
+
                 stage('Build') {
                     steps {
                         withCredentials([string(credentialsId: 'DOCKER_REGISTRY', variable: 'DOCKER_REGISTRY')]) {
@@ -110,7 +110,7 @@ pipeline {
                     }
                 }
             }
-        }
+
 
         stage('Build Docker images') {
             steps {
