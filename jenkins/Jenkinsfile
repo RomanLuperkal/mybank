@@ -26,6 +26,17 @@ pipeline {
                             poll: false
                     }
                 }
+
+        stage('Build dto-library') {
+                    steps {
+                        script {
+                            dir("dto-library") {
+                                sh 'mvn clean install'
+                            }
+                        }
+                    }
+                }
+
         stage('Build and execute tests') {
             steps {
                 script {
