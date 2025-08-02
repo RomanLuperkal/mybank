@@ -101,7 +101,7 @@ pipeline {
                                                          'transfer-service'
                                                     ].each { service ->
                                                         echo "Building Docker image for ${service}"
-                                                        echo "docker_registry: \${DOCKER_REGISTRY}"
+                                                        echo "docker_registry: \${REGISTRY_NAME_VAR}"
                                                         sh "docker build -t \${REGISTRY_NAME_VAR}/${service}:${IMAGE_TAG} ./${service}"
                                                     }
                                                 }
