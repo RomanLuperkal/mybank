@@ -88,7 +88,7 @@ pipeline {
 
         stage('Build Docker images') {
             steps {
-            [
+            def microservices = [
                                     'account-service',
                                      'block-service',
                                      'cash-service',
