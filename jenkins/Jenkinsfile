@@ -8,7 +8,7 @@ pipeline {
     }
 
     stages {
-        stage('Check files (for debug)') {
+        stage('Check files') {
             			steps {
             				sh """
             				pwd
@@ -16,6 +16,16 @@ pipeline {
             				"""
             			}
             		}
+        stage('Checkout') {
+                    steps {
+                        deleteDir() // Очистить рабочую директорию
+                        git branch: 'release/v2.0.0',
+                            url: 'https://github.com/RomanLuperkal/mybank.git',
+                            credentialsId: 'github-creds',
+                            changelog: true,
+                            poll: false
+                    }
+                }
         stage('Build and execute tests') {
             steps {
                 script {
