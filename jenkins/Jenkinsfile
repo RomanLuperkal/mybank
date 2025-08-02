@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        //DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
     }
