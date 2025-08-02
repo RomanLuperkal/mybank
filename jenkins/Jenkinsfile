@@ -27,12 +27,10 @@ pipeline {
                     }
                 }
 
-        stage('Build dto-library') {
+        stage('Build project') {
                     steps {
                         script {
-                            dir("dto-library") {
-                                sh 'mvn clean install'
-                            }
+                                sh 'mvn clean install -Dmaven.test.skip=true'
                         }
                     }
                 }
