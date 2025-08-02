@@ -4,7 +4,7 @@ USER root
 
 RUN apt-get update && apt-get install -y \
     git \
-    gradle \
+    maven \
     curl \
     unzip \
     ca-certificates \
