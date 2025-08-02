@@ -88,7 +88,21 @@ pipeline {
 
         stage('Build Docker images') {
             steps {
-            withCredentials([string(credentialsId: 'DOCKER_REGISTRY', variable: 'REGISTRY_NAME_VAR')]) {
+            [
+                                    'account-service',
+                                     'block-service',
+                                     'cash-service',
+                                     'front',
+                                     'exchange-service',
+                                     'exchange-generator',
+                                     'notification-service',
+                                     'transfer-service'
+                                ].each { service ->
+                                    echo "Building Docker image for ${service}"
+                                    echo "docker_registry: ${DOCKER_REGISTRY}"
+                                    sh """docker build -t ${DOCKER_REGISTRY}/${service}:${IMAGE_TAG} ./${service}"""
+                                }
+           /*  withCredentials([string(credentialsId: 'DOCKER_REGISTRY', variable: 'REGISTRY_NAME_VAR')]) {
                                 script {
                                                     [
                                                         'account-service',
@@ -101,11 +115,11 @@ pipeline {
                                                          'transfer-service'
                                                     ].each { service ->
                                                         echo "Building Docker image for ${service}"
-                                                        echo "docker_registry: \${REGISTRY_NAME_VAR}"
-                                                        sh "docker build -t \${REGISTRY_NAME_VAR}/${service}:${IMAGE_TAG} ./${service}"
+                                                        echo "docker_registry: " + env.DOCKER_REGISTRY + " d"
+                                                        sh 'docker build -t ${REGISTRY_NAME_VAR}/${service}:${IMAGE_TAG} ./${service}'
                                                     }
                                                 }
-                            }
+                            } */
                 /* script {
                     [
                         'account-service',
