@@ -88,18 +88,16 @@ pipeline {
 
         stage('Build Docker images') {
             steps {
-             steps {
-                            sh """
-                            docker build -t ${DOCKER_REGISTRY}/account-service:${IMAGE_TAG} ./account-service
-                            docker build -t ${DOCKER_REGISTRY}/block-service:${IMAGE_TAG} ./block-service
-                            docker build -t ${DOCKER_REGISTRY}/cash-service:${IMAGE_TAG} ./cash-service
-                            docker build -t ${DOCKER_REGISTRY}/front:${IMAGE_TAG} ./front
-                            docker build -t ${DOCKER_REGISTRY}/exchange-service:${IMAGE_TAG} ./exchange-service
-                            docker build -t ${DOCKER_REGISTRY}/exchange-generator:${IMAGE_TAG} ./exchange-generator
-                            docker build -t ${DOCKER_REGISTRY}/notification-service:${IMAGE_TAG} ./notification-service
-                            docker build -t ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG} ./transfer-service
-                            """
-                        }
+             sh """
+                                         docker build -t ${DOCKER_REGISTRY}/account-service:${IMAGE_TAG} ./account-service
+                                         docker build -t ${DOCKER_REGISTRY}/block-service:${IMAGE_TAG} ./block-service
+                                         docker build -t ${DOCKER_REGISTRY}/cash-service:${IMAGE_TAG} ./cash-service
+                                         docker build -t ${DOCKER_REGISTRY}/front:${IMAGE_TAG} ./front
+                                         docker build -t ${DOCKER_REGISTRY}/exchange-service:${IMAGE_TAG} ./exchange-service
+                                         docker build -t ${DOCKER_REGISTRY}/exchange-generator:${IMAGE_TAG} ./exchange-generator
+                                         docker build -t ${DOCKER_REGISTRY}/notification-service:${IMAGE_TAG} ./notification-service
+                                         docker build -t ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG} ./transfer-service
+                                         """
            /*  withCredentials([string(credentialsId: 'DOCKER_REGISTRY', variable: 'REGISTRY_NAME_VAR')]) {
                                 script {
                                                     [
