@@ -35,7 +35,7 @@ pipeline {
                     }
                 }
 
-        stage('Build and execute tests') {
+        stage('Execute tests') {
             steps {
                 script {
                     def microservices = [
@@ -57,14 +57,14 @@ pipeline {
                         sh 'ls -la'
                         echo "Building and testing ${service}"
                         dir("${service}") {
-                            sh 'mvn clean test'
+                            sh 'mvn test'
                         }
                     }
                 }
             }
         }
 
-        stage('Build JARs') {
+        /* stage('Build JARs') {
             steps {
                 script {
                     [
@@ -84,7 +84,7 @@ pipeline {
                     }
                 }
             }
-        }
+        } */
 
         stage('Build Docker images') {
             steps {
