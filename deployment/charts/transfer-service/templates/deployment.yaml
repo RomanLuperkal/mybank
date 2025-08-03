@@ -69,6 +69,13 @@ spec:
                 secretKeyRef:
                   name: postgres-sc
                   key: POSTGRES_PASSWORD
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
       volumes:
         - name: {{ include "transfer-service.name" . }}
           configMap:
