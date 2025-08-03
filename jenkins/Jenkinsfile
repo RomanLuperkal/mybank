@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Build project') {
                             steps {
-                            deleteDir()
+                            //deleteDir()
                                 script {
                                         sh 'mvn clean install -Dmaven.test.skip=true'
                                 }
