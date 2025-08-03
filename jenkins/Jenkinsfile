@@ -10,6 +10,7 @@ pipeline {
     stages {
         stage('Build project') {
                             steps {
+                            deleteDir()
                                 script {
                                         sh 'mvn clean install -Dmaven.test.skip=true'
                                 }
@@ -108,6 +109,22 @@ pipeline {
                   helm dependency update .
                   helm upgrade --install mybank ./ \\
                     --namespace test --create-namespace \\
+                    --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
+                    --set account-service.image.tag=${IMAGE_TAG} \\
+                    --set block-service.image.repository=${DOCKER_REGISTRY}/block-service \\
+                    --set block-service.image.tag=${IMAGE_TAG} \\
+                    --set cash-service.image.repository=${DOCKER_REGISTRY}/cash-service \\
+                    --set cash-service.image.tag=${IMAGE_TAG} \\
+                    --set front.image.repository=${DOCKER_REGISTRY}/front \\
+                    --set front.image.tag=${IMAGE_TAG} \\
+                    --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
+                    --set exchange-service.image.tag=${IMAGE_TAG} \\
+                    --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                    --set exchange-generator.image.tag=${IMAGE_TAG} \\
+                    --set notification-service.image.repository=${DOCKER_REGISTRY}/notification-service \\
+                    --set notification-service.image.tag=${IMAGE_TAG} \\
+                    --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
+                    --set transfer-service.image.tag=${IMAGE_TAG} \\
                   """
                }
 
@@ -127,6 +144,22 @@ pipeline {
                 helm dependency update .
                 helm upgrade --install mybank ./ \\
                   --namespace prod --create-namespace \\
+                  --set account-service.image.repository=${DOCKER_REGISTRY}/account-service \\
+                  --set account-service.image.tag=${IMAGE_TAG} \\
+                  --set block-service.image.repository=${DOCKER_REGISTRY}/block-service \\
+                  --set block-service.image.tag=${IMAGE_TAG} \\
+                  --set cash-service.image.repository=${DOCKER_REGISTRY}/cash-service \\
+                  --set cash-service.image.tag=${IMAGE_TAG} \\
+                  --set front.image.repository=${DOCKER_REGISTRY}/front \\
+                  --set front.image.tag=${IMAGE_TAG} \\
+                  --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
+                  --set exchange-service.image.tag=${IMAGE_TAG} \\
+                  --set exchange-generator.image.repository=${DOCKER_REGISTRY}/exchange-generator \\
+                  --set exchange-generator.image.tag=${IMAGE_TAG} \\
+                  --set notification-service.image.repository=${DOCKER_REGISTRY}/notification-service \\
+                  --set notification-service.image.tag=${IMAGE_TAG} \\
+                  --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
+                  --set transfer-service.image.tag=${IMAGE_TAG} \\
                 """
             }
             }
