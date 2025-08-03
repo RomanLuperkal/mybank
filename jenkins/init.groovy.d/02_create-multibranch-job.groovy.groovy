@@ -11,28 +11,31 @@ def githubRepo    = env['GITHUB_REPOSITORY']
 def credentialsId = "github-creds"
 def scriptPath    = "jenkins/Jenkinsfile"
 
-println "--> Starting create-multibranch-job.groovy"
+println "--> Запуск create-multibranch-job.groovy"
 
 if (!githubRepo) {
-    println "Env variable GITHUB_REPOSITORY not set (example: owner/repo)"
+    println "Переменная окружения GITHUB_REPOSITORY не задана (пример: owner/repo)"
     return
 }
 
 println "--> GITHUB_REPOSITORY = ${githubRepo}"
 
+// Проверка, существует ли уже такой job
 if (instance.getItem(jobName) != null) {
-    println "--> Multibranch job '${jobName}' already exists. Skipping."
+    println "--> Multibranch job '${jobName}' уже существует. Пропускаем."
     return
 }
 
+// Разбиваем owner/repo
 def parts = githubRepo.split('/')
 if (parts.length != 2) {
-    println "Incorrect format GITHUB_REPOSITORY. Expected: owner/repo"
+    println "Неверный формат GITHUB_REPOSITORY. Ожидалось: owner/repo"
     return
 }
 def owner = parts[0]
 def repo  = parts[1]
 
+// Создаём GitHub SCM Source
 def source = new GitHubSCMSource(owner, repo)
 source.setCredentialsId(credentialsId)
 source.setTraits([
@@ -55,4 +58,4 @@ instance.add(mbp, jobName)
 mbp.save()
 mbp.scheduleBuild2(0)
 
-println "--> Multibranch job '${jobName}' created and started on '${githubRepo}'"
+println "--> Multibranch job '${jobName}' создан и запущен на '${githubRepo}'"

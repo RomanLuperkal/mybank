@@ -2,250 +2,130 @@ pipeline {
     agent any
 
     environment {
-        //DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
         GITHUB_USERNAME = credentials('GITHUB_USERNAME')
         IMAGE_TAG       = "${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Check files') {
-            			steps {
-            				sh """
-            				pwd
-            				ls -lh ./
-            				"""
-            			}
-            		}
-        stage('Checkout') {
-                    steps {
-                        deleteDir() // Очистить рабочую директорию
-                        git branch: 'release/v2.0.0',
-                            url: 'https://github.com/RomanLuperkal/mybank.git',
-                            credentialsId: 'github-creds',
-                            changelog: true,
-                            poll: false
-                    }
-                }
-
         stage('Build project') {
+                            steps {
+                                script {
+                                        sh 'mvn clean install -Dmaven.test.skip=true'
+                                }
+                            }
+                        }
+
+                stage('Execute tests') {
                     steps {
                         script {
-                                sh 'mvn clean install -Dmaven.test.skip=true'
-                        }
-                    }
-                }
+                            def microservices = [
+                                'account-service',
+                                'block-service',
+                                'cash-service',
+                                'front',
+                                'exchange-service',
+                                'exchange-generator',
+                                'notification-service',
+                                'transfer-service'
+                            ]
 
-        stage('Execute tests') {
-            steps {
-                script {
-                    def microservices = [
-                        'account-service',
-                        'block-service',
-                        'cash-service',
-                        'front',
-                        'exchange-service',
-                        'exchange-generator',
-                        'notification-service',
-                        'transfer-service'
-                    ]
+                            echo "Текущая директория: ${pwd()}"
+                            sh 'ls -la'
 
-                    echo "Текущая директория: ${pwd()}"
-                    sh 'ls -la'
-
-                    microservices.each { service ->
-                        echo "Текущая директория: ${pwd()}"
-                        sh 'ls -la'
-                        echo "Building and testing ${service}"
-                        dir("${service}") {
-                            sh 'mvn test'
-                        }
-                    }
-                }
-            }
-        }
-
-        /* stage('Build JARs') {
-            steps {
-                script {
-                    [
-                        'account-service',
-                        'block-service',
-                        'cash-service',
-                        'front',
-                        'exchange-service',
-                        'exchange-generator',
-                        'notification-service',
-                        'transfer-service'
-                    ].each { service ->
-                        echo "Building JAR for ${service}"
-                        dir("${service}") {
-                            sh 'mvn clean package'
-                        }
-                    }
-                }
-            }
-        } */
-
-
-                stage('Build') {
-                    steps {
-                        withCredentials([string(credentialsId: 'DOCKER_REGISTRY', variable: 'DOCKER_REGISTRY')]) {
-                            script {
-                                def services = [
-                                    'account-service',
-                                    'block-service',
-                                    'cash-service',
-                                    'front',
-                                    'exchange-service',
-                                    'exchange-generator',
-                                    'notification-service',
-                                    'transfer-service'
-                                ]
-                                services.each { service ->
-                                    echo "Building Docker image for ${service}"
-                                    sh "docker build -t ${DOCKER_REGISTRY}/${service}:${IMAGE_TAG} ./${service}"
+                            microservices.each { service ->
+                                echo "Текущая директория: ${pwd()}"
+                                sh 'ls -la'
+                                echo "Building and testing ${service}"
+                                dir("${service}") {
+                                    sh 'mvn test'
                                 }
                             }
                         }
                     }
                 }
 
-
-
-        stage('Build Docker images') {
-            steps {
-
-             /* withCredentials([string(credentialsId: 'DOCKER_REGISTRY', variable: 'REGISTRY_NAME_VAR')]) {
-                                script {
-                                                    [
-                                                        'account-service',
-                                                         'block-service',
-                                                         'cash-service',
-                                                         'front',
-                                                         'exchange-service',
-                                                         'exchange-generator',
-                                                         'notification-service',
-                                                         'transfer-service'
-                                                    ].each { service ->
-                                                        echo "Building Docker image for ${service}"
-                                                        echo "docker_registry: " + env.DOCKER_REGISTRY + " d"
-                                                        sh 'docker build -t ${REGISTRY_NAME_VAR}/${service}:${IMAGE_TAG} ./${service}'
-                                                    }
-                                                }
-                            }  */
-                 script {
-                    [
-                        'account-service',
-                         'block-service',
-                         'cash-service',
-                         'front',
-                         'exchange-service',
-                         'exchange-generator',
-                         'notification-service',
-                         'transfer-service'
-                    ].each { service ->
-                        echo "Building Docker image for ${service}"
-                        echo "docker_registry: ${DOCKER_REGISTRY}"
-                        sh "docker build -t ${DOCKER_REGISTRY}/${service}:${IMAGE_TAG} ./${service}"
+                 stage('Build JARs') {
+                    steps {
+                        script {
+                            [
+                                'account-service',
+                                'block-service',
+                                'cash-service',
+                                'front',
+                                'exchange-service',
+                                'exchange-generator',
+                                'notification-service',
+                                'transfer-service'
+                            ].each { service ->
+                                echo "Building JAR for ${service}"
+                                dir("${service}") {
+                                    sh 'mvn clean package'
+                                }
+                            }
+                        }
                     }
                 }
+
+        stage('Build Docker Images') {
+            steps {
+                sh """
+                docker build -t ${DOCKER_REGISTRY}/account-service:${IMAGE_TAG} ./account-service
+                docker build -t ${DOCKER_REGISTRY}/block-service:${IMAGE_TAG} ./block-service
+                docker build -t ${DOCKER_REGISTRY}/cash-service:${IMAGE_TAG} ./cash-service
+                docker build -t ${DOCKER_REGISTRY}/front:${IMAGE_TAG} ./front
+                docker build -t ${DOCKER_REGISTRY}/exchange-service:${IMAGE_TAG} ./exchange-service
+                docker build -t ${DOCKER_REGISTRY}/exchange-generator:${IMAGE_TAG} ./exchange-generator
+                docker build -t ${DOCKER_REGISTRY}/notification-service:${IMAGE_TAG} ./notification-service
+                docker build -t ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG} ./transfer-service
+                """
             }
         }
 
-        stage('Push Docker images') {
+        stage('Push Docker Images') {
             steps {
                 withCredentials([string(credentialsId: 'GHCR_TOKEN', variable: 'GHCR_TOKEN')]) {
                     sh """
                     echo \$GHCR_TOKEN | docker login ghcr.io -u ${GITHUB_USERNAME} --password-stdin
-                    """
 
-                    script {
-                        [
-                            'account-service',
-                            'block-service',
-                            'cash-service',
-                            'front',
-                            'exchange-service',
-                            'exchange-generator',
-                            'notification-service',
-                            'transfer-service'
-                        ].each { service ->
-                            echo "Pushing Docker image for ${service}"
-                            sh "docker push ${DOCKER_REGISTRY}/${service}:${IMAGE_TAG}"
-                        }
-                    }
-                }
-            }
-        }
-
-        stage('Deploy to TEST') {
-            steps {
-                dir('mybank') {
-                    script {
-                        def servicesToRename = [
-                            'account-service',
-                            'block-service',
-                            'cash-service',
-                            'front',
-                            'exchange-service',
-                            'exchange-generator',
-                            'notification-service',
-                            'transfer-service'
-                        ]
-
-                        servicesToRename.each { service ->
-                            sh """
-                            helm upgrade --install ${service} . \\
-                              --namespace test --create-namespace \\
-                              --set ${service}.image.repository=${DOCKER_REGISTRY}/${service} \\
-                              --set ${service}.image.tag=${IMAGE_TAG}
-                            """
-                        }
-
-                        sh """
-                        helm dependency update .
-                        helm upgrade --install mybank . \\
-                          --namespace test --create-namespace
-                        """
-                    }
-                }
-            }
-        }
-
-        stage('Manual approval for PROD') {
-            steps {
-                input message: 'Confirm manually to deploy to PROD environment.', ok: 'Confirm'
-            }
-        }
-
-        stage('Deploy to PROD') {
-            steps {
-                dir('mybank') {
-                    sh """
-                    helm dependency update .
-                    helm upgrade --install mybank . \\
-                      --namespace prod --create-namespace
+                    docker push ${DOCKER_REGISTRY}/account-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/block-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/cash-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/front:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/exchange-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/exchange-generator:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/notification-service:${IMAGE_TAG}
+                    docker push ${DOCKER_REGISTRY}/transfer-service:${IMAGE_TAG}
                     """
                 }
             }
         }
 
+        stage('Deploy to TEST using Helm') {
+            steps {
+                sh """
+                helm dependency update .
+                helm upgrade --install mybank ./ \\
+                  --namespace test --create-namespace \\
+                """
+            }
+        }
+
+        stage('Manual Approval for PROD') {
+            steps {
+                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
+            }
+        }
+
+        stage('Deploy to PROD using Helm') {
+            steps {
+                sh """
+                helm dependency update .
+                helm upgrade --install mybank ./ \\
+                  --namespace prod --create-namespace \\
+                """
+            }
+        }
 
     }
-
-
-    post {
-        always {
-            echo 'Pipeline completed - cleaning up'
-        }
-        success {
-            echo 'Pipeline succeeded!'
-        }
-        failure {
-            echo 'Pipeline failed!'
-        }
-    }
-
-
-
 }
