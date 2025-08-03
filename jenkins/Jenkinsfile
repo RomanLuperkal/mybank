@@ -117,7 +117,7 @@ pipeline {
                     --set cash-service.image.tag=${IMAGE_TAG} \\
                     --set front.image.repository=${DOCKER_REGISTRY}/front \\
                     --set front.image.tag=${IMAGE_TAG} \\
-                    --set front.ingress.hosts[0].host=bank-mybank.test \\
+                    --set front.ingress.hosts[0].host=mybank.test \\
                     --set front.ingress.hosts[0].paths[0].path="/" \\
                     --set front.ingress.hosts[0].paths[0].pathType="Prefix" \\
                     --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
@@ -155,7 +155,7 @@ pipeline {
                   --set cash-service.image.tag=${IMAGE_TAG} \\
                   --set front.image.repository=${DOCKER_REGISTRY}/front \\
                   --set front.image.tag=${IMAGE_TAG} \\
-                  --set front.ingress.hosts[0].host=bank-mybank.prod \\
+                  --set front.ingress.hosts[0].host=mybank.prod \\
                   --set front.ingress.hosts[0].paths[0].path="/" \\
                   --set front.ingress.hosts[0].paths[0].pathType="Prefix" \\
                   --set exchange-service.image.repository=${DOCKER_REGISTRY}/exchange-service \\
