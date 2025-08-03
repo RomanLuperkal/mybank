@@ -45,7 +45,7 @@ pipeline {
                     }
                 }
 
-                 stage('Build JARs') {
+                 /* stage('Build JARs') {
                     steps {
                         script {
                             [
@@ -65,7 +65,7 @@ pipeline {
                             }
                         }
                     }
-                }
+                } */
 
         stage('Build Docker Images') {
             steps {
@@ -103,11 +103,14 @@ pipeline {
 
         stage('Deploy to TEST using Helm') {
             steps {
-                sh """
-                helm dependency update .
-                helm upgrade --install mybank ./ \\
-                  --namespace test --create-namespace \\
-                """
+                dir("deployment") {
+                  sh """
+                  helm dependency update .
+                  helm upgrade --install mybank ./ \\
+                    --namespace test --create-namespace \\
+                  """
+               }
+
             }
         }
 
@@ -119,13 +122,14 @@ pipeline {
 
         stage('Deploy to PROD using Helm') {
             steps {
+            dir("deployment") {
                 sh """
                 helm dependency update .
                 helm upgrade --install mybank ./ \\
                   --namespace prod --create-namespace \\
                 """
             }
+            }
         }
-
     }
 }
