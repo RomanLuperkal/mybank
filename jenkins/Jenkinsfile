@@ -150,7 +150,9 @@ pipeline {
         }
 
         stage('clear workdir') {
-        deleteDir()
+            steps {
+                deleteDir()
+            }
         }
     }
 }
