@@ -10,7 +10,6 @@ pipeline {
     stages {
         stage('Build project') {
                             steps {
-                            //deleteDir()
                                 script {
                                         sh 'mvn clean install -Dmaven.test.skip=true'
                                 }
@@ -46,27 +45,6 @@ pipeline {
                     }
                 }
 
-                 /* stage('Build JARs') {
-                    steps {
-                        script {
-                            [
-                                'account-service',
-                                'block-service',
-                                'cash-service',
-                                'front',
-                                'exchange-service',
-                                'exchange-generator',
-                                'notification-service',
-                                'transfer-service'
-                            ].each { service ->
-                                echo "Building JAR for ${service}"
-                                dir("${service}") {
-                                    sh 'mvn clean package'
-                                }
-                            }
-                        }
-                    }
-                } */
 
         stage('Build Docker Images') {
             steps {
@@ -169,6 +147,10 @@ pipeline {
                 """
             }
             }
+        }
+
+        stage('clear workdir') {
+        deleteDir()
         }
     }
 }
