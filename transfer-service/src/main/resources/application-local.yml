@@ -44,7 +44,7 @@ spring:
 
 management:
   server:
-    port: ${ACTUATOR_ENDPOINT_PORT:7080}
+    port: ${ACTUATOR_ENDPOINT_PORT:7087}
   endpoints:
     web:
       exposure:
@@ -56,13 +56,13 @@ logging:
 
 
 account-service:
-  host: ${ACCOUNT_SERVICE_HOST:http//localhost:8081}
+  host: ${ACCOUNT_SERVICE_HOST:http://localhost:8081}
 
 block-service:
-  host: ${BLOCK_SERVICE_HOST:http//localhost:8085}
+  host: ${BLOCK_SERVICE_HOST:http://localhost:8086}
 
 exchange-service:
-  host: ${EXCHANGE_SERVICE_HOST:http//localhost:8084}
+  host: ${EXCHANGE_SERVICE_HOST:http://localhost:8084}
 
 notification-service:
-  host: ${TRANSFER_SERVICE_HOST:http//localhost:8087}
+  host: ${TRANSFER_SERVICE_HOST:http://localhost:8087}

@@ -55,10 +55,10 @@ logging:
 
 
 account-service:
-  host: ${ACCOUNT_SERVICE_HOST:http//localhost:8081}
+  host: ${ACCOUNT_SERVICE_HOST:http://localhost:8081}
 
 block-service:
-  host: ${BLOCK_SERVICE_HOST:http//localhost:8085}
+  host: ${BLOCK_SERVICE_HOST:http://localhost:8086}
 
 notification-service:
-  host: ${NOTIFICATION_SERVICE_HOST:http//localhost:8084}
+  host: ${NOTIFICATION_SERVICE_HOST:http://localhost:8084}

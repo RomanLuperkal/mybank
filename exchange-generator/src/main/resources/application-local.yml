@@ -21,7 +21,7 @@ spring:
             clientAuthenticationMethod: client_secret_post
 
 exchange-service:
-  host: ${EXCHANGE_SERVICE_HOST:test}
+  host: ${EXCHANGE_SERVICE_HOST:http://localhost:8084}
 
 logging:
   level:

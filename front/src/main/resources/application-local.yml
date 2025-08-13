@@ -52,13 +52,13 @@ logging:
 
 
 account-service:
-  host: ${ACCOUNT_SERVICE_HOST:http//localhost:8081}
+  host: ${ACCOUNT_SERVICE_HOST:http://localhost:8081}
 
 cash-service:
-  host: ${CASH_SERVICE_HOST:http//localhost:8085}
+  host: ${CASH_SERVICE_HOST:http://localhost:8085}
 
 exchange-service:
-  host: ${EXCHANGE_SERVICE_HOST:http//localhost:8084}
+  host: ${EXCHANGE_SERVICE_HOST:http://localhost:8084}
 
 transfer-service:
-  host: ${TRANSFER_SERVICE_HOST:http//localhost:8087}
+  host: ${TRANSFER_SERVICE_HOST:http://localhost:8087}

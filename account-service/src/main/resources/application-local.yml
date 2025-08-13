@@ -46,5 +46,5 @@ logging:
     org.springframework.security: INFO
 
 notification-service:
-  host: ${NOTIFICATION_HOST:test}
+  host: ${NOTIFICATION_HOST:http://localhost:8082}
 
