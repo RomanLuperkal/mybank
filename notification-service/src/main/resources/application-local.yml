@@ -50,3 +50,7 @@ management:
     web:
       exposure:
         include: health,prometheus
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS:localhost:9091}
+  group-id: notification-1

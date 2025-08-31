@@ -16,14 +16,15 @@ import java.util.List;
 @RequestMapping("/notification")
 @RequiredArgsConstructor
 @Slf4j
+//TODO удалить потом
 public class NotificationController {
     private final NotificationService notificationService;
 
-    @PostMapping
+    /*@PostMapping
     public ResponseEntity<Void> saveMessage(@RequestBody List<CreateMessageDto> dto) {
         log.info("Поступил запрос post /notification");
         log.debug("List<CreateMessageDto>: {}", dto);
         notificationService.saveMessage(dto);
         return ResponseEntity.ok().build();
-    }
+    }*/
 }
