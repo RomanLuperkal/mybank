@@ -9,7 +9,7 @@ import org.ivanov.exchangedto.kafka.enums.ExchangeEvent;
         property = "event"
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = SaveMessageEvent.class, name = "SAVE_MESSAGE")
+        @JsonSubTypes.Type(value = FetchCurrencyEvent.class, name = "SAVE_MESSAGE")
 })
 public interface KafkaExchangeEvent {
     ExchangeEvent getEvent();
