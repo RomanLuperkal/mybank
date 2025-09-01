@@ -62,3 +62,6 @@ block-service:
 
 notification-service:
   host: ${NOTIFICATION_SERVICE_HOST:http://localhost:8084}
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS:localhost:9091}
