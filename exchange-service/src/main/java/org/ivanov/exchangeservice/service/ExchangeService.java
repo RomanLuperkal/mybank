@@ -7,4 +7,6 @@ public interface ExchangeService {
     void changeExchange(CreateCurrencyDto createCurrencyDto);
 
     ResponseCurrencyDto getExchange();
+
+    void saveExchange(CreateCurrencyDto createCurrencyDto);
 }

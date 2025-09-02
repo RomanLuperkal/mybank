@@ -10,3 +10,23 @@ spring:
         jwt:
           issuer-uri: http://${KEYCLOAK_HOST_NAME:localhost}:9092/realms/master
 
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${EXCHANGE_DB_HOST:localhost}:${EXCHANGE_DB_PORT:5432}/${EXCHANGE_DB_NAME:exchange}
+    username: ${EXCHANGE_DB_USERNAME:postgres}
+    password: ${EXCHANGE_DB_PASSWORD}
+
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS:localhost:9091}
+  group-id: exchange-1
