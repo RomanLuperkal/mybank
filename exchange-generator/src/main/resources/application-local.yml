@@ -26,3 +26,6 @@ exchange-service:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS:localhost:9091}
