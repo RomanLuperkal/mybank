@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kafka-ui.fullname" . }}-env
+data:
+  KAFKA_CLUSTERS_0_NAME: {{ .Values.kafka_clusters_0_name | quote }}
+  KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: {{tpl .Values.kafka_clusters_0_bootstrapservers . | quote }}

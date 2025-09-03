@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "kafka.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "kafka.fullname" . }}:{{ .Values.ports.client_port }}']
   restartPolicy: Never

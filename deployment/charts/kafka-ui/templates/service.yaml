@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kafka.name" . }}
+spec:
+  selector:
+    app: {{ include "kafka.name" . }}
+  ports:
+    - name: app
+      port: {{ .Values.ports.kafka_ui_port }}
+      targetPort: {{ .Values.ports.kafka_ui_port }}

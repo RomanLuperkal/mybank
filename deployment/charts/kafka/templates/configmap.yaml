@@ -6,10 +6,10 @@ data:
   KAFKA_NODE_ID: {{ .Values.kafka_node_id | quote }}
   CLUSTER_ID: {{ .Values.cluster_id | quote }}
   KAFKA_PROCESS_ROLES: {{ .Values.kafka_process_roles | quote }}
-  KAFKA_CONTROLLER_QUORUM_VOTERS: {{ .Values.kafka_controller_quorum_voters| quote }}
+  KAFKA_CONTROLLER_QUORUM_VOTERS: {{tpl .Values.kafka_controller_quorum_voters . | quote }}
   KAFKA_CONTROLLER_LISTENER_NAMES: {{ .Values.kafka_controller_listener_names| quote }}
   KAFKA_LISTENERS: {{ .Values.kafka_listeners | quote }}
-  KAFKA_ADVERTISED_LISTENERS: {{ .Values.kafka_advertised_listeners | quote }}
+  KAFKA_ADVERTISED_LISTENERS: {{tpl .Values.kafka_advertised_listeners . | quote }}
   KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: {{ .Values.kafka_listener_security_protocol_map | quote }}
   KAFKA_INTER_BROKER_LISTENER_NAME: {{ .Values.kafka_inter_broker_listener_name | quote }}
   KAFKA_LOG_DIRS: {{ .Values.kafka_log_dirs | quote }}

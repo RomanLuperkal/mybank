@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kafka-ui.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "kafka-ui.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "kafka-ui.name" . }}
+    spec:
+      containers:
+        - name: kafka-ui
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.ports.kafka_ui_port }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "kafka.fullname" . }}-env
+

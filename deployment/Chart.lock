@@ -32,5 +32,8 @@ dependencies:
 - name: transfer-service
   repository: file://charts/transfer-service
   version: 1.0.0
-digest: sha256:16cea674caf3969c75259ff511cfd26f6ebec5547c580e0146007f64b3ad6589
-generated: "2025-07-27T19:50:59.3247049+03:00"
+- name: kafka
+  repository: file://charts/kafka
+  version: 1.0.0
+digest: sha256:c721324eb49c8b3214df8ca3c523affaabc7d8493d62d3234031b4f1fe61c27c
+generated: "2025-09-03T23:05:22.7776522+03:00"

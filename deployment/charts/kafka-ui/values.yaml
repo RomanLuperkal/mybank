@@ -1,0 +1,10 @@
+ports:
+  kafka_ui_port: 9096
+
+image:
+  repository: provectuslabs/kafka-ui
+  pullPolicy: IfNotPresent
+  tag: latest
+
+kafka_clusters_0_name: local
+kafka_clusters_0_bootstrapservers: "kafka-0.kafka.{{ .Release.Namespace }}.svc.cluster.local:9094"
