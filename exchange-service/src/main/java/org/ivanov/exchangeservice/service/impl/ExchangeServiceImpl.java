@@ -27,6 +27,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         List<CurrencyRates> currentCurrencies = currencyRatesRepository.findAll();
         currentCurrencies.forEach(c -> updateCurrency(createCurrencyDto, c));
         currencyRatesRepository.saveAll(currentCurrencies);
+        currentCurrencies.forEach(this::updateProvider);
     }
 
     @Override
@@ -46,6 +47,13 @@ public class ExchangeServiceImpl implements ExchangeService {
             var currenciesMap = currencyRatesMapper.getCurrenciesMap(createCurrencyDto);
             currencyRates.setValue(currenciesMap.get(currencyRates.getCurrencyName()));
             currencyRates.setTimestamp(createCurrencyDto.timestamp());
+        }
+    }
+
+    private void updateProvider(CurrencyRates currencyRates) {
+        switch (currencyRates.getCurrencyName()) {
+            case CNY -> provider.setCNY(currencyRates.getValue());
+            case USD -> provider.setUSD(currencyRates.getValue());
         }
     }
 }

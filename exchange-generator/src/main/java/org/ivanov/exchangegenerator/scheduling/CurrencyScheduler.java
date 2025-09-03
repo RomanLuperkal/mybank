@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.ivanov.exchangedto.currency.CreateCurrencyDto;
 import org.ivanov.exchangedto.kafka.event.FetchCurrencyEvent;
 import org.ivanov.exchangedto.kafka.event.KafkaExchangeEvent;
-import org.ivanov.exchangegenerator.client.ExchangeClient;
 import org.ivanov.exchangegenerator.service.CurrencyService;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;

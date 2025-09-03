@@ -17,11 +17,9 @@ public class NotificationListener {
 
     @KafkaListener(topics = "notification", containerFactory = "kafkaListenerContainerFactory", batch = "true")
     public void saveMessage(List<KafkaNotificationEvent> messages, Acknowledgment ack) {
-        messages.forEach(message -> {
-            handlers.stream().filter(h -> h.canHandle(message)).findFirst()
-                    .orElseThrow(() -> new RuntimeException("Обработчик для события не найден"))
-                    .handleEvent(message);
-        });
+        messages.forEach(message -> handlers.stream().filter(h -> h.canHandle(message)).findFirst()
+                .orElseThrow(() -> new RuntimeException("Обработчик для события не найден"))
+                .handleEvent(message));
         ack.acknowledge();
     }
 }

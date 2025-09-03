@@ -1,0 +1,26 @@
+ports:
+  client_port: 9092
+  broker_port: 9094
+  controller_port: 9093
+image:
+  repository: confluentinc/cp-kafka
+  pullPolicy: IfNotPresent
+  tag: 7.7.0
+
+kafka_node_id: "1"
+cluster_id: "kafka-cluster-1"
+kafka_process_roles: "broker,controller"
+kafka_controller_quorum_voters: "1@kafka-0.kafka-svc.default.svc.cluster.local:9093"
+kafka_controller_listener_names: "CONTROLLER"
+kafka_listeners: "BROKER://0.0.0.0:9094,CLIENT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093"
+kafka_advertised_listeners: "BROKER://kafka-0.kafka-svc.default.svc.cluster.local:9094,CLIENT://kafka-0.kafka-svc.default.svc.cluster.local:9092"
+kafka_listener_security_protocol_map: "BROKER:PLAINTEXT,CLIENT:PLAINTEXT,CONTROLLER:PLAINTEXT"
+kafka_inter_broker_listener_name: "BROKER"
+kafka_log_dirs: "/var/lib/kafka/data"
+kafka_offsets_topic_replication_factor: "1"
+kafka_transaction_state_log_replication_factor: "1"
+kafka_default_replication_factor: "1"
+
+service:
+  clusterIP: None
+  port: 9092

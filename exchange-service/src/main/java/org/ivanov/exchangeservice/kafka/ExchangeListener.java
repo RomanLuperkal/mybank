@@ -16,9 +16,9 @@ public class ExchangeListener {
 
     @KafkaListener(topics = "exchange", containerFactory = "kafkaListenerContainerFactory")
     public void saveMessage(KafkaExchangeEvent message, Acknowledgment ack) {
+        ack.acknowledge();
         handlers.stream().filter(h -> h.canHandle(message)).findFirst()
                 .orElseThrow(() -> new RuntimeException("Обработчик для события не найден"))
                 .handleEvent(message);
-        ack.acknowledge();
     }
 }
