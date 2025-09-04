@@ -16,18 +16,18 @@ spring:
       ddl-auto: validate
     show-sql: false
 
-    datasource:
-      driverClassName: org.postgresql.Driver
-      url: jdbc:postgresql://${DB_HOST}/${EXCHANGE_DB_NAME:exchange}
-      username: ${EXCHANGE_DB_USERNAME}
-      password: ${EXCHANGE_DB_PASSWORD}
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}/${EXCHANGE_DB_NAME}
+    username: ${EXCHANGE_DB_USERNAME}
+    password: ${EXCHANGE_DB_PASSWORD}
 
-    liquibase:
-      change-log: classpath:db/changelog/changelog-master.xml
+  liquibase:
+    change-log: classpath:db/changelog/changelog-master.xml
 
-  kafka:
-    bootstrapServers: ${BOOTSTRAP_SERVERS}
-    group-id: exchange-1
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS}
+  group-id: exchange-1
 
 management:
   server:
