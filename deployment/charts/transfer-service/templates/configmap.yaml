@@ -21,5 +21,6 @@ data:
   ACCOUNT_SERVICE_HOST: {{ tpl .Values.global.account_host_name . | quote }}
   BLOCK_SERVICE_HOST: {{ tpl .Values.global.block_host_name . | quote }}
   EXCHANGE_SERVICE_HOST: {{ tpl .Values.global.exchange_host_name . | quote }}
+  BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
 
 

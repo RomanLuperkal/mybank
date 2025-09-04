@@ -15,3 +15,4 @@ spec:
     - name: controller
       port: {{ .Values.ports.controller_port }}
       targetPort: {{ .Values.ports.controller_port }}
+  clusterIP: None

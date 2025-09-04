@@ -18,4 +18,5 @@ data:
   KEYCLOAK_HOST_NAME: {{ tpl .Values.global.keycloak_host_name . | quote }}
   ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
   LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
+  BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
 

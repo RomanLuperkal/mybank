@@ -54,3 +54,7 @@ management:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT}
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS}
+  group-id: notification-1

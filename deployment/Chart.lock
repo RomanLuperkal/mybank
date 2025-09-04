@@ -35,5 +35,8 @@ dependencies:
 - name: kafka
   repository: file://charts/kafka
   version: 1.0.0
-digest: sha256:c721324eb49c8b3214df8ca3c523affaabc7d8493d62d3234031b4f1fe61c27c
-generated: "2025-09-03T23:05:22.7776522+03:00"
+- name: kafka-ui
+  repository: file://charts/kafka-ui
+  version: 1.0.0
+digest: sha256:7d2e20b9954b39b9ba629524e0bed89c6ef388e389eb1e33098286223b263124
+generated: "2025-09-04T17:09:48.9694757+03:00"

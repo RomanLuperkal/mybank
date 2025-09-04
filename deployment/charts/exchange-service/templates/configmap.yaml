@@ -16,4 +16,6 @@ data:
   ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
   LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
   EXCHANGE_SERVICE_PORT: {{ .Values.ports.exchange_service_port | quote }}
+  DB_HOST: {{ tpl .Values.global.db_host . | quote }}
+  BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
 

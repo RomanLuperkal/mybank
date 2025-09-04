@@ -8,3 +8,4 @@ data:
     CREATE DATABASE cash;
     CREATE DATABASE notification;
     CREATE DATABASE transfer;
+    CREATE DATABASE exchange;

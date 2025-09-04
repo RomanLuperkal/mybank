@@ -66,3 +66,6 @@ exchange-service:
 
 notification-service:
   host: ${NOTIFICATION_SERVICE_HOST:http//localhost:8087}
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS}

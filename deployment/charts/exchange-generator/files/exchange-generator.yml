@@ -34,3 +34,6 @@ management:
     web:
       exposure:
         include: health,prometheus
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS}

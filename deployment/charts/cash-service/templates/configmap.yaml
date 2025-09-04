@@ -20,4 +20,5 @@ data:
   LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
   ACCOUNT_SERVICE_HOST: {{ tpl .Values.global.account_host_name . | quote }}
   BLOCK_SERVICE_HOST: {{ tpl .Values.global.block_host_name . | quote }}
+  BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
 

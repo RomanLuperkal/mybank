@@ -11,3 +11,4 @@ global:
   notification_host: "http://{{ .Release.Name }}-notification-service.{{ .Release.Namespace }}.svc.cluster.local:8082"
   block_host_name: "http://{{ .Release.Name }}-block-service.{{ .Release.Namespace }}.svc.cluster.local:8086"
   db_host: "postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local:5432"
+  kafka_host: "kafka-0.kafka.{{ .Release.Namespace }}.svc.cluster.local:9092"

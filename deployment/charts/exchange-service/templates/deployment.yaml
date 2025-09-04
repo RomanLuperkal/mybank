@@ -41,6 +41,17 @@ spec:
           volumeMounts:
             - name: {{ include "exchange-service.name" . }}
               mountPath: /config
+          env:
+            - name: EXCHANGE_DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sc
+                  key: POSTGRES_USER
+            - name: EXCHANGE_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-sc
+                  key: POSTGRES_PASSWORD
           envFrom:
             - configMapRef:
                 name: {{ include "exchange-service.fullname" . }}-env

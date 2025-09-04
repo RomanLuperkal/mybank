@@ -18,4 +18,5 @@ data:
   ACTUATOR_ENDPOINT_PORT: {{ .Values.ports.actuator_endpoint_port | quote }}
   LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
   SMTP_HOST: {{ tpl .Values.smtp_host . | quote}}
+  BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
 
