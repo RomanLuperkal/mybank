@@ -24,6 +24,7 @@
         <module>block-service</module>
         <module>cash-service</module>
         <module>transfer-service</module>
+        <module>kafka-notification-client-starter</module>
     </modules>
 
     <properties>
