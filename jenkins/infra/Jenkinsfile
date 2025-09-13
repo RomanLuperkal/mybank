@@ -1,8 +1,6 @@
 pipeline {
     agent any
 
-    triggers { }
-
     parameters {
         string(name: 'TARGET_NAMESPACE', defaultValue: 'test', description: 'Целевой namespace')
         booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Только проверка (helm install --dry-run)')
