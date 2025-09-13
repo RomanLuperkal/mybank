@@ -1,0 +1,67 @@
+// kafka/Jenkinsfile
+
+pipeline {
+    agent any
+
+    triggers {}  // 🔒 Отключаем все автоматические триггеры (webhook, polling и т.д.)
+
+    parameters {
+        string(name: 'TARGET_NAMESPACE', defaultValue: 'test', description: 'Целевой namespace')
+        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Только проверка (helm install --dry-run)')
+    }
+
+    stages {
+        stage('Validate Trigger') {
+            steps {
+                script {
+                    def cause = currentBuild.rawBuild.getCauses()
+                    def isManual = cause.any { it.class.simpleName == 'UserIdCause' } // ручной запуск через UI
+                    def isUpstream = cause.any { it.class.simpleName == 'UpstreamCause' } // вызов из другого job
+
+                    if (!isManual && !isUpstream) {
+                        currentBuild.result = 'ABORTED'
+                        error("❌ Этот пайплайн можно запускать ТОЛЬКО вручную или из основного пайплайна (mybank).")
+                    }
+                    echo "✅ Запуск разрешён: ${isManual ? 'ручной' : 'из основного пайплайна'}"
+                }
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Deploy Kafka via Helm') {
+            steps {
+                script {
+                    dir('deployment') {
+                        def cmd = """
+                        helm dependency update .
+                        helm upgrade --mybank ./ \\
+                            --namespace \${TARGET_NAMESPACE} --create-namespace \\
+                            --set kafka.enabled=true \\
+                            --set kafka-ui.enabled=true
+                        """
+
+                        if (params.DRY_RUN) {
+                            cmd += " --dry-run --debug"
+                        }
+
+                        sh cmd
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Kafka успешно развернута в namespace: ${params.TARGET_NAMESPACE}"
+        }
+        failure {
+            echo "❌ Ошибка при развёртывании Kafka"
+        }
+    }
+}

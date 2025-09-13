@@ -6,12 +6,8 @@ import org.jenkinsci.plugins.workflow.multibranch.*
 def env = System.getenv()
 def instance = Jenkins.get()
 
-def jobName       = "mybank"
 def githubRepo    = env['GITHUB_REPOSITORY']
 def credentialsId = "github-creds"
-def scriptPath    = "jenkins/Jenkinsfile"
-
-println "--> Запуск create-multibranch-job.groovy"
 
 if (!githubRepo) {
     println "Переменная окружения GITHUB_REPOSITORY не задана (пример: owner/repo)"
@@ -20,13 +16,6 @@ if (!githubRepo) {
 
 println "--> GITHUB_REPOSITORY = ${githubRepo}"
 
-// Проверка, существует ли уже такой job
-if (instance.getItem(jobName) != null) {
-    println "--> Multibranch job '${jobName}' уже существует. Пропускаем."
-    return
-}
-
-// Разбиваем owner/repo
 def parts = githubRepo.split('/')
 if (parts.length != 2) {
     println "Неверный формат GITHUB_REPOSITORY. Ожидалось: owner/repo"
@@ -35,27 +24,40 @@ if (parts.length != 2) {
 def owner = parts[0]
 def repo  = parts[1]
 
-// Создаём GitHub SCM Source
-def source = new GitHubSCMSource(owner, repo)
-source.setCredentialsId(credentialsId)
-source.setTraits([
-        new BranchDiscoveryTrait(1),
-        new OriginPullRequestDiscoveryTrait(1),
-        new ForkPullRequestDiscoveryTrait(1, new ForkPullRequestDiscoveryTrait.TrustPermission())
-])
+// Функция для создания Multibranch Pipeline Job
+def createJob(String jobName, String scriptPath) {
+    if (instance.getItem(jobName) != null) {
+        println "--> Multibranch job '${jobName}' уже существует. Пропускаем."
+        return
+    }
 
-def branchSource = new BranchSource(source)
-branchSource.setStrategy(new DefaultBranchPropertyStrategy([] as BranchProperty[]))
+    def source = new GitHubSCMSource(owner, repo)
+    source.setCredentialsId(credentialsId)
+    source.setTraits([
+            new BranchDiscoveryTrait(1),
+            new OriginPullRequestDiscoveryTrait(1),
+            new ForkPullRequestDiscoveryTrait(1, new ForkPullRequestDiscoveryTrait.TrustPermission())
+    ])
 
-def mbp = new WorkflowMultiBranchProject(instance, jobName)
-mbp.getSourcesList().add(branchSource)
+    def branchSource = new BranchSource(source)
+    branchSource.setStrategy(new DefaultBranchPropertyStrategy([] as BranchProperty[]))
 
-def factory = new WorkflowBranchProjectFactory()
-factory.setScriptPath(scriptPath)
-mbp.setProjectFactory(factory)
+    def mbp = new WorkflowMultiBranchProject(instance, jobName)
+    mbp.getSourcesList().add(branchSource)
 
-instance.add(mbp, jobName)
-mbp.save()
-mbp.scheduleBuild2(0)
+    def factory = new WorkflowBranchProjectFactory()
+    factory.setScriptPath(scriptPath)
+    mbp.setProjectFactory(factory)
 
-println "--> Multibranch job '${jobName}' создан и запущен на '${githubRepo}'"
+    instance.add(mbp, jobName)
+    mbp.save()
+    mbp.scheduleBuild2(0)
+
+    println "--> Multibranch job '${jobName}' создан и запущен на '${githubRepo}'"
+}
+
+// Создаём основной job
+createJob("mybank", "jenkins/Jenkinsfile")
+
+// Создаём job для Kafka
+createJob("kafka", "jenkins/infra/Jenkinsfile")
