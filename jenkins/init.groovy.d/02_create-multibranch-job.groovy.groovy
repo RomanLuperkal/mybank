@@ -3,29 +3,31 @@ import org.jenkinsci.plugins.github_branch_source.*
 import jenkins.branch.*
 import org.jenkinsci.plugins.workflow.multibranch.*
 
-def env = System.getenv()
-Jenkins instance = Jenkins.get()
 
-def githubRepo    = env['GITHUB_REPOSITORY']
-def credentialsId = "github-creds"
 
-if (!githubRepo) {
-    println "Переменная окружения GITHUB_REPOSITORY не задана (пример: owner/repo)"
-    return
-}
-
-println "--> GITHUB_REPOSITORY = ${githubRepo}"
-
-def parts = githubRepo.split('/')
-if (parts.length != 2) {
-    println "Неверный формат GITHUB_REPOSITORY. Ожидалось: owner/repo"
-    return
-}
-def owner = parts[0]
-def repo  = parts[1]
 
 // Функция для создания Multibranch Pipeline Job
-def createJob(Jenkins instance, String jobName, String scriptPath) {
+def createJob(String jobName, String scriptPath) {
+    def env = System.getenv()
+
+    def githubRepo    = env['GITHUB_REPOSITORY']
+    def credentialsId = "github-creds"
+
+    if (!githubRepo) {
+        println "Переменная окружения GITHUB_REPOSITORY не задана (пример: owner/repo)"
+        return
+    }
+
+    println "--> GITHUB_REPOSITORY = ${githubRepo}"
+
+    def parts = githubRepo.split('/')
+    if (parts.length != 2) {
+        println "Неверный формат GITHUB_REPOSITORY. Ожидалось: owner/repo"
+        return
+    }
+    def instance = Jenkins.get()
+    def owner = parts[0]
+    def repo  = parts[1]
     if (instance.getItem(jobName) != null) {
         println "--> Multibranch job '${jobName}' уже существует. Пропускаем."
         return
@@ -57,7 +59,7 @@ def createJob(Jenkins instance, String jobName, String scriptPath) {
 }
 
 // Создаём основной job
-createJob(instance,"mybank", "jenkins/Jenkinsfile")
+createJob("mybank", "jenkins/Jenkinsfile")
 
 // Создаём job для Kafka
-createJob(instance, "kafka", "jenkins/infra/Jenkinsfile")
+createJob("kafka", "jenkins/infra/Jenkinsfile")

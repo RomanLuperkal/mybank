@@ -1,9 +1,7 @@
-// kafka/Jenkinsfile
-
 pipeline {
     agent any
 
-    triggers {}  // 🔒 Отключаем все автоматические триггеры (webhook, polling и т.д.)
+    triggers { }
 
     parameters {
         string(name: 'TARGET_NAMESPACE', defaultValue: 'test', description: 'Целевой namespace')
