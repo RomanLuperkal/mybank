@@ -4,7 +4,7 @@ import jenkins.branch.*
 import org.jenkinsci.plugins.workflow.multibranch.*
 
 def env = System.getenv()
-def instance = Jenkins.get()
+Jenkins instance = Jenkins.get()
 
 def githubRepo    = env['GITHUB_REPOSITORY']
 def credentialsId = "github-creds"
@@ -25,7 +25,7 @@ def owner = parts[0]
 def repo  = parts[1]
 
 // Функция для создания Multibranch Pipeline Job
-def createJob(String jobName, String scriptPath) {
+def createJob(Jenkins instance, String jobName, String scriptPath) {
     if (instance.getItem(jobName) != null) {
         println "--> Multibranch job '${jobName}' уже существует. Пропускаем."
         return
@@ -57,7 +57,7 @@ def createJob(String jobName, String scriptPath) {
 }
 
 // Создаём основной job
-createJob("mybank", "jenkins/Jenkinsfile")
+createJob(instance,"mybank", "jenkins/Jenkinsfile")
 
 // Создаём job для Kafka
-createJob("kafka", "jenkins/infra/Jenkinsfile")
+createJob(instance, "kafka", "jenkins/infra/Jenkinsfile")
