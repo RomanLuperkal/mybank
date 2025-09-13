@@ -72,8 +72,9 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
+            <groupId>org.ivanov</groupId>
+            <artifactId>kafka-notification-client-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

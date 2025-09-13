@@ -16,9 +16,4 @@ public class NotificationScheduler {
     public void scheduledSentMessage() {
         notificationService.sentMessage();
     }
-
-    @Scheduled(fixedRate  = 1000)
-    public void saveMessage() {
-        notificationService.saveMessage();
-    }
 }

@@ -2,10 +2,12 @@ package org.ivanov.notificationservice.service;
 
 import org.blog.notificationdto.notificationoutbox.CreateMessageDto;
 
+import java.util.List;
+
 public interface NotificationService {
-    void saveMessage();
 
     void sentMessage();
 
-    void saveMessage(CreateMessageDto dto);
+    void saveMessage(List<CreateMessageDto> dto);
+
 }
