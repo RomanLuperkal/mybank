@@ -23,8 +23,8 @@ pipeline {
                     --set exchange-generator.enabled=false \\
                     --set notification-service.enabled=false \\
                     --set keycloak.enabled=false \\
-                    --set mailhog-service.enabled=false \\
-                    --set postgres-service.enabled=false \\
+                    --set mailhog.enabled=false \\
+                    --set postgres.enabled=false \\
                     --set transfer-service.enabled=false \\
                     --set kafka.enabled=true \\
                     --set kafka-ui.enabled=true
@@ -54,8 +54,8 @@ pipeline {
                   --set exchange-generator.enabled=false \\
                   --set notification-service.enabled=false \\
                   --set keycloak.enabled=false \\
-                  --set mailhog-service.enabled=false \\
-                  --set postgres-service.enabled=false \\
+                  --set mailhog.enabled=false \\
+                  --set postgres.enabled=false \\
                   --set transfer-service.enabled=false \\
                   --set kafka.enabled=true \\
                   --set kafka-ui.enabled=true
