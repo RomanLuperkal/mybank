@@ -3,9 +3,6 @@ import org.jenkinsci.plugins.github_branch_source.*
 import jenkins.branch.*
 import org.jenkinsci.plugins.workflow.multibranch.*
 
-
-
-
 // Функция для создания Multibranch Pipeline Job
 def createJob(String jobName, String scriptPath) {
     def env = System.getenv()
@@ -60,6 +57,3 @@ def createJob(String jobName, String scriptPath) {
 
 // Создаём основной job
 createJob("mybank", "jenkins/Jenkinsfile")
-
-// Создаём job для Kafka
-createJob("kafka", "jenkins/infra/Jenkinsfile")

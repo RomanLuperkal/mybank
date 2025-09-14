@@ -80,21 +80,6 @@ pipeline {
             }
         }
 
-        stage('Deploy Kafka in TEST Infrastructure') {
-                    steps {
-                        script {
-                            echo "🚀 Запуск развёртывания Kafka для TEST окружения..."
-                            build job: 'kafka',
-                                  parameters: [
-                                      string(name: 'TARGET_NAMESPACE', value: 'test'),
-                                      booleanParam(name: 'DRY_RUN', value: false)
-                                  ],
-                                  wait: true
-                            echo "✅ Kafka для TEST готова"
-                        }
-                    }
-                }
-
         stage('Deploy to TEST using Helm') {
             steps {
                 dir("deployment") {
@@ -121,8 +106,6 @@ pipeline {
                     --set notification-service.image.tag=${IMAGE_TAG} \\
                     --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
                     --set transfer-service.image.tag=${IMAGE_TAG} \\
-                    --set kafka.enabled=false \\
-                    --set kafka-ui.enabled=false
                   """
                }
 
@@ -134,21 +117,6 @@ pipeline {
                 input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
             }
         }
-
-        stage('Deploy Kafka in PROD Infrastructure') {
-                            steps {
-                                script {
-                                    echo "🚀 Запуск развёртывания Kafka для PROD окружения..."
-                                    build job: 'kafka',
-                                          parameters: [
-                                              string(name: 'TARGET_NAMESPACE', value: 'prod'),
-                                              booleanParam(name: 'DRY_RUN', value: false)
-                                          ],
-                                          wait: true
-                                    echo "✅ Kafka для PROD готова"
-                                }
-                            }
-                        }
 
         stage('Deploy to PROD using Helm') {
             steps {
@@ -176,8 +144,6 @@ pipeline {
                   --set notification-service.image.tag=${IMAGE_TAG} \\
                   --set transfer-service.image.repository=${DOCKER_REGISTRY}/transfer-service \\
                   --set transfer-service.image.tag=${IMAGE_TAG} \\
-                  --set kafka.enabled=false \\
-                  --set kafka-ui.enabled=false
                 """
             }
             }

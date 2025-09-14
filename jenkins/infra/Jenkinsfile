@@ -1,63 +1,73 @@
 pipeline {
     agent any
 
-    parameters {
-        string(name: 'TARGET_NAMESPACE', defaultValue: 'test', description: 'Целевой namespace')
-        booleanParam(name: 'DRY_RUN', defaultValue: false, description: 'Только проверка (helm install --dry-run)')
+    environment {
+        DOCKER_REGISTRY = credentials('DOCKER_REGISTRY')
+        GITHUB_USERNAME = credentials('GITHUB_USERNAME')
+        IMAGE_TAG       = "${env.BUILD_NUMBER}"
     }
 
     stages {
-        stage('Validate Trigger') {
+        stage('Deploy to TEST using Helm') {
             steps {
-                script {
-                    def cause = currentBuild.rawBuild.getCauses()
-                    def isManual = cause.any { it.class.simpleName == 'UserIdCause' } // ручной запуск через UI
-                    def isUpstream = cause.any { it.class.simpleName == 'UpstreamCause' } // вызов из другого job
-
-                    if (!isManual && !isUpstream) {
-                        currentBuild.result = 'ABORTED'
-                        error("❌ Этот пайплайн можно запускать ТОЛЬКО вручную или из основного пайплайна (mybank).")
-                    }
-                    echo "✅ Запуск разрешён: ${isManual ? 'ручной' : 'из основного пайплайна'}"
-                }
+                dir("deployment") {
+                  sh """
+                  helm dependency update .
+                  helm upgrade --install mybank ./ \\
+                    --namespace test --create-namespace \\
+                    --set account-service.enabled=false \\
+                    --set block-service.enabled=false \\
+                    --set cash-service.enabled=false \\
+                    --set front.enabled=false \\
+                    --set exchange-service.enabled=false \\
+                    --set exchange-generator.enabled=false \\
+                    --set notification-service.enabled=false \\
+                    --set keycloak.enabled=false \\
+                    --set mailhog-service.enabled=false \\
+                    --set postgres-service.enabled=false \\
+                    --set transfer-service.enabled=false \\
+                    --set kafka.enabled=true \\
+                    --set kafka-ui.enabled=true
+                  """
+               }
             }
         }
 
-        stage('Checkout') {
+        stage('Manual Approval for PROD') {
             steps {
-                checkout scm
+                input message: 'Deploy to PROD environment?', ok: 'Yes, deploy'
             }
         }
 
-        stage('Deploy Kafka via Helm') {
+        stage('Deploy to PROD using Helm') {
             steps {
-                script {
-                    dir('deployment') {
-                        def cmd = """
-                        helm dependency update .
-                        helm upgrade --mybank ./ \\
-                            --namespace \${TARGET_NAMESPACE} --create-namespace \\
-                            --set kafka.enabled=true \\
-                            --set kafka-ui.enabled=true
-                        """
-
-                        if (params.DRY_RUN) {
-                            cmd += " --dry-run --debug"
-                        }
-
-                        sh cmd
-                    }
-                }
+            dir("deployment") {
+                sh """
+                helm dependency update .
+                helm upgrade --install mybank ./ \\
+                  --namespace prod --create-namespace \\
+                  --set account-service.enabled=false \\
+                  --set block-service.enabled=false \\
+                  --set cash-service.enabled=false \\
+                  --set front.enabled=false \\
+                  --set exchange-service.enabled=false \\
+                  --set exchange-generator.enabled=false \\
+                  --set notification-service.enabled=false \\
+                  --set keycloak.enabled=false \\
+                  --set mailhog-service.enabled=false \\
+                  --set postgres-service.enabled=false \\
+                  --set transfer-service.enabled=false \\
+                  --set kafka.enabled=true \\
+                  --set kafka-ui.enabled=true
+                """
+            }
             }
         }
-    }
 
-    post {
-        success {
-            echo "✅ Kafka успешно развернута в namespace: ${params.TARGET_NAMESPACE}"
-        }
-        failure {
-            echo "❌ Ошибка при развёртывании Kafka"
+        stage('clear workdir') {
+            steps {
+                deleteDir()
+            }
         }
     }
 }

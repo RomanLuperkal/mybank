@@ -12,3 +12,31 @@ global:
   block_host_name: "http://{{ .Release.Name }}-block-service.{{ .Release.Namespace }}.svc.cluster.local:8086"
   db_host: "postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local:5432"
   kafka_host: "kafka-0.kafka.{{ .Release.Namespace }}.svc.cluster.local:9093"
+
+# values.yaml
+keycloak:
+  enabled: true
+front:
+  enabled: true
+postgres:
+  enabled: true
+account-service:
+  enabled: true
+exchange-service:
+  enabled: true
+exchange-generator:
+  enabled: true
+mailhog:
+  enabled: true
+notification-service:
+  enabled: true
+block-service:
+  enabled: true
+cash-service:
+  enabled: true
+transfer-service:
+  enabled: true
+kafka:
+  enabled: true
+kafka-ui:
+  enabled: true

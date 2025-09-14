@@ -7,39 +7,52 @@ dependencies:
   - name: keycloak
     version: 1.0.0
     repository: file://charts/keycloak
+    condition: keycloak.enabled
   - name: front
     version: 1.0.0
     repository: file://charts/front
+    condition: front.enabled
   - name: postgres
     version: 1.0.0
     repository: file://charts/postgres
+    condition: postgres.enabled
   - name: account-service
     version: 1.0.0
     repository: file://charts/account-service
+    condition: account-service.enabled
   - name: exchange-service
     version: 1.0.0
     repository: file://charts/exchange-service
+    condition: exchange-service.enabled
   - name: exchange-generator
     version: 1.0.0
     repository: file://charts/exchange-generator
+    condition: exchange-generator.enabled
   - name: mailhog
     version: 1.0.0
     repository: file://charts/mailhog
+    condition: mailhog.enabled
   - name: notification-service
     version: 1.0.0
     repository: file://charts/notification-service
+    condition: notification-service.enabled
   - name: block-service
     version: 1.0.0
     repository: file://charts/block-service
+    condition: block-service.enabled
   - name: cash-service
     version: 1.0.0
     repository: file://charts/cash-service
+    condition: cash-service.enabled
   - name: transfer-service
     version: 1.0.0
     repository: file://charts/transfer-service
+    condition: transfer-service.enabled
   - name: kafka
     version: 1.0.0
     repository: file://charts/kafka
+    condition: kafka.enabled
   - name: kafka-ui
     version: 1.0.0
     repository: file://charts/kafka-ui
+    condition: kafka-ui.enabled
