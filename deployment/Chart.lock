@@ -38,5 +38,8 @@ dependencies:
 - name: kafka-ui
   repository: file://charts/kafka-ui
   version: 1.0.0
-digest: sha256:5ee2576c1552e4cb0bb08749182ba2aecedc8c35be0f8aca389b335b603ddab4
-generated: "2025-09-14T17:20:55.5774445+03:00"
+- name: zipkin
+  repository: file://charts/zipkin
+  version: 1.0.0
+digest: sha256:6a19eda13ca9112643ca1754e20669eb8ad5fbafdfcd135fb4007fe30f270d4f
+generated: "2025-09-15T22:55:29.7800721+03:00"

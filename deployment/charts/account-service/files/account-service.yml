@@ -5,6 +5,12 @@ management:
     web:
       exposure:
         include: health,prometheus
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_HOST}/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1
 
 server:
   port: ${ACCOUNT_SERVICE_PORT}

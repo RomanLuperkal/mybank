@@ -19,4 +19,5 @@ data:
   DB_HOST: {{ tpl .Values.global.db_host . | quote }}
   BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
   EXCHANGE_DB_NAME: "exchange"
+  ZIPKIN_HOST: {{ tpl .Values.global.ziplin_host . | quote }}
 

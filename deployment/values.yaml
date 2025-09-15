@@ -12,6 +12,7 @@ global:
   block_host_name: "http://{{ .Release.Name }}-block-service.{{ .Release.Namespace }}.svc.cluster.local:8086"
   db_host: "postgres-0.postgres.{{ .Release.Namespace }}.svc.cluster.local:5432"
   kafka_host: "kafka-0.kafka.{{ .Release.Namespace }}.svc.cluster.local:9093"
+  ziplin_host: "http://{{ .Release.Name }}-zipkin.{{ .Release.Namespace }}.svc.cluster.local:9411"
 
 # values.yaml
 keycloak:
@@ -39,4 +40,6 @@ transfer-service:
 kafka:
   enabled: true
 kafka-ui:
+  enabled: true
+zipkin:
   enabled: true
