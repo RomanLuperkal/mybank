@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "transfer-service.fullname" . }}-monitor
+  labels:
+    app: {{ include "transfer-service.name" . }}
+spec:
+  jobLabel: transfer-service
+  endpoints:
+    - port: http
+      path: /actuator/prometheus
+      interval: 10s
+  selector:
+    matchLabels:
+      app: {{ include "transfer-service.name" . }}
+
+

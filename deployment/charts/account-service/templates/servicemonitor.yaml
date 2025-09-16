@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "account-service.fullname" . }}-monitor
+  labels:
+    app: {{ include "account-service.name" . }}
+spec:
+  jobLabel: account-service
+  endpoints:
+    - port: http
+      path: /actuator/prometheus
+      interval: 10s
+  selector:
+    matchLabels:
+      app: {{ include "account-service.name" . }}
+
+

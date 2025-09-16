@@ -49,7 +49,8 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,prometheus
+        include: health,prometheus,metrics
+
   zipkin:
     tracing:
       endpoint: ${ZIPKIN_HOST}/api/v2/spans

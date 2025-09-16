@@ -60,3 +60,7 @@ dependencies:
     version: 1.0.0
     repository: file://charts/zipkin
     condition: zipkin.enabled
+  - name: kube-prometheus-stack
+    version: 58.1.0
+    repository: https://prometheus-community.github.io/helm-charts
+    condition: kube-prometheus-stack.enabled

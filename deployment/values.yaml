@@ -14,7 +14,21 @@ global:
   kafka_host: "kafka-0.kafka.{{ .Release.Namespace }}.svc.cluster.local:9093"
   ziplin_host: "http://{{ .Release.Name }}-zipkin.{{ .Release.Namespace }}.svc.cluster.local:9411"
 
-# values.yaml
+kube-prometheus-stack:
+  enabled: true
+  prometheus:
+    prometheusSpec:
+      serviceMonitorSelector: {}
+      podMonitorSelector: {}
+  grafana:
+    enabled: true
+    adminPassword: "admin"
+    service:
+      type: ClusterIP
+  prometheus-node-exporter:
+    hostRootFsMount:
+      enabled: false
+
 keycloak:
   enabled: true
 front:
