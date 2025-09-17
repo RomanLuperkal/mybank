@@ -1,5 +1,6 @@
 package org.ivanov.front.controller;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     private final AccountService accountService;
     private final WalletService walletService;
+    private final MeterRegistry meterRegistry;
 
     @GetMapping("/login")
     public String login(@RequestParam(required = false) String error, Model model) {
@@ -66,7 +68,11 @@ public class AccountController {
     @GetMapping("/home")
     public String home(Authentication authentication, Model model) {
         log.info("Поступил запрос get /home");
-        model.addAttribute("user", accountService.getAccountInfo(getUsername(authentication)));
+
+        ResponseAccountDto accountInfo = accountService.getAccountInfo(getUsername(authentication));
+        meterRegistry.counter("success_login", "login", accountInfo.username());
+
+        model.addAttribute("user", accountInfo);
         return "home";
     }
 

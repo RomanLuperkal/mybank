@@ -1,6 +1,8 @@
 package org.ivanov.front.configuration.security;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
+import lombok.RequiredArgsConstructor;
 import org.ivanov.front.client.AccountClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +21,10 @@ import java.nio.charset.StandardCharsets;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
+    private final MeterRegistry meterRegistry;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -56,6 +61,9 @@ public class SecurityConfig {
     private AuthenticationFailureHandler failureHandler() {
         return (request, response, authException) -> {
             String redirectUrl = "/login";
+
+            String login = request.getParameter("username");
+            meterRegistry.counter("failure_login", "login", login).increment();
 
             if (authException instanceof BadCredentialsException) {
                 redirectUrl += "?error";

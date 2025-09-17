@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  account-service:
+    build: ../account-service
+    image: account-service
+
+  block-service:
+    build: ../block-service
+    image: block-service
+
+  cash-service:
+    build: ../cash-service
+    image: cash-service
+
+  exchange-generator:
+    build: ../exchange-generator
+    image: exchange-generator
+
+  exchange-service:
+    build: ../exchange-service
+    image: exchange-service
+
+  front:
+    build: ../front
+    image: front
+
+  notification-service:
+    build: ../notification-service
+    image: notification-service
+
+  transfer-service:
+    build: ../transfer-service
+    image: transfer-service
