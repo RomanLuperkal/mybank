@@ -4,10 +4,11 @@ metadata:
   name: {{ include "notification-service.fullname" . }}-monitor
   labels:
     app: {{ include "notification-service.name" . }}
+    release: {{ .Release.Name }}
 spec:
   jobLabel: notification-service
   endpoints:
-    - port: http
+    - port: actuator
       path: /actuator/prometheus
       interval: 10s
   selector:

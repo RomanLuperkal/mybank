@@ -4,10 +4,11 @@ metadata:
   name: {{ include "account-service.fullname" . }}-monitor
   labels:
     app: {{ include "account-service.name" . }}
+    release: {{ .Release.Name }}
 spec:
   jobLabel: account-service
   endpoints:
-    - port: http
+    - port: actuator
       path: /actuator/prometheus
       interval: 10s
   selector:

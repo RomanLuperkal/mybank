@@ -53,6 +53,8 @@ public class KafkaConfiguration {
         factory.setConsumerFactory(consumerFactoryString());
         factory.getContainerProperties().setAckMode(ContainerProperties.AckMode.MANUAL);
         factory.setBatchListener(true);
+        ContainerProperties containerProperties = factory.getContainerProperties();
+        containerProperties.setObservationEnabled(true);
         return factory;
     }
 

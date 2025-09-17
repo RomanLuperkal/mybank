@@ -45,7 +45,9 @@ public class KafkaConfiguration {
 
     @Bean
     public KafkaTemplate<String, KafkaNotificationEvent> kafkaTemplateString() {
-        return new KafkaTemplate<>(producerFactoryString());
+        KafkaTemplate<String, KafkaNotificationEvent> kafkaTemplate = new KafkaTemplate<>(producerFactoryString());
+        kafkaTemplate.setObservationEnabled(true);
+        return kafkaTemplate;
     }
 
     private ProducerFactory<String, KafkaNotificationEvent> producerFactoryString() {

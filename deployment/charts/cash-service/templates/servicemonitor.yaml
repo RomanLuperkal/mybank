@@ -4,10 +4,11 @@ metadata:
   name: {{ include "cash-service.fullname" . }}-monitor
   labels:
     app: {{ include "cash-service.name" . }}
+    release: {{ .Release.Name }}
 spec:
   jobLabel: cash-service
   endpoints:
-    - port: http
+    - port: actuator
       path: /actuator/prometheus
       interval: 10s
   selector:
