@@ -70,7 +70,7 @@ public class AccountController {
         log.info("Поступил запрос get /home");
 
         ResponseAccountDto accountInfo = accountService.getAccountInfo(getUsername(authentication));
-        meterRegistry.counter("success_login", "login", accountInfo.username());
+        meterRegistry.counter("success_login", "login", accountInfo.username()).increment();
 
         model.addAttribute("user", accountInfo);
         return "home";

@@ -62,7 +62,7 @@ public class TransferServiceImpl implements TransferService {
                 case BLOCKED -> {
                     meterRegistry.counter("blocked_transaction", "login", transaction.getLogin(),
                             "source_wallet_id", transaction.getSourceWalletId().toString(),
-                            "target_wallet_id", transaction.getTransactionId().toString());
+                            "target_wallet_id", transaction.getTransactionId().toString()).increment();
                     saveValidationResult(status, transaction);
                     prepareMessageForNotification(transaction);
                 }

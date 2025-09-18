@@ -28,7 +28,7 @@ public class TransferServiceImpl implements TransferService {
     public ResponseTransferDto createInnerTransfer(TransferReqDto dto, Set<ResponseWalletDto> wallets) {
         if (!validateTransfer(dto, wallets)) {
             meterRegistry.counter("failed_internal_transfer_attempts", "login", dto.getLogin(),
-                    "source_wallet_id", dto.getSourceWalletId().toString());
+                    "source_wallet_id", dto.getSourceWalletId().toString()).increment();
             return new ResponseTransferDto("Сумма перевода не может быть больше баланса на счете");
         }
 
@@ -41,13 +41,13 @@ public class TransferServiceImpl implements TransferService {
         var targetWallet = targetWalletTypeExists(userWallets, dto.walletType())
                 .orElseThrow(() -> {
                     meterRegistry.counter("failed_internal_transfer_attempts", "login", dto.login(),
-                            "source_wallet_id", dto.sourceWalletId().toString(), "target_wallet_id", null);
+                            "source_wallet_id", dto.sourceWalletId().toString(), "target_wallet_id", null).increment();
                     return new TransferException("Такого типа кошелька у пользователя не существует", HttpStatus.NOT_FOUND);
                 });
 
         if (!validateTransfer(dto, wallets)) {
             meterRegistry.counter("failed_internal_transfer_attempts", "login", dto.login(),
-                    "source_wallet_id", dto.sourceWalletId().toString(), "target_wallet_id", targetWallet.walletId().toString());
+                    "source_wallet_id", dto.sourceWalletId().toString(), "target_wallet_id", targetWallet.walletId().toString()).increment();
             return new ResponseTransferDto("Сумма перевода не может быть больше баланса на счете");
         }
 

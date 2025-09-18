@@ -17,6 +17,7 @@ public class Notification {
     private String theme;
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAITING;
+    private String login;
 
     public enum Status {
         WAITING, SENT, ERROR

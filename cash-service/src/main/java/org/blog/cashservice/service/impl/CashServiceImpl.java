@@ -51,7 +51,7 @@ public class CashServiceImpl implements CashService {
                 case APPROVED -> saveValidationResult(status, transaction);
                 case BLOCKED -> {
                     meterRegistry.counter("blocked_transaction", "login", transaction.getLogin(),
-                            "source_id", transaction.getWalletId().toString(), "target_wallet_id", null);
+                            "source_id", transaction.getWalletId().toString(), "target_wallet_id", null).increment();
                     saveValidationResult(status, transaction);
                     prepareMessageForNotification(transaction);
                 }

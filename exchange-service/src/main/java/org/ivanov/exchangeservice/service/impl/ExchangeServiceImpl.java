@@ -9,6 +9,7 @@ import org.ivanov.exchangeservice.model.CurrencyRates;
 import org.ivanov.exchangeservice.provider.ExchangeRateProvider;
 import org.ivanov.exchangeservice.repository.CurrencyRatesRepository;
 import org.ivanov.exchangeservice.service.ExchangeService;
+import org.ivanov.exchangeservice.utils.ExchangeUpdateMetrics;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ public class ExchangeServiceImpl implements ExchangeService {
     private final ExchangeRateProvider provider;
     private final CurrencyRatesMapper currencyRatesMapper;
     private final CurrencyRatesRepository currencyRatesRepository;
+    private final ExchangeUpdateMetrics exchangeUpdateMetrics;
 
     @Override
     @Transactional
@@ -28,6 +30,7 @@ public class ExchangeServiceImpl implements ExchangeService {
         currentCurrencies.forEach(c -> updateCurrency(createCurrencyDto, c));
         currencyRatesRepository.saveAll(currentCurrencies);
         currentCurrencies.forEach(this::updateProvider);
+        exchangeUpdateMetrics.rateUpdated();
     }
 
     @Override
