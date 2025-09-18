@@ -22,6 +22,7 @@ public class Transaction {
     private String email;
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAITING;
+    private String login;
 
     public enum Status {
         WAITING, APPROVED, DONE, ERROR, BLOCKED

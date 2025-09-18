@@ -14,4 +14,5 @@ public class TransferReqDto {
     private Long targetWalletId;
     private BigDecimal amount;
     private String email;
+    private String login;
 }

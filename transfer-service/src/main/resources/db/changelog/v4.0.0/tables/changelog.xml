@@ -4,7 +4,12 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
-    <include file="v1.0.0/tables/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v4.0.0/tables/changelog.xml" relativeToChangelogFile="true"/>
+    <changeSet id="add-tag-4.0.0" author="Roman">
+        <tagDatabase tag="v.4.0.0"/>
+    </changeSet>
+
+    <changeSet author="Roman" id="alter_transaction">
+        <sqlFile path="alter_transaction.sql" relativeToChangelogFile="true" endDelimiter=";" splitStatements="true"/>
+    </changeSet>
 
 </databaseChangeLog>

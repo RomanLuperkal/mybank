@@ -1,0 +1,1 @@
+ALTER TABLE cash_transaction ADD COLUMN login VARCHAR;

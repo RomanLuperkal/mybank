@@ -1,5 +1,6 @@
 package org.ivanov.transfer.service.impl;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.blog.blockdto.block.ResponseValidatedTransactionDto;
 import org.blog.blockdto.block.UnvalidatedTransactionDto;
@@ -38,6 +39,7 @@ public class TransferServiceImpl implements TransferService {
     private final ExchangeClient exchangeClient;
     private final AccountClient accountClient;
     private final NotificationOutBoxService notificationOutBoxService;
+    private final MeterRegistry meterRegistry;
 
     @Override
     @PreAuthorize("hasAuthority('TRANSFER_ROLE')")
@@ -58,6 +60,9 @@ public class TransferServiceImpl implements TransferService {
             switch (status) {
                 case APPROVED -> saveValidationResult(status, transaction);
                 case BLOCKED -> {
+                    meterRegistry.counter("blocked_transaction", "login", transaction.getLogin(),
+                            "source_wallet_id", transaction.getSourceWalletId().toString(),
+                            "target_wallet_id", transaction.getTransactionId().toString());
                     saveValidationResult(status, transaction);
                     prepareMessageForNotification(transaction);
                 }

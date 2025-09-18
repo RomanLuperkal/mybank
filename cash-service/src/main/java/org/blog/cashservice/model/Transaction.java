@@ -25,6 +25,7 @@ public class Transaction {
     @Enumerated(EnumType.STRING)
     private Status status = Status.WAITING;
     private String email;
+    private String login;
 
 
     @Getter

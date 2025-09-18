@@ -1,5 +1,6 @@
 package org.ivanov.front.service.impl;
 
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.RequiredArgsConstructor;
 import org.ivanov.accountdto.wallet.ReqWalletInfoDto;
 import org.ivanov.accountdto.wallet.ResponseWalletDto;
@@ -21,10 +22,13 @@ import java.util.Set;
 public class TransferServiceImpl implements TransferService {
     private final TransferClient transferClient;
     private final AccountClient accountClient;
+    private final MeterRegistry meterRegistry;
 
     @Override
     public ResponseTransferDto createInnerTransfer(TransferReqDto dto, Set<ResponseWalletDto> wallets) {
         if (!validateTransfer(dto, wallets)) {
+            meterRegistry.counter("failed_internal_transfer_attempts", "login", dto.getLogin(),
+                    "source_wallet_id", dto.getSourceWalletId().toString());
             return new ResponseTransferDto("Сумма перевода не может быть больше баланса на счете");
         }
 
@@ -33,14 +37,21 @@ public class TransferServiceImpl implements TransferService {
 
     @Override
     public ResponseTransferDto createExternalTransfer(ExternalTransferDto dto, Set<ResponseWalletDto> wallets) {
-        if (!validateTransfer(dto, wallets)) {
-            return new ResponseTransferDto("Сумма перевода не может быть больше баланса на счете");
-        }
         Set<ResponseWalletDto> userWallets = accountClient.getWalletInfoByUsername(new ReqWalletInfoDto(dto.username()));
         var targetWallet = targetWalletTypeExists(userWallets, dto.walletType())
-                .orElseThrow(() -> new TransferException("Такого типа кошелька у пользователя не существует", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> {
+                    meterRegistry.counter("failed_internal_transfer_attempts", "login", dto.login(),
+                            "source_wallet_id", dto.sourceWalletId().toString(), "target_wallet_id", null);
+                    return new TransferException("Такого типа кошелька у пользователя не существует", HttpStatus.NOT_FOUND);
+                });
 
-        return transferClient.createInnerTransfer(new TransferReqDto(dto.sourceWalletId(), targetWallet.walletId(), dto.amount(), dto.email()));
+        if (!validateTransfer(dto, wallets)) {
+            meterRegistry.counter("failed_internal_transfer_attempts", "login", dto.login(),
+                    "source_wallet_id", dto.sourceWalletId().toString(), "target_wallet_id", targetWallet.walletId().toString());
+            return new ResponseTransferDto("Сумма перевода не может быть больше баланса на счете");
+        }
+
+        return transferClient.createInnerTransfer(new TransferReqDto(dto.sourceWalletId(), targetWallet.walletId(), dto.amount(), dto.email(), ""));
     }
 
     private Boolean validateTransfer(TransferReqDto dto, Set<ResponseWalletDto> wallets) {
