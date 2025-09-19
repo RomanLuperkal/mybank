@@ -14,10 +14,11 @@ public class ExchangeUpdateMetrics {
 
     private final MeterRegistry meterRegistry;
 
-    private volatile Instant lastUpdateTime = Instant.EPOCH;
+    private volatile Instant lastUpdateTime;
 
     @PostConstruct
     void init() {
+        lastUpdateTime = Instant.now();
         meterRegistry.gauge("rate_update_seconds", this, metrics ->
                         Duration.between(metrics.lastUpdateTime, Instant.now()).getSeconds()
                 );

@@ -50,6 +50,9 @@ logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
 
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS:localhost:9091}
+
 
 account-service:
   host: ${ACCOUNT_SERVICE_HOST:http://localhost:8081}
