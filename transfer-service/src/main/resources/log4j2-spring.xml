@@ -6,10 +6,13 @@
         </Console>
         <Kafka name="Kafka" topic="input-logs" syncSend="false">
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5level [${spring:spring.application.name}/%c{1}#%M/%L/%X{traceId}/%X{spanId}]: %msg"/>
-            <Property name="bootstrap.servers">localhost:9091</Property>
+            <Property name="bootstrap.servers">${env:BOOTSTRAP_SERVERS}</Property>
         </Kafka>
     </Appenders>
     <Loggers>
+        <Logger name="org.apache.kafka" level="INFO" additivity="false">
+            <AppenderRef ref="Console"/>
+        </Logger>
         <Root level="info">
             <AppenderRef ref="Kafka"/>
             <AppenderRef ref="Console"/>

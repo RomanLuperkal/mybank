@@ -68,3 +68,6 @@ exchange-service:
 
 transfer-service:
   host: ${TRANSFER_SERVICE_HOST}
+
+kafka:
+  bootstrapServers: ${BOOTSTRAP_SERVERS}

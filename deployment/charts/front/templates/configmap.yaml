@@ -21,4 +21,5 @@ data:
   TRANSFER_SERVICE_HOST: {{ tpl .Values.global.transfer_host_name . | quote }}
   LOG_LEVEL_ROOT: {{ .Values.log_level_root | quote }}
   ZIPKIN_HOST: {{ tpl .Values.global.ziplin_host . | quote }}
+  BOOTSTRAP_SERVERS: {{ tpl .Values.global.kafka_host . | quote }}
 

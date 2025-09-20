@@ -47,7 +47,7 @@ logstash:
         kafka {
           bootstrap_servers => "kafka-0.kafka.{{ .Release.Namespace }}.svc.cluster.local:9093"
           topics => ["input-logs"]
-          group_id => "logs-group"
+          group_id => "logstash-group"
         }
       }
       filter {
@@ -61,10 +61,14 @@ logstash:
           index => "logs-%{+dd.MM.YYYY}"
           retry_on_conflict => 3
           action => "create"
+          user => "elastic"                  
+          password => "elastic"
           ssl_enabled => true
           ssl_verification_mode => "none"
         }
       }
+  livenessProbe: null
+  readinessProbe: null
 
 elasticsearch:
   enabled: true
@@ -76,17 +80,16 @@ elasticsearch:
   minimumMasterNodes: 1
   esJavaOpts: "-Xmx1g -Xms1g"
   clusterHealthCheckParams: ""
-  security:
-    enabled: true
-    elasticPassword: "elastic"
-    createDefaultSecret: true
+  secret:
+    password: "elastic"
   esConfig:
     elasticsearch.yml: |
-      xpack.security.http.ssl.enabled: false
+      network.host: 0.0.0.0
+      xpack.security.http.ssl.enabled: true
       xpack.security.enabled: true
 
 kibana:
-  enabled: true
+  enabled: false
   replicaCount: 1
   elasticsearchHosts: "https://elasticsearch:9200"
   resources:
@@ -107,11 +110,6 @@ kibana:
         paths:
           - path: /
             pathType: Prefix
-  env:
-    - name: ELASTICSEARCH_USERNAME
-      value: "admin"
-    - name: ELASTICSEARCH_PASSWORD
-      value: "admin"
 
 keycloak:
   enabled: true
