@@ -9,6 +9,12 @@ management:
       #base-path: /
       exposure:
         include: health,prometheus
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 0
 
 spring:
   application:
@@ -49,6 +55,9 @@ spring:
 logging:
   level:
     root: ${LOG_LEVEL_ROOT:INFO}
+    io.micrometer: DEBUG
+    io.opentelemetry: DEBUG
+    org.springframework.cloud.sleuth: DEBUG
 
 kafka:
   bootstrapServers: ${BOOTSTRAP_SERVERS:localhost:9091}

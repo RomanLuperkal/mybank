@@ -20,11 +20,98 @@ kube-prometheus-stack:
     prometheusSpec:
       serviceMonitorSelector: {}
       podMonitorSelector: {}
+  additionalPrometheusRulesMap:
+    practicum-custom-rules:
+      groups:
+        - name: mybank_http_errors
+          rules:
+            - alert: HighHttp5xxErrorRate
+              expr: >
+                sum(rate(http_server_requests_seconds_count{status=~"5.."}[1m])) 
+                / 
+                sum(rate(http_server_requests_seconds_count[1m])) 
+                > 0.1
+              for: 1m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Высокий процент 5xx ошибок"
+                description: "Больше 10% запросов за минуту вернули 5xx"
+        - name: user_login_failures
+          rules:
+            - alert: HighLoginFailureRate
+              expr: |
+                sum by (login) (increase(failure_login_total[1m])) > 5
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Большое кол-во неудачных аутентификаций"
+                description: "Пользователь {{ $labels.login }} совершил более 5 неудачных попыток аутентификации за 1 минуту"
+
+        - name: user_blocker_transactions
+          rules:
+            - alert: HighBlockTransactionRate
+              expr: |
+                increase(blocked_transaction_total[1m]) > 0
+              for: 0m
+              labels:
+                severity: warning
+              annotations:
+                summary: "Заблокирован подозрительный перевод"
+                description: "Обнаружена подозрительная операция. Пользователь: {{ $labels.login }}"
+
+        - name: user_notification_failures
+          rules:
+            - alert: HighNotificationSendFailureRate
+              expr: |
+                increase(notification_send_error_count_by_login_total[5m]) > 0
+              for: 30s
+              labels:
+                severity: warning
+              annotations:
+                summary: "Ошибка отправки уведомления"
+                description: "Невозможно отправить уведомление пользователю {{ $labels.login }}"
+
+        - name: currency_rates
+          rules:
+            - alert: CurrencyRateNotUpdated
+              expr: |
+                rate_update_seconds > 300
+              for: 1m
+              labels:
+                severity: critical
+              annotations:
+                summary: "Не обновлялся курс валют"
+                description: "Курс валют не обновлялся последние 5 минут"
+
   grafana:
     enabled: true
     adminPassword: "admin"
     service:
       type: ClusterIP
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: default
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+    dashboards:
+      default:
+        spring-boot:
+          gnetId: 10280
+          revision: 1
+          datasource: Prometheus
+        jvm-overview:
+          gnetId: 4701
+          revision: 2
+          datasource: Prometheus
   prometheus-node-exporter:
     hostRootFsMount:
       enabled: false

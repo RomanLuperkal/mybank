@@ -28,6 +28,10 @@ pipeline {
                     --set transfer-service.enabled=false \\
                     --set kafka.enabled=true \\
                     --set kafka-ui.enabled=true
+                    --set zipkin.enabled=true
+                    --set kube-prometheus-stack.enabled=true
+                    --set logstash.enabled=true
+                    --set elasticsearch.enabled=true
                   """
                }
             }
@@ -59,6 +63,10 @@ pipeline {
                   --set transfer-service.enabled=false \\
                   --set kafka.enabled=true \\
                   --set kafka-ui.enabled=true
+                  --set zipkin.enabled=true
+                  --set kube-prometheus-stack.enabled=true
+                  --set logstash.enabled=true
+                  --set elasticsearch.enabled=true
                 """
             }
             }

@@ -49,6 +49,9 @@ management:
     web:
       exposure:
         include: health,prometheus,metrics
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
   zipkin:
     tracing:
